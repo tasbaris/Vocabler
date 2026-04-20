@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>anasayfa</title>
+        <link rel="stylesheet" href="main.css">
+        <style>
+.wordle-container {
+  text-align: center;
+}
+main {
+  min-height: 100vh;          /* tüm ekran yüksekliği */
+  display: flex;
+  justify-content: center;    /* yatay ortala */
+  align-items: center;        /* dikey ortala */
+}
+/* GRID */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.cell {
+  width: 80px;
+  height: 80px;
+  border: 2px solid #555;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #222;
+  text-transform: uppercase;
+}
+
+/* KEYBOARD */
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.key-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.key-row button {
+  padding: 10px 12px;
+  border: none;
+  background: #393e46;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.key-row button:hover {
+  background: #4a4f57;
+}
+
+.key-row .wide {
+  padding: 10px 18px;
+}</style>
+    </head>
+    <body>
+        <header class="header">
+            <a href="main.html" class="logo">Logo</a>
+
+            <nav class="nav">
+                <a href="main.html" class="nav-link">Anasayfa</a>
+                <a href="quiz.html" class="nav-link">Quiz</a>
+                <a href="#" class="nav-link">Konular</a>
+                <a href="wordle.html" class="nav-link">Wordle</a>
+                <a href="wordchain.html" class="nav-link">Wordchain</a>
+            </nav>
+
+            <div class="auth-area">
+                <div class="guest">
+                    <a href="#" class="login-btn">Giriş</a>
+                    <a href="#" class="register-btn">Kayıt Ol</a>
+                </div>
+                <div class="user" style="display:none;">
+                    <a href="#" class="profile-btn">Profil</a>
+                </div>
+            </div>
+        </header>
+<main>
+  <div class="wordle-container">
+
+    <!-- GRID -->
+    <div class="grid">
+      <!-- 6 satır -->
+      <div class="row">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+
+      <div class="row">
+        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+      </div>
+    </div>
+
+    <!-- KEYBOARD -->
+    <div class="keyboard">
+      <div class="key-row">
+        <button>Q</button><button>W</button><button>E</button><button>R</button><button>T</button>
+        <button>Y</button><button>U</button><button>I</button><button>O</button><button>P</button>
+      </div>
+
+      <div class="key-row">
+        <button>A</button><button>S</button><button>D</button><button>F</button><button>G</button>
+        <button>H</button><button>J</button><button>K</button><button>L</button>
+      </div>
+
+      <div class="key-row">
+        <button class="wide">Enter</button>
+        <button>Z</button><button>X</button><button>C</button><button>V</button>
+        <button>B</button><button>N</button><button>M</button>
+        <button class="wide">⌫</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+
+        <footer>
+
+        </footer>
+
+    </body>
+</html>

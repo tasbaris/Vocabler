@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>WordMaster</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+<div class="container">
+    <div class="login-card">
+        <a href="main.html" class="card-title">WordMaster</a>
+        <p class="subtitle">Learn vocabulary smarter</p>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('register')">Register</button>
+            <button class="tab" onclick="showTab('login')">Login</button>
+        </div>
+
+        <!-- Register -->
+        <div id="register" class="tab-content active">
+            <input type="text" placeholder="Username">
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button class="btn primary">Register</button>
+        </div>
+
+        <!-- Login -->
+        <div id="login" class="tab-content">
+            <input type="email" placeholder="Email">
+            <input type="password" placeholder="Password">
+            <button class="btn success">Login</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function showTab(tabId) {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(btn => btn.classList.remove('active'));
+    contents.forEach(c => c.classList.remove('active'));
+
+    document.getElementById(tabId).classList.add('active');
+
+    if(tabId === "register") tabs[0].classList.add('active');
+    else tabs[1].classList.add('active');
+}
+</script>
+
+</body>
+</html>

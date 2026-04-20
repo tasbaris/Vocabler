@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>anasayfa</title>
+        <link rel="stylesheet" href="main.css">
+        <style>     
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+}
+.layout {
+    display: grid;
+    gap: 25px;
+    grid-template-columns: 1fr 2fr 1fr; 
+    width: 100%;
+    margin-top: 150px;
+}
+.topics {
+    justify-self: start;
+    width: 100%;
+}
+.topic-card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.topic {
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+.topic-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.topic-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: 0.3s;
+}
+.topic.active .topic-content {
+    max-height: 200px;
+    margin-top: 10px;
+}
+.bar {
+    background: #ddd;
+    height: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.bar div {
+    height: 10px;
+    background: #4CAF50;
+    border-radius: 5px;
+}
+.profile {
+    justify-self: center;
+    width: 100%;
+}
+.profile-card {
+    justify-self: center;
+    background: white;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    width: 300px;
+}
+.stats {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    justify-content: center;
+}
+.stat-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 100px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.settings {
+    justify-self: end;
+    width: 100%;
+}
+.settings-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.theme-card {
+    background: white;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+.dark {
+    background: #1e1e1e;
+    color: white;
+}
+.dark .topic-card,
+.dark .settings-card,
+.dark .theme-card,
+.dark .card,
+.dark .profile-card,
+.dark .stat-box {
+    background: #2a2a2a;
+    color: white;
+}
+</style>
+    </head>
+    <body>
+        <header class="header">
+            <a href="main.html" class="logo">Logo</a>
+
+            <nav class="nav">
+                <a href="main.html" class="nav-link">Anasayfa</a>
+                <a href="q" class="nav-link">Quiz</a>
+                <a href="#" class="nav-link">Konular</a>
+                <a href="wordle.html" class="nav-link">Wordle</a>
+                <a href="wordchain.html" class="nav-link">Wordchain</a>
+            </nav>
+
+            <div class="auth-area">
+                <div class="guest">
+                    <a href="#" class="login-btn">Giriş</a>
+                    <a href="#" class="register-btn">Kayıt Ol</a>
+                </div>
+                <div class="user" style="display:none;">
+                    <a href="#" class="profile-btn">Profil</a>
+                </div>
+            </div>
+        </header>
+        <main>
+
+<div class="layout">
+    <div class="topics">
+        <div class="topic-card">
+            <h3>Konu Dağılımı</h3>
+
+            <div class="topic" onclick="toggleTopic(this)">
+                <div class="topic-header">Food (%40)</div>
+                <div class="bar"><div style="width:40%"></div></div>
+                <div class="topic-content">
+                    <p>apple</p>
+                    <p>bread</p>
+                    <p>cheese</p>
+                </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+                <div class="topic-header">Travel (%25)</div>
+                <div class="bar"><div style="width:25%"></div></div>
+                <div class="topic-content">
+                    <p>airport</p>
+                    <p>hotel</p>
+                    <p>ticket</p>
+                </div>
+            </div>
+
+            <div class="topic" onclick="toggleTopic(this)">
+                <div class="topic-header">Business (%20)</div>
+                <div class="bar"><div style="width:20%"></div></div>
+                <div class="topic-content">
+                    <p>meeting</p>
+                    <p>email</p>
+                    <p>project</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="profile">
+
+        <div class="profile-card">
+            <h2>Nuri Çevik</h2>
+            <p>nuri@mail.com</p>
+            <p>Seviye: Intermediate</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-box">
+                <h3>120</h3>
+                <p>Kelime</p>
+            </div>
+            <div class="stat-box">
+                <h3>7 🔥</h3>
+                <p>Streak</p>
+            </div>
+            <div class="stat-box">
+                <h3>%85</h3>
+                <p>Doğruluk</p>
+            </div>
+        </div>
+
+    </div>
+    <div class="settings">
+
+        <div class="settings-card">
+            <h3>Günlük Kelime Hedefi</h3>
+            <input type="number" value="20">
+            <button>Kaydet</button>
+            <p>Bugün: 12 / 20</p>
+        </div>
+
+        <div class="theme-card">
+            <h3>Tema</h3>
+            <button onclick="toggleTheme()">🌙 / ☀️</button>
+        </div>
+
+    </div>
+
+</div>
+
+</main>
+
+
+        <footer>
+
+        </footer>
+
+    </body>
+</html>
+<script>
+function toggleTheme() {
+    document.body.classList.toggle("dark");
+}
+
+function toggleTopic(el) {
+    document.querySelectorAll(".topic").forEach(t => {
+        if (t !== el) t.classList.remove("active");
+    });
+    el.classList.toggle("active");
+}
+</script>
