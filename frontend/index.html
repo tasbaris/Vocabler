@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabler | Kelime Öğrenmenin Eğlenceli Yolu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link active" href="index.html">Anasayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="topics.html">Konular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wordle.html">Wordle</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wordchain.html">Wordchain</a></li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="login.html" class="btn btn-outline-light btn-sm px-3 rounded-pill me-2">Giriş</a>
+                    <a href="login.html" class="btn btn-primary btn-sm px-3 rounded-pill text-dark">Kayıt Ol</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="py-5 mb-5" style="background: radial-gradient(circle at top right, #393E46, #222831); min-height: 80vh; display: flex; align-items: center;">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-3 fw-bold mb-4">Yeni Bir Dil Öğrenmenin En <span style="color: var(--accent);">Eğlenceli</span> Yolu</h1>
+                    <p class="lead mb-5 text-muted">Quiz çöz, kelime öğren, oyunlarla geliş. Vocabler ile dil öğrenmek artık bir oyun.</p>
+                    <div class="d-flex gap-3">
+                        <a href="login.html" class="btn btn-primary btn-lg px-4">Hemen Başla</a>
+                        <a href="#features" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Daha Fazla Bilgi</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block text-center">
+                    <i class="fas fa-book-open fa-10x opacity-25" style="color: var(--accent);"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features -->
+    <main class="container mb-5" id="features">
+        <h2 class="text-center fw-bold mb-5">Öne Çıkan Özellikler</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="custom-card h-100 p-4 text-center">
+                    <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-tasks"></i></div>
+                    <h4 class="fw-bold">Quiz</h4>
+                    <p class="small text-muted">Binlerce kelime arasından seçilen testlerle kendini dene.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="custom-card h-100 p-4 text-center">
+                    <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-grid-2"></i></div>
+                    <h4 class="fw-bold">Wordle</h4>
+                    <p class="small text-muted">Gizli kelimeyi bulmak için stratejini geliştir.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="custom-card h-100 p-4 text-center">
+                    <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-link"></i></div>
+                    <h4 class="fw-bold">Kelime Zinciri</h4>
+                    <p class="small text-muted">Kelimeleri birbirine bağlayarak hazineni genişlet.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="custom-card h-100 p-4 text-center">
+                    <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-book"></i></div>
+                    <h4 class="fw-bold">Konular</h4>
+                    <p class="small text-muted">İlgini çeken kategorilerde spesifik öğrenme sağla.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- CTA Section -->
+    <section class="py-5 text-center" style="background: var(--card);">
+        <div class="container">
+            <h2 class="fw-bold mb-3">Öğrenmeye Başlamaya Hazır Mısın?</h2>
+            <p class="lead text-muted mb-4">Hemen şimdi ücretsiz bir hesap oluştur ve kelime dağarcığını genişletmeye başla!</p>
+            <a href="login.html" class="btn btn-primary btn-lg px-5">Şimdi Kayıt Ol</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 mt-5 text-center text-lg-start" style="background: var(--card);">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3" style="color: var(--accent);">Vocabler</h5>
+                    <p class="small text-muted">Kelime ezberlemeyi kolaylaştıran modern bir öğrenme uygulaması.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">Hızlı Linkler</h5>
+                    <ul class="list-unstyled small">
+                        <li><a href="index.html" class="text-decoration-none text-white-50">Anasayfa</a></li>
+                        <li><a href="quiz.html" class="text-decoration-none text-white-50">Quiz</a></li>
+                        <li><a href="profile.html" class="text-decoration-none text-white-50">Profil</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">İletişim</h5>
+                    <p class="small text-muted mb-1"><i class="fas fa-envelope me-2"></i> info@vocabler.com</p>
+                    <p class="small text-muted"><i class="fas fa-code me-2"></i> Ismail Nuri Çevik</p>
+                </div>
+            </div>
+            <hr class="my-4 opacity-10">
+            <div class="small text-muted text-center">
+                © 2026 Vocabler. Tüm hakları saklıdır.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,164 +1,134 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>anasayfa</title>
-        <link rel="stylesheet" href="main.css">
-        <style>
-.wordle-container {
-  text-align: center;
-}
-main {
-  min-height: 100vh;          /* tüm ekran yüksekliği */
-  display: flex;
-  justify-content: center;    /* yatay ortala */
-  align-items: center;        /* dikey ortala */
-}
-/* GRID */
-.grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 30px;
-}
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordle | Vocabler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .game-wrapper {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 80px;
+        }
+        .wordle-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+        .wordle-row {
+            display: flex;
+            gap: 8px;
+        }
+        .keyboard-layout {
+            max-width: 600px;
+        }
+        .key-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text);
+            padding: 15px 0;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: var(--transition);
+            flex: 1;
+            min-width: 30px;
+            text-transform: uppercase;
+        }
+        .key-btn:hover {
+            background: rgba(255,255,255,0.08);
+            border-color: var(--accent);
+        }
+        .key-btn.wide {
+            flex: 1.5;
+        }
+    </style>
+</head>
+<body>
 
-.row {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-
-.cell {
-  width: 80px;
-  height: 80px;
-  border: 2px solid #555;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #222;
-  text-transform: uppercase;
-}
-
-/* KEYBOARD */
-.keyboard {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.key-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
-.key-row button {
-  padding: 10px 12px;
-  border: none;
-  background: #393e46;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
-}
-
-.key-row button:hover {
-  background: #4a4f57;
-}
-
-.key-row .wide {
-  padding: 10px 18px;
-}</style>
-    </head>
-    <body>
-        <header class="header">
-            <a href="main.html" class="logo">Vocabler</a>
-
-            <nav class="nav">
-                <a href="main.html" class="nav-link">Anasayfa</a>
-                <a href="quiz.html" class="nav-link">Quiz</a>
-                <a href="#" class="nav-link">Konular</a>
-                <a href="wordle.html" class="nav-link">Wordle</a>
-                <a href="wordchain.html" class="nav-link">Wordchain</a>
-            </nav>
-
-            <div class="auth-area">
-                <div class="guest">
-                    <a href="#" class="login-btn">Giriş</a>
-                    <a href="#" class="register-btn">Kayıt Ol</a>
-                </div>
-                <div class="user" style="display:none;">
-                    <a href="#" class="profile-btn">Profil</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="topics.html">Konular</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="wordle.html">Wordle</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wordchain.html">Wordchain</a></li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="profile.html" class="profile-pill">
+                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                        <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+                    </a>
                 </div>
             </div>
-        </header>
-<main>
-  <div class="wordle-container">
+        </div>
+    </nav>
 
-    <!-- GRID -->
-    <div class="grid">
-      <!-- 6 satır -->
-      <div class="row">
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-        <div class="cell"></div>
-      </div>
+    <div class="game-wrapper">
+        <h2 class="fw-bold mb-5">Günün Kelimesini Bul</h2>
+        
+        <!-- Grid -->
+        <div class="wordle-grid">
+            <div class="wordle-row">
+                <div class="wordle-cell">W</div>
+                <div class="wordle-cell">O</div>
+                <div class="wordle-cell">R</div>
+                <div class="wordle-cell" style="background-color: #6aaa64; border-color: #6aaa64; color: white;">D</div>
+                <div class="wordle-cell">S</div>
+            </div>
+            <div class="wordle-row">
+                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
+            </div>
+            <div class="wordle-row">
+                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
+            </div>
+            <div class="wordle-row">
+                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
+            </div>
+            <div class="wordle-row">
+                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
+            </div>
+            <div class="wordle-row">
+                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
+            </div>
+        </div>
 
-      <div class="row">
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      </div>
-
-      <div class="row">
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      </div>
-
-      <div class="row">
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      </div>
-
-      <div class="row">
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      </div>
-
-      <div class="row">
-        <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
-      </div>
+        <!-- Keyboard -->
+        <div class="keyboard-layout container-fluid">
+            <div class="d-flex justify-content-center gap-2 mb-2">
+                <button class="key-btn">Q</button><button class="key-btn">W</button><button class="key-btn">E</button>
+                <button class="key-btn">R</button><button class="key-btn">T</button><button class="key-btn">Y</button>
+                <button class="key-btn">U</button><button class="key-btn">I</button><button class="key-btn">O</button>
+                <button class="key-btn">P</button>
+            </div>
+            <div class="d-flex justify-content-center gap-2 mb-2 ps-4 pe-4">
+                <button class="key-btn">A</button><button class="key-btn">S</button><button class="key-btn">D</button>
+                <button class="key-btn">F</button><button class="key-btn">G</button><button class="key-btn">H</button>
+                <button class="key-btn">J</button><button class="key-btn">K</button><button class="key-btn">L</button>
+            </div>
+            <div class="d-flex justify-content-center gap-2">
+                <button class="key-btn wide">ENTER</button>
+                <button class="key-btn">Z</button><button class="key-btn">X</button><button class="key-btn">C</button>
+                <button class="key-btn">V</button><button class="key-btn">B</button><button class="key-btn">N</button>
+                <button class="key-btn">M</button>
+                <button class="key-btn wide"><i class="fas fa-backspace"></i></button>
+            </div>
+        </div>
     </div>
 
-    <!-- KEYBOARD -->
-    <div class="keyboard">
-      <div class="key-row">
-        <button>Q</button><button>W</button><button>E</button><button>R</button><button>T</button>
-        <button>Y</button><button>U</button><button>I</button><button>O</button><button>P</button>
-      </div>
-
-      <div class="key-row">
-        <button>A</button><button>S</button><button>D</button><button>F</button><button>G</button>
-        <button>H</button><button>J</button><button>K</button><button>L</button>
-      </div>
-
-      <div class="key-row">
-        <button class="wide">Enter</button>
-        <button>Z</button><button>X</button><button>C</button><button>V</button>
-        <button>B</button><button>N</button><button>M</button>
-        <button class="wide">⌫</button>
-      </div>
-    </div>
-
-  </div>
-</main>
-
-
-        <footer>
-
-        </footer>
-
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

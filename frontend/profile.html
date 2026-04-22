@@ -1,244 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>anasayfa</title>
-        <link rel="stylesheet" href="main.css">
-        <style>     
-body {
-    font-family: Arial, sans-serif;
-    background: #f5f5f5;
-}
-.layout {
-    display: grid;
-    gap: 25px;
-    grid-template-columns: 1fr 2fr 1fr; 
-    width: 100%;
-    margin-top: 150px;
-}
-.topics {
-    justify-self: start;
-    width: 100%;
-}
-.topic-card {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-.topic {
-    margin-bottom: 15px;
-    cursor: pointer;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-}
-.topic-header {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-.topic-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: 0.3s;
-}
-.topic.active .topic-content {
-    max-height: 200px;
-    margin-top: 10px;
-}
-.bar {
-    background: #ddd;
-    height: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-}
-.bar div {
-    height: 10px;
-    background: #4CAF50;
-    border-radius: 5px;
-}
-.profile {
-    justify-self: center;
-    width: 100%;
-}
-.profile-card {
-    justify-self: center;
-    background: white;
-    margin-bottom: 20px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-    padding: 25px;
-    border-radius: 15px;
-    text-align: center;
-    width: 300px;
-}
-.stats {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-    justify-content: center;
-}
-.stat-box {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 100px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-.settings {
-    justify-self: end;
-    width: 100%;
-}
-.settings-card {
-    background: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-.theme-card {
-    background: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-}
-.dark {
-    background: #1e1e1e;
-    color: white;
-}
-.dark .topic-card,
-.dark .settings-card,
-.dark .theme-card,
-.dark .card,
-.dark .profile-card,
-.dark .stat-box {
-    background: #2a2a2a;
-    color: white;
-}
-</style>
-    </head>
-    <body>
-        <header class="header">
-            <a href="main.html" class="logo">Vocabler</a>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil | Vocabler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
 
-            <nav class="nav">
-                <a href="main.html" class="nav-link">Anasayfa</a>
-                <a href="q" class="nav-link">Quiz</a>
-                <a href="#" class="nav-link">Konular</a>
-                <a href="wordle.html" class="nav-link">Wordle</a>
-                <a href="wordchain.html" class="nav-link">Wordchain</a>
-            </nav>
-
-            <div class="auth-area">
-                <div class="guest">
-                    <a href="#" class="login-btn">Giriş</a>
-                    <a href="#" class="register-btn">Kayıt Ol</a>
-                </div>
-                <div class="user" style="display:none;">
-                    <a href="#" class="profile-btn">Profil</a>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars text-white"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
+                    <li class="nav-item"><a class="nav-link" href="topics.html">Konular</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wordle.html">Wordle</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wordchain.html">Wordchain</a></li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="profile.html" class="profile-pill">
+                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                        <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+                    </a>
                 </div>
             </div>
-        </header>
-        <main>
+        </div>
+    </nav>
 
-<div class="layout">
-    <div class="topics">
-        <div class="topic-card">
-            <h3>Konu Dağılımı</h3>
-
-            <div class="topic" onclick="toggleTopic(this)">
-                <div class="topic-header">Food (%40)</div>
-                <div class="bar"><div style="width:40%"></div></div>
-                <div class="topic-content">
-                    <p>apple</p>
-                    <p>bread</p>
-                    <p>cheese</p>
+    <main class="container my-5">
+        <div class="row g-4">
+            <!-- Left: Profile Info -->
+            <div class="col-lg-4">
+                <div class="custom-card text-center">
+                    <div class="position-relative d-inline-block mb-4">
+                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&size=128&background=00ADB5&color=222831" class="rounded-circle shadow-lg" alt="Profile Large">
+                        <span class="position-absolute bottom-0 end-0 bg-success border border-4 border-dark rounded-circle" style="width: 25px; height: 25px;"></span>
+                    </div>
+                    <h3 class="fw-bold mb-1">Nuri Çevik</h3>
+                    <p class="text-muted small mb-4">Üst Düzey Kelime Avcısı</p>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary py-2">Profili Düzenle</button>
+                        <button class="btn btn-outline-secondary border-0 py-2 small opacity-50">Çıkış Yap</button>
+                    </div>
+                    
+                    <hr class="my-4 opacity-10">
+                    
+                    <div class="text-start">
+                        <h6 class="fw-bold mb-3 small opacity-50 text-uppercase">Başarılar</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span class="badge rounded-pill bg-dark border border-secondary p-2 px-3 fw-normal">🔥 7 Gün Streak</span>
+                            <span class="badge rounded-pill bg-dark border border-secondary p-2 px-3 fw-normal">🎯 %85 Doğruluk</span>
+                            <span class="badge rounded-pill bg-dark border border-secondary p-2 px-3 fw-normal">📚 120 Kelime</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="topic" onclick="toggleTopic(this)">
-                <div class="topic-header">Travel (%25)</div>
-                <div class="bar"><div style="width:25%"></div></div>
-                <div class="topic-content">
-                    <p>airport</p>
-                    <p>hotel</p>
-                    <p>ticket</p>
+            <!-- Right: Stats & Activity -->
+            <div class="col-lg-8">
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="custom-card p-4 text-center border-0 bg-opacity-10" style="background: var(--accent);">
+                            <p class="small text-muted mb-1">Toplam Öğrenilen</p>
+                            <h2 class="fw-bold mb-0" style="color: var(--accent);">120</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="custom-card p-4 text-center border-0 bg-opacity-10" style="background: #FFD369;">
+                            <p class="small text-muted mb-1">Günlük Seri</p>
+                            <h2 class="fw-bold mb-0" style="color: #FFD369;">7 Gün</h2>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="custom-card p-4 text-center border-0 bg-opacity-10" style="background: #4CAF50;">
+                            <p class="small text-muted mb-1">Global Sıralama</p>
+                            <h2 class="fw-bold mb-0" style="color: #4CAF50;">#42</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="custom-card">
+                    <h5 class="fw-bold mb-4">Haftalık Aktivite</h5>
+                    <div class="d-flex justify-content-between align-items-end mb-4" style="height: 150px;">
+                        <div class="bg-primary opacity-25 rounded-top" style="width: 10%; height: 40%;"></div>
+                        <div class="bg-primary opacity-50 rounded-top" style="width: 10%; height: 70%;"></div>
+                        <div class="bg-primary opacity-25 rounded-top" style="width: 10%; height: 30%;"></div>
+                        <div class="bg-primary opacity-75 rounded-top" style="width: 10%; height: 90%;"></div>
+                        <div class="bg-primary rounded-top" style="width: 10%; height: 100%; background-color: var(--accent) !important;"></div>
+                        <div class="bg-primary opacity-50 rounded-top" style="width: 10%; height: 60%;"></div>
+                        <div class="bg-primary opacity-25 rounded-top" style="width: 10%; height: 45%;"></div>
+                    </div>
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+                    </div>
+                </div>
+                
+                <div class="custom-card mt-4">
+                    <h5 class="fw-bold mb-4">Son Öğrenilen Kelimeler</h5>
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item bg-transparent border-bottom border-white border-opacity-10 py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Ambiguous</h6>
+                                <span class="small text-muted">Belirsiz, muğlak</span>
+                            </div>
+                            <i class="fas fa-check-circle text-success"></i>
+                        </div>
+                        <div class="list-group-item bg-transparent border-bottom border-white border-opacity-10 py-3 d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-0 fw-bold">Persistent</h6>
+                                <span class="small text-muted">Israrcı, kalıcı</span>
+                            </div>
+                            <i class="fas fa-check-circle text-success"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="topic" onclick="toggleTopic(this)">
-                <div class="topic-header">Business (%20)</div>
-                <div class="bar"><div style="width:20%"></div></div>
-                <div class="topic-content">
-                    <p>meeting</p>
-                    <p>email</p>
-                    <p>project</p>
-                </div>
-            </div>
-
         </div>
-    </div>
-    <div class="profile">
+    </main>
 
-        <div class="profile-card">
-            <h2>Nuri Çevik</h2>
-            <p>nuri@mail.com</p>
-            <p>Seviye: Intermediate</p>
-        </div>
-
-        <div class="stats">
-            <div class="stat-box">
-                <h3>120</h3>
-                <p>Kelime</p>
-            </div>
-            <div class="stat-box">
-                <h3>7 🔥</h3>
-                <p>Streak</p>
-            </div>
-            <div class="stat-box">
-                <h3>%85</h3>
-                <p>Doğruluk</p>
-            </div>
-        </div>
-
-    </div>
-    <div class="settings">
-
-        <div class="settings-card">
-            <h3>Günlük Kelime Hedefi</h3>
-            <input type="number" value="20">
-            <button>Kaydet</button>
-            <p>Bugün: 12 / 20</p>
-        </div>
-
-        <div class="theme-card">
-            <h3>Tema</h3>
-            <button onclick="toggleTheme()">🌙 / ☀️</button>
-        </div>
-
-    </div>
-
-</div>
-
-</main>
-
-
-        <footer>
-
-        </footer>
-
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
-<script>
-function toggleTheme() {
-    document.body.classList.toggle("dark");
-}
-
-function toggleTopic(el) {
-    document.querySelectorAll(".topic").forEach(t => {
-        if (t !== el) t.classList.remove("active");
-    });
-    el.classList.toggle("active");
-}
-</script>
