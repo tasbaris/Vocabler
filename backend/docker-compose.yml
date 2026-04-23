@@ -1,0 +1,26 @@
+services:
+  # MySQL Veritabanı Servisi
+  db:
+    image: mysql:8.0
+    container_name: vocabler_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: vocabler
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # PHP ve Apache (Backend) Servisi
+  backend:
+    build: ./api
+    container_name: vocabler_api
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./api:/var/www/html
+    depends_on:
+      - db
