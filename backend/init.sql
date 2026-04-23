@@ -115,13 +115,25 @@ CREATE TABLE IF NOT EXISTS PasswordResets (
 
 -- BAŞLANGIÇ VERİLERİ (Opsiyonel)
 INSERT IGNORE INTO Languages (Id, LangCode, LangName) VALUES 
-(1, 'tr', 'Türkçe'),
-(2, 'en', 'İngilizce'),
-(3, 'de', 'Almanca'),
-(4, 'jp', 'Japonca');
+(1, 'tr', 'Turkish'),
+(2, 'en', 'English'),
+(3, 'de', 'German'),
+(4, 'jp', 'Japanese'),
+(5, 'fr', 'French'),
+(6, 'es', 'Spanish'),
+(7, 'it', 'Italian'),
+(8, 'ru', 'Russian'),
+(9, 'cn', 'Chinese'),
+(10, 'ar', 'Arabic');
 
 INSERT IGNORE INTO Categories (Id, CategoryName) VALUES 
-(1, 'Genel'),
-(2, 'Mutfak'),
-(3, 'Seyahat'),
-(4, 'İş Dünyası');
+(1, 'General'),
+(2, 'Cooking'),
+(3, 'Travel'),
+(4, 'Business'),
+(5, 'Education'),
+(6, 'Health'),
+(7, 'Technology'),
+(8, 'Sports'),
+(9, 'Entertainment'),
+(10, 'Nature');
