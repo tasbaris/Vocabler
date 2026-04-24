@@ -1,9 +1,6 @@
 
-// if (window.location.pathname.includes('index.html') && !localStorage.getItem('user')) {
-//     window.location.href = 'login.html';
-// }
 
-// Backend API'nizin temel adresi (backand ci arkadaş burayı söyleyecek)
+// Backend API'nizin temel adresi (barış söyleyecek)
 const API_BASE_URL = 'http://localhost/vocabler_backend/api'; 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -31,14 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include',  // 
                     body: JSON.stringify(loginData) // JSON paketimizi yolluyoruz
                 });
 
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    // Giriş başarılı! Token/Kullanıcı bilgisini tarayıcıya kaydet
-                    localStorage.setItem('user', JSON.stringify(result.user)); //
                     window.location.href = 'index.html'; // Anasayfaya yönlendir
                 } else {
                     alert(`Giriş Başarısız: ${result.message}`);
@@ -55,19 +51,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-
-const logoutBtn = document.getElementById('logoutBtn');
-
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Hafızayı temizleme
-        localStorage.removeItem('user');
-        
-        // Giriş sayfasına yönlendir
-        window.location.href = 'login.html';
-        
-        console.log("Çıkış yapıldı ve hafıza temizlendi.");
-    });
-}
