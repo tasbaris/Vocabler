@@ -1,4 +1,8 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
 $host = 'db';
 $user = 'root';
 $pass = 'root_password';
@@ -14,14 +18,6 @@ $options = [
 
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
-     echo "Veritabanına PDO ile başarıyla bağlanıldı! <br>";
-
-     $query = $pdo->query("SHOW TABLES");
-     echo "Tablolar: <br>";
-     while ($row = $query->fetch(PDO::FETCH_NUM)) {
-         echo "- " . $row[0] . "<br>";
-     }
-
 } catch (\PDOException $e) {
      throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
