@@ -1,5 +1,5 @@
 <?php
-require_once 'conn.php';
+require_once '../conn.php';
 
 // --- JWT Yardımcı Fonksiyonları ---
 function base64UrlEncode($data) {
