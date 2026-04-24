@@ -49,12 +49,11 @@
         <form id ="loginForm">     <!--id ekledim forma-->
             <div class="mb-3 text-start">
                 <label class="form-label small opacity-50 ms-2">E-posta Adresi</label>
-                <input type="email" class="form-control" placeholder="isim@örnek.com">
+                <input type="email" name="email" class="form-control" placeholder="isim@örnek.com" required>
             </div>
             <div class="mb-4 text-start">
                 <label class="form-label small opacity-50 ms-2">Şifre</label>
-                <!--veriyi sonrasında almak için name="Password ekledim"-->
-                <input type="password" name="Password" class="form-control" placeholder="••••••••">
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
             </div>
             <!--id ekledim butona-->
             <button type="submit" id="loginBtn" class="btn btn-primary w-100 mb-4 py-3">Giriş Yap</button>
