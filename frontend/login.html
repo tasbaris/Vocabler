@@ -37,6 +37,10 @@
             background: rgba(255,255,255,0.08);
             border-color: var(--accent);
         }
+        p{
+            color: #EEEEEE;
+        }
+        
     </style>
 </head>
 <body>
@@ -45,54 +49,57 @@
     <!-- Login Card -->
     <div class="custom-card login-card text-center" id="loginCard">
         <a href="index.html" class="text-decoration-none h1 fw-bold mb-2 d-block" style="color: var(--accent); letter-spacing: -1px;">Vocabler</a>
-        <p class="text-muted mb-4 small">Öğrenmeye kaldığın yerden devam et</p>
+        <p class=" mb-4 small">Öğrenmeye kaldığın yerden devam et</p>
 
         <form>
             <div class="mb-3 text-start">
-                <label class="form-label small opacity-50 ms-2">E-posta Adresi</label>
+                <label class="form-label small  ms-2">E-posta Adresi</label>
                 <input type="email" name="email" class="form-control" placeholder="örnek@gmail.com" required>
             </div>
             <div class="mb-4 text-start">
-                <label class="form-label small opacity-50 ms-2">Şifre</label>
+                <label class="form-label small ms-2">Şifre</label>
                 <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                <div class="text-end mt-2">
+                    <a href="#" class="text-decoration-none small opacity-75" style="color: var(--accent);">Şifremi Unuttum</a>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 mb-4 py-3">Giriş Yap</button>
         </form>
-
-        <div class="d-flex align-items-center mb-4">
-            <hr class="flex-grow-1 opacity-10">
-            <span class="px-3 small opacity-25 text-uppercase">veya</span>
-            <hr class="flex-grow-1 opacity-10">
-        </div>
-
-        <div class="row g-2 mb-4">
-            <div class="col-6">
-                <button class="social-btn w-100"><i class="fab fa-google me-2"></i>Google</button>
-            </div>
-            <div class="col-6">
-                <button class="social-btn w-100"><i class="fab fa-apple me-2"></i>Apple</button>
-            </div>
-        </div>
-
         <p class="mb-0 small opacity-75">Hesabın yok mu? <a href="javascript:void(0)" onclick="toggleAuth()" class="text-decoration-none" style="color: var(--accent);">Hemen Kayıt Ol</a></p>
     </div>
 
     <!-- Register Card -->
     <div class="custom-card login-card text-center d-none" id="registerCard">
         <a href="index.html" class="text-decoration-none h1 fw-bold mb-2 d-block" style="color: var(--accent); letter-spacing: -1px;">Vocabler</a>
-        <p class="text-muted mb-4 small">Kelime dünyasına adım at</p>
+        <p class=" mb-4 small ">Kelime dünyasına adım at</p>
 
         <form>
             <div class="mb-3 text-start">
-                <label class="form-label small opacity-50 ms-2">Ad Soyad</label>
+                <label class="form-label small  ms-2">Ad Soyad</label>
                 <input type="text" class="form-control" placeholder="Adınız Soyadınız" required>
             </div>
             <div class="mb-3 text-start">
-                <label class="form-label small opacity-50 ms-2">E-posta Adresi</label>
-                <input type="email" class="form-control" placeholder="örnek@gmail.com" required>
+                <label class="form-label small  ms-2">E-posta Adresi</label>
+                <input type="email" name="email" class="form-control" placeholder="örnek@gmail.com" required>
+            </div>
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <label class="form-label small  ms-2">Ana Dil</label>
+                    <select class="form-select" id="nativeLanguage" name="native_language" required>
+                        <option value="" disabled selected>Seçiniz</option>
+                        <!-- JS ile doldurulacak -->
+                    </select>
+                </div>
+                <div class="col-6 text-start">
+                    <label class="form-label small  ms-2">Öğrenilecek Dil</label>
+                    <select class="form-select" id="targetLanguage" name="target_language" required>
+                        <option value="" disabled selected>Seçiniz</option>
+                        <!-- JS ile doldurulacak -->
+                    </select>
+                </div>
             </div>
             <div class="mb-4 text-start">
-                <label class="form-label small opacity-50 ms-2">Şifre</label>
+                <label class="form-label small  ms-2">Şifre</label>
                 <input type="password" class="form-control" placeholder="••••••••" required>
             </div>
             <button type="submit" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button>

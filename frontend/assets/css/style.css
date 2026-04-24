@@ -95,19 +95,47 @@ body {
 }
 
 /* Inputs */
-.form-control {
-    background: rgba(255, 255, 255, 0.03);
+.form-control, .form-select {
+    background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: var(--text);
     border-radius: 12px;
     padding: 12px 15px;
 }
 
-.form-control:focus {
-    background: rgba(255, 255, 255, 0.05);
+.form-select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23EEEEEE' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.05);
     border-color: var(--accent);
     color: var(--text);
     box-shadow: none;
+}
+
+.form-control::placeholder {
+    color: rgba(238, 238, 238, 0.5);
+    opacity: 1; /* Firefox fix */
+}
+
+.form-select option {
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* Select placeholder behavior */
+.form-select:invalid,
+.form-select option[value=""][disabled] {
+    color: rgba(238, 238, 238, 0.5);
+}
+
+/* Ensure selected valid options are full color */
+.form-select:not(:invalid) {
+    color: var(--text);
 }
 
 /* Games */
