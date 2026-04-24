@@ -7,154 +7,144 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('vocabler_theme') || 'dark';
+            if (savedTheme === 'light') document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.add('no-transition');
+            window.addEventListener('load', () => {
+                setTimeout(() => document.documentElement.classList.remove('no-transition'), 100);
+            });
+        })();
+    </script>
     <style>
-        .page-wrapper {
-            min-height: calc(100vh - 80px);
-            padding-top: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
         .topics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 1100px;
-            margin: 40px auto;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
         }
         .topic-card-link {
             text-decoration: none;
             color: inherit;
-            transition: var(--transition);
-        }
-        .topic-card-link:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
         }
         .topic-card-link .custom-card {
-            height: 200px;
+            height: 180px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .topic-card-link .icon {
-            font-size: 3rem;
+            font-size: 2.5rem;
             color: var(--accent);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="topics.html">Konular</a></li>
-                    <li class="nav-item"><a class="nav-link" href="wordle.html">Wordle</a></li>
-                    <li class="nav-item"><a class="nav-link" href="wordchain.html">Wordchain</a></li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <a href="profile.html" class="profile-pill">
-                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                        <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
-                    </a>
-                </div>
-            </div>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex justify-content-between align-items-center">
+            <a href="index.html" class="text-decoration-none h4 fw-bold mb-0" style="color: var(--accent);">Vocabler</a>
+            <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
         </div>
-    </nav>
+        <div class="sidebar-menu">
+            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
+            <a href="topics.html" class="menu-item active"><i class="fas fa-layer-group"></i> Konular</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> Quiz Çöz</a>
+            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
+            <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> Kelime Zinciri</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
+                <i class="fas fa-moon"></i> Tema Değiştir
+            </button>
+            <a href="login.html" class="menu-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </a>
+        </div>
+    </aside>
 
-    <div class="page-wrapper">
-        <main class="container text-center">
-            <h2 class="fw-bold mb-5">Öğrenebileceğiniz Konular</h2>
-            
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar"><i class="fas fa-bars fs-5"></i></button>
+                <h5 class="mb-0 fw-bold">Konular</h5>
+            </div>
+            <a href="settings.html" class="profile-pill">
+                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+            </a>
+        </header>
+
+        <div class="container-fluid p-4">
+            <h4 class="fw-bold mb-4">Öğrenebileceğiniz Konular</h4>
             <div class="topics-grid">
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-utensils icon"></i>
-                        <h4 class="fw-bold">Yiyecekler</h4>
-                        <p class="small ">250 Kelime</p>
+                        <h5 class="fw-bold mb-1">Yiyecekler</h5>
+                        <p class="small  mb-0">250 Kelime</p>
                     </div>
                 </a>
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-plane icon"></i>
-                        <h4 class="fw-bold">Seyahat</h4>
-                        <p class="small ">180 Kelime</p>
+                        <h5 class="fw-bold mb-1">Seyahat</h5>
+                        <p class="small  mb-0">180 Kelime</p>
                     </div>
                 </a>
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-briefcase icon"></i>
-                        <h4 class="fw-bold">İş Hayatı</h4>
-                        <p class="small ">300 Kelime</p>
+                        <h5 class="fw-bold mb-1">İş Hayatı</h5>
+                        <p class="small  mb-0">300 Kelime</p>
                     </div>
                 </a>
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-heart icon"></i>
-                        <h4 class="fw-bold">Aşk ve İlişkiler</h4>
-                        <p class="small ">150 Kelime</p>
+                        <h5 class="fw-bold mb-1">Aşk ve İlişkiler</h5>
+                        <p class="small  mb-0">150 Kelime</p>
                     </div>
                 </a>
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-school icon"></i>
-                        <h4 class="fw-bold">Eğitim</h4>
-                        <p class="small ">220 Kelime</p>
+                        <h5 class="fw-bold mb-1">Eğitim</h5>
+                        <p class="small  mb-0">220 Kelime</p>
                     </div>
                 </a>
                 <a href="#" class="topic-card-link">
                     <div class="custom-card">
                         <i class="fas fa-gamepad icon"></i>
-                        <h4 class="fw-bold">Oyunlar</h4>
-                        <p class="small ">100 Kelime</p>
+                        <h5 class="fw-bold mb-1">Oyunlar</h5>
+                        <p class="small  mb-0">100 Kelime</p>
                     </div>
                 </a>
             </div>
-        </main>
-    </div>
-
-    <!-- Footer -->
-    <footer class="py-4 mt-5 text-center text-lg-start" style="background: var(--card);">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <h5 class="fw-bold mb-3"><a href="index.html" class="text-decoration-none" style="color: var(--accent);">Vocabler</a></h5>
-                    <p class="small ">Kelime ezberlemeyi kolaylaştıran modern bir öğrenme uygulaması.</p>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="fw-bold mb-3">Hızlı Linkler</h5>
-                    <ul class="list-unstyled small">
-                        <li><a href="index.html" class="text-decoration-none text-white-50">Anasayfa</a></li>
-                        <li><a href="quiz.html" class="text-decoration-none text-white-50">Quiz</a></li>
-                        <li><a href="profile.html" class="text-decoration-none text-white-50">Profil</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h5 class="fw-bold mb-3">İletişim</h5>
-                    <p class="small  mb-1"><i class="fas fa-envelope me-2"></i> info@vocabler.com</p>
-                    <p class="small "><i class="fas fa-code me-2"></i> Ismail Nuri Çevik</p>
-                </div>
-            </div>
-            <hr class="my-4 opacity-10">
-            <div class="small  text-center">
-                © 2026 Vocabler. Tüm hakları saklıdır.
-            </div>
         </div>
-    </footer>
+    </main>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.add('show'));
+    if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/theme.js"></script>
 </body>
 </html>

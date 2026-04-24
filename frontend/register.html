@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş | Vocabler</title>
+    <title>Kayıt Ol | Vocabler</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
@@ -27,7 +27,7 @@
         }
         .login-card {
             width: 100%;
-            max-width: 420px;
+            max-width: 480px;
             padding: 40px;
             animation: fadeIn 0.6s ease-out;
         }
@@ -35,53 +35,60 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .social-btn {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text);
-            padding: 10px;
-            border-radius: 12px;
-            transition: var(--transition);
-        }
-        .social-btn:hover {
-            background: rgba(255,255,255,0.08);
-            border-color: var(--accent);
-        }
-        p { color: #EEEEEE; }
     </style>
 </head>
 <body>
 
 <div class="auth-wrapper">
-    <div class="custom-card login-card text-center" id="loginCard">
+    <div class="custom-card login-card text-center">
         <a href="index.html" class="text-decoration-none h1 fw-bold mb-2 d-block" style="color: var(--accent); letter-spacing: -1px;">Vocabler</a>
-        <p class=" mb-4 small">Öğrenmeye kaldığın yerden devam et</p>
+        <p class=" mb-4 small">Kelime dünyasına adım at</p>
 
-        <form id="loginForm">
+        <form id="registerForm">
+            <div class="mb-3 text-start">
+                <label class="form-label small ms-2">Ad Soyad</label>
+                <input type="text" class="form-control" placeholder="Adınız Soyadınız" required>
+            </div>
             <div class="mb-3 text-start">
                 <label class="form-label small ms-2">E-posta Adresi</label>
                 <input type="email" name="email" class="form-control" placeholder="örnek@gmail.com" required>
             </div>
-            <div class="mb-4 text-start">
-                <label class="form-label small ms-2">Şifre</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
-                <div class="text-end mt-2">
-                    <a href="forgot-password.html" class="text-decoration-none small opacity-75" style="color: var(--accent);">Şifremi Unuttum</a>
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <label class="form-label small  ms-2">Ana Dil</label>
+                    <select class="form-select" id="nativeLanguage" name="native_language" required>
+                        <option value="" disabled selected>Seçiniz</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="en">İngilizce</option>
+                    </select>
+                </div>
+                <div class="col-6 text-start">
+                    <label class="form-label small  ms-2">Öğrenilecek Dil</label>
+                    <select class="form-select" id="targetLanguage" name="target_language" required>
+                        <option value="" disabled selected>Seçiniz</option>
+                        <option value="en">İngilizce</option>
+                        <option value="de">Almanca</option>
+                        <option value="fr">Fransızca</option>
+                        <option value="es">İspanyolca</option>
+                    </select>
                 </div>
             </div>
-            <button type="submit" id="loginBtn" class="btn btn-primary w-100 mb-4 py-3">Giriş Yap</button>        
+            <div class="mb-4 text-start">
+                <label class="form-label small ms-2">Şifre</label>
+                <input type="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button>
         </form>
 
-        <p class="mb-0 small opacity-75">Hesabın yok mu? <a href="register.html" class="text-decoration-none" style="color: var(--accent);">Hemen Kayıt Ol</a></p>
-        
+        <p class="mb-0 small opacity-75" style="color: #EEEEEE;">Zaten hesabın var mı? <a href="login.html" class="text-decoration-none" style="color: var(--accent);">Giriş Yap</a></p>
         <div class="mt-4 pt-3 border-top border-white border-opacity-10">
             <a href="index.html" class="text-decoration-none small opacity-50 text-white"><i class="fas fa-arrow-left me-1"></i> Ana Sayfaya Dön</a>
         </div>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/theme.js"></script>
+</body>
 <script src="assets/js/auth.js"></script>
 </body>
 </html>

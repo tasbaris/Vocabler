@@ -7,20 +7,23 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('vocabler_theme') || 'dark';
+            if (savedTheme === 'light') document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.add('no-transition');
+            window.addEventListener('load', () => {
+                setTimeout(() => document.documentElement.classList.remove('no-transition'), 100);
+            });
+        })();
+    </script>
     <style>
-        .game-wrapper {
-            min-height: calc(100vh - 80px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-top: 80px;
-        }
         .wordle-grid {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            align-items: center;
         }
         .wordle-row {
             display: flex;
@@ -28,6 +31,7 @@
         }
         .keyboard-layout {
             max-width: 600px;
+            margin: 0 auto;
         }
         .key-btn {
             background: rgba(255,255,255,0.03);
@@ -45,90 +49,97 @@
             background: rgba(255,255,255,0.08);
             border-color: var(--accent);
         }
-        .key-btn.wide {
-            flex: 1.5;
+        .key-btn.wide { flex: 1.5; }
+        @media (max-width: 576px) {
+            .key-btn { padding: 12px 0; font-size: 0.8rem; min-width: 25px; }
+            .gap-2 { gap: 4px !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
+<div class="dashboard-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex justify-content-between align-items-center">
+            <a href="index.html" class="text-decoration-none h4 fw-bold mb-0" style="color: var(--accent);">Vocabler</a>
+            <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
+            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> Konular</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> Quiz Çöz</a>
+            <a href="wordle.html" class="menu-item active"><i class="fas fa-border-all"></i> Wordle</a>
+            <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> Kelime Zinciri</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
+                <i class="fas fa-moon"></i> Tema Değiştir
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
-                    <li class="nav-item"><a class="nav-link" href="topics.html">Konular</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="wordle.html">Wordle</a></li>
-                    <li class="nav-item"><a class="nav-link" href="wordchain.html">Wordchain</a></li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <a href="profile.html" class="profile-pill">
-                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                        <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
-                    </a>
+            <a href="login.html" class="menu-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar"><i class="fas fa-bars fs-5"></i></button>
+                <h5 class="mb-0 fw-bold">Wordle</h5>
+            </div>
+            <a href="settings.html" class="profile-pill">
+                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+            </a>
+        </header>
+
+        <div class="container-fluid p-4 text-center">
+            <h4 class="fw-bold mb-4">Günün Kelimesini Bul</h4>
+            
+            <div class="wordle-grid">
+                <div class="wordle-row">
+                    <div class="wordle-cell">W</div>
+                    <div class="wordle-cell">O</div>
+                    <div class="wordle-cell">R</div>
+                    <div class="wordle-cell" style="background-color: #6aaa64; border-color: #6aaa64; color: white;">D</div>
+                    <div class="wordle-cell">S</div>
+                </div>
+                <div class="wordle-row"><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div></div>
+                <div class="wordle-row"><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div></div>
+                <div class="wordle-row"><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div></div>
+                <div class="wordle-row"><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div></div>
+            </div>
+
+            <div class="keyboard-layout container-fluid">
+                <div class="d-flex justify-content-center gap-2 mb-2">
+                    <button class="key-btn">Q</button><button class="key-btn">W</button><button class="key-btn">E</button><button class="key-btn">R</button><button class="key-btn">T</button><button class="key-btn">Y</button><button class="key-btn">U</button><button class="key-btn">I</button><button class="key-btn">O</button><button class="key-btn">P</button>
+                </div>
+                <div class="d-flex justify-content-center gap-2 mb-2 ps-md-4 pe-md-4">
+                    <button class="key-btn">A</button><button class="key-btn">S</button><button class="key-btn">D</button><button class="key-btn">F</button><button class="key-btn">G</button><button class="key-btn">H</button><button class="key-btn">J</button><button class="key-btn">K</button><button class="key-btn">L</button>
+                </div>
+                <div class="d-flex justify-content-center gap-2">
+                    <button class="key-btn wide">ENTER</button>
+                    <button class="key-btn">Z</button><button class="key-btn">X</button><button class="key-btn">C</button><button class="key-btn">V</button><button class="key-btn">B</button><button class="key-btn">N</button><button class="key-btn">M</button>
+                    <button class="key-btn wide"><i class="fas fa-backspace"></i></button>
                 </div>
             </div>
         </div>
-    </nav>
+    </main>
+</div>
 
-    <div class="game-wrapper">
-        <h2 class="fw-bold mb-5">Günün Kelimesini Bul</h2>
-        
-        <!-- Grid -->
-        <div class="wordle-grid">
-            <div class="wordle-row">
-                <div class="wordle-cell">W</div>
-                <div class="wordle-cell">O</div>
-                <div class="wordle-cell">R</div>
-                <div class="wordle-cell" style="background-color: #6aaa64; border-color: #6aaa64; color: white;">D</div>
-                <div class="wordle-cell">S</div>
-            </div>
-            <div class="wordle-row">
-                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
-            </div>
-            <div class="wordle-row">
-                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
-            </div>
-            <div class="wordle-row">
-                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
-            </div>
-            <div class="wordle-row">
-                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
-            </div>
-            <div class="wordle-row">
-                <div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div><div class="wordle-cell"></div>
-            </div>
-        </div>
-
-        <!-- Keyboard -->
-        <div class="keyboard-layout container-fluid">
-            <div class="d-flex justify-content-center gap-2 mb-2">
-                <button class="key-btn">Q</button><button class="key-btn">W</button><button class="key-btn">E</button>
-                <button class="key-btn">R</button><button class="key-btn">T</button><button class="key-btn">Y</button>
-                <button class="key-btn">U</button><button class="key-btn">I</button><button class="key-btn">O</button>
-                <button class="key-btn">P</button>
-            </div>
-            <div class="d-flex justify-content-center gap-2 mb-2 ps-4 pe-4">
-                <button class="key-btn">A</button><button class="key-btn">S</button><button class="key-btn">D</button>
-                <button class="key-btn">F</button><button class="key-btn">G</button><button class="key-btn">H</button>
-                <button class="key-btn">J</button><button class="key-btn">K</button><button class="key-btn">L</button>
-            </div>
-            <div class="d-flex justify-content-center gap-2">
-                <button class="key-btn wide">ENTER</button>
-                <button class="key-btn">Z</button><button class="key-btn">X</button><button class="key-btn">C</button>
-                <button class="key-btn">V</button><button class="key-btn">B</button><button class="key-btn">N</button>
-                <button class="key-btn">M</button>
-                <button class="key-btn wide"><i class="fas fa-backspace"></i></button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.add('show'));
+    if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/theme.js"></script>
 </body>
 </html>

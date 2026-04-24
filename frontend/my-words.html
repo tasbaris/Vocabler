@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelimelerim | Vocabler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('vocabler_theme') || 'dark';
+            if (savedTheme === 'light') document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.add('no-transition');
+            window.addEventListener('load', () => {
+                setTimeout(() => document.documentElement.classList.remove('no-transition'), 100);
+            });
+        })();
+    </script>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex justify-content-between align-items-center">
+            <a href="index.html" class="text-decoration-none h4 fw-bold mb-0" style="color: var(--accent);">Vocabler</a>
+            <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="my-words.html" class="menu-item active">
+                <i class="fas fa-book-open"></i> Kelimelerim
+            </a>
+            <a href="topics.html" class="menu-item">
+                <i class="fas fa-layer-group"></i> Konular
+            </a>
+            
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item">
+                <i class="fas fa-tasks"></i> Quiz Çöz
+            </a>
+            <a href="wordle.html" class="menu-item">
+                <i class="fas fa-border-all"></i> Wordle
+            </a>
+            <a href="wordchain.html" class="menu-item">
+                <i class="fas fa-link"></i> Kelime Zinciri
+            </a>
+            
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i> Ayarlar
+            </a>
+            
+        </div>
+        <div class="sidebar-footer">
+            <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
+                <i class="fas fa-moon"></i> Tema Değiştir
+            </button>
+            <a href="login.html" class="menu-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+                <h5 class="mb-0 fw-bold d-none d-sm-block">Kelimelerim</h5>
+            </div>
+            
+            <a href="settings.html" class="profile-pill">
+                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+            </a>
+        </header>
+
+        <!-- Content Area -->
+        <div class="container-fluid p-4">
+            
+            <div class="row g-4">
+                <!-- Add New Word Form -->
+                <div class="col-lg-4">
+                    <div class="custom-card sticky-top" style="top: 90px;">
+                        <h5 class="fw-bold mb-4">Yeni Kelime Ekle</h5>
+                        <form id="addWordForm">
+                            <div class="mb-3">
+                                <label class="form-label small  ms-2">Hedef Dildeki Kelime (İngilizce)</label>
+                                <input type="text" class="form-control" placeholder="Örn: Serendipity" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small  ms-2">Ana Dildeki Karşılığı (Türkçe)</label>
+                                <input type="text" class="form-control" placeholder="Örn: Tesadüf, şans" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small  ms-2">Örnek Cümle (İsteğe Bağlı)</label>
+                                <textarea class="form-control" rows="2" placeholder="I experienced a moment of serendipity."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-save me-2"></i>Listeme Ekle</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Word List -->
+                <div class="col-lg-8">
+                    <div class="custom-card h-100">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+                            <h5 class="fw-bold mb-0">Kelime Havuzum</h5>
+                            <div class="input-group" style="max-width: 250px;">
+                                <span class="input-group-text bg-transparent border-end-0 border-white border-opacity-10 ">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 ps-0" placeholder="Kelime ara...">
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover mb-0" style="background: transparent;">
+                                <thead>
+                                    <tr>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Kelime</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Anlamı</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center">Durum</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-end">İşlem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 fw-bold">Ambiguous</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3">Belirsiz, muğlak</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-center">
+                                            <span class="badge bg-warning text-dark rounded-pill">Öğreniliyor</span>
+                                        </td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-end">
+                                            <button class="btn btn-sm btn-link text-white opacity-50 hover-opacity-100"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-link text-danger opacity-75 hover-opacity-100"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 fw-bold">Persistent</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3">Israrcı, kalıcı</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-center">
+                                            <span class="badge bg-success rounded-pill">Öğrenildi</span>
+                                        </td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-end">
+                                            <button class="btn btn-sm btn-link text-white opacity-50 hover-opacity-100"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-link text-danger opacity-75 hover-opacity-100"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 fw-bold">Ubiquitous</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3">Her yerde bulunan</td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-center">
+                                            <span class="badge bg-danger rounded-pill">Yeni</span>
+                                        </td>
+                                        <td class="border-bottom border-white border-opacity-10 py-3 text-end">
+                                            <button class="btn btn-sm btn-link text-white opacity-50 hover-opacity-100"><i class="fas fa-edit"></i></button>
+                                            <button class="btn btn-sm btn-link text-danger opacity-75 hover-opacity-100"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Pagination -->
+                        <nav class="mt-4">
+                            <ul class="pagination justify-content-center pagination-sm">
+                                <li class="page-item disabled"><a class="page-link bg-transparent border-white border-opacity-10 " href="#">Önceki</a></li>
+                                <li class="page-item active"><a class="page-link border-accent text-dark" style="background-color: var(--accent);" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link bg-transparent border-white border-opacity-10 text-white" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link bg-transparent border-white border-opacity-10 text-white" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link bg-transparent border-white border-opacity-10 text-white" href="#">Sonraki</a></li>
+                            </ul>
+                        </nav>
+                        
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+
+    if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.add('show'));
+    if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/theme.js"></script>
+</body>
+</html>

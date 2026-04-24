@@ -7,74 +7,107 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('vocabler_theme') || 'dark';
+            if (savedTheme === 'light') document.documentElement.classList.add('light-theme');
+            document.documentElement.classList.add('no-transition');
+            window.addEventListener('load', () => {
+                setTimeout(() => document.documentElement.classList.remove('no-transition'), 100);
+            });
+        })();
+    </script>
     <style>
-        .game-wrapper {
-            min-height: calc(100vh - 80px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding-top: 80px;
-        }
         .word-display {
             background: var(--card);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
             padding: 25px 40px;
             margin-bottom: 30px;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             letter-spacing: 2px;
             color: var(--accent);
             text-transform: uppercase;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            display: inline-block;
         }
         .input-area {
-            max-width: 400px;
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        @media (max-width: 576px) {
+            .word-display { font-size: 1.4rem; padding: 15px 25px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="index.html" style="color: var(--accent);">Vocabler</a>
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
+<div class="dashboard-container">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header d-flex justify-content-between align-items-center">
+            <a href="index.html" class="text-decoration-none h4 fw-bold mb-0" style="color: var(--accent);">Vocabler</a>
+            <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-menu">
+            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
+            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> Konular</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> Quiz Çöz</a>
+            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
+            <a href="wordchain.html" class="menu-item active"><i class="fas fa-link"></i> Kelime Zinciri</a>
+            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+        </div>
+        <div class="sidebar-footer">
+            <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
+                <i class="fas fa-moon"></i> Tema Değiştir
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Anasayfa</a></li>
-                    <li class="nav-item"><a class="nav-link" href="quiz.html">Quiz</a></li>
-                    <li class="nav-item"><a class="nav-link" href="topics.html">Konular</a></li>
-                    <li class="nav-item"><a class="nav-link" href="wordle.html">Wordle</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="wordchain.html">Wordchain</a></li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <a href="profile.html" class="profile-pill">
-                        <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                        <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
-                    </a>
+            <a href="login.html" class="menu-item text-danger">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar"><i class="fas fa-bars fs-5"></i></button>
+                <h5 class="mb-0 fw-bold">Kelime Zinciri</h5>
+            </div>
+            <a href="settings.html" class="profile-pill">
+                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+            </a>
+        </header>
+
+        <div class="container-fluid p-4 text-center">
+            <div class="custom-card py-5">
+                <h2 class="fw-bold mb-5">Kelime Zinciri</h2>
+                <p class=" mb-3">Son kelime:</p>
+                <div class="word-display">BAŞLANGIÇ</div>
+                <div class="input-area mt-4">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" placeholder="Yeni kelimeyi girin...">
+                        <button class="btn btn-primary px-4">Gönder</button>
+                    </div>
                 </div>
+                <p class="small  mt-5"><i class="fas fa-info-circle me-1"></i> Kural: Yeni kelime, önceki kelimenin son harfiyle başlamalıdır.</p>
             </div>
         </div>
-    </nav>
+    </main>
+</div>
 
-    <div class="game-wrapper text-center">
-        <h2 class="fw-bold mb-5">Kelime Zinciri</h2>
-        
-        <p class=" mb-3">Son kelime:</p>
-        <div class="word-display">BAŞLANGIÇ</div>
-
-        <div class="input-area input-group mb-3">
-            <input type="text" class="form-control form-control-lg" placeholder="Yeni kelimeyi girin...">
-            <button class="btn btn-primary btn-lg">Gönder</button>
-        </div>
-
-        <p class="small  mt-4">Kural: Yeni kelime, önceki kelimenin son harfiyle başlamalıdır.</p>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const sidebar = document.getElementById('sidebar');
+    const openBtn = document.getElementById('openSidebar');
+    const closeBtn = document.getElementById('closeSidebar');
+    if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.add('show'));
+    if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/theme.js"></script>
 </body>
 </html>
