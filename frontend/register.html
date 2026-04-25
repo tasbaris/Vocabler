@@ -53,39 +53,54 @@
         <p class=" mb-4 small">Kelime dünyasına adım at</p>
 
         <form id="registerForm">
-            <div class="mb-3 text-start">
-                <label class="form-label small ms-2">Ad Soyad</label>
-                <input type="text" name="fullname" class="form-control" placeholder="Adınız Soyadınız" required> <!--name="fullname" parametresini ekledim.-->
+            <div class="row mb-3">
+                <div class="col-6 text-start">
+                    <label class="form-label small ms-2">Ad</label>
+                    <input type="text" name="name" class="form-control" placeholder="Adınız" required>
+                </div>
+                <div class="col-6 text-start">
+                    <label class="form-label small ms-2">Soyad</label>
+                    <input type="text" name="surname" class="form-control" placeholder="Soyadınız" required>
+                </div>
             </div>
+            
+            <div class="mb-3 text-start">
+                <label class="form-label small ms-2">Kullanıcı Adı</label>
+                <input type="text" name="username" class="form-control" placeholder="kullanici_adi" required>
+            </div>
+
             <div class="mb-3 text-start">
                 <label class="form-label small ms-2">E-posta Adresi</label>
                 <input type="email" name="email" class="form-control" placeholder="örnek@gmail.com" required>
             </div>
+
             <div class="row mb-3">
                 <div class="col-6 text-start">
-                    <label class="form-label small  ms-2">Ana Dil</label>
-                    <select class="form-select" id="nativeLanguage" name="native_language" required>
+                    <label class="form-label small ms-2">Ana Dil</label>
+                    <select class="form-select" id="nativeLanguage" name="nativeLangId" required>
                         <option value="" disabled selected>Seçiniz</option>
-                        <option value="tr">Türkçe</option>
-                        <option value="en">İngilizce</option>
+                        <option value="1">Türkçe</option>
+                        <option value="2">İngilizce</option>
                     </select>
                 </div>
                 <div class="col-6 text-start">
-                    <label class="form-label small  ms-2">Öğrenilecek Dil</label>
-                    <select class="form-select" id="targetLanguage" name="target_language" required>
+                    <label class="form-label small ms-2">Öğrenilecek Dil</label>
+                    <select class="form-select" id="targetLanguage" name="targetLangId" required>
                         <option value="" disabled selected>Seçiniz</option>
-                        <option value="en">İngilizce</option>
-                        <option value="de">Almanca</option>
-                        <option value="fr">Fransızca</option>
-                        <option value="es">İspanyolca</option>
+                        <option value="2">İngilizce</option>
+                        <option value="3">Almanca</option>
+                        <option value="4">Fransızca</option>
+                        <option value="5">İspanyolca</option>
                     </select>
                 </div>
             </div>
+
             <div class="mb-4 text-start">
                 <label class="form-label small ms-2">Şifre</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required> <!--name="password" parametresini ekledim.-->
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
             </div>
-            <button type="submit" id="registerBtn" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button> <!--name="password" parametresini ekledim.Kayıt yapılıyor... animasyonu için-->
+
+            <button type="submit" id="registerBtn" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button>
         </form>
 
         <p class="mb-0 small opacity-75" style="color: #EEEEEE;">Zaten hesabın var mı? <a href="login.html" class="text-decoration-none" style="color: var(--accent);">Giriş Yap</a></p>
