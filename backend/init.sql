@@ -6,7 +6,8 @@ USE vocabler;
 CREATE TABLE IF NOT EXISTS Languages (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     LangCode CHAR(2) NOT NULL,
-    LangName VARCHAR(20) NOT NULL
+    LangName VARCHAR(20) NOT NULL,
+    Active TINYINT DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 2. Kategoriler Tablosu
@@ -114,17 +115,17 @@ CREATE TABLE IF NOT EXISTS PasswordResets (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- BAŞLANGIÇ VERİLERİ (Opsiyonel)
-INSERT IGNORE INTO Languages (Id, LangCode, LangName) VALUES 
-(1, 'tr', 'Turkish'),
-(2, 'en', 'English'),
-(3, 'de', 'German'),
-(4, 'jp', 'Japanese'),
-(5, 'fr', 'French'),
-(6, 'es', 'Spanish'),
-(7, 'it', 'Italian'),
-(8, 'ru', 'Russian'),
-(9, 'cn', 'Chinese'),
-(10, 'ar', 'Arabic');
+INSERT IGNORE INTO Languages (Id, LangCode, LangName,Active) VALUES 
+(1, 'tr', 'Turkish', 1),
+(2, 'en', 'English', 1),
+(3, 'de', 'German', 0),
+(4, 'jp', 'Japanese', 0),
+(5, 'fr', 'French', 0),
+(6, 'es', 'Spanish', 0),
+(7, 'it', 'Italian', 0),
+(8, 'ru', 'Russian', 0),
+(9, 'cn', 'Chinese', 0),
+(10, 'ar', 'Arabic', 0);
 
 INSERT IGNORE INTO Categories (Id, CategoryName) VALUES 
 (1, 'General'),
@@ -137,3 +138,7 @@ INSERT IGNORE INTO Categories (Id, CategoryName) VALUES
 (8, 'Sports'),
 (9, 'Entertainment'),
 (10, 'Nature');
+
+-- HERKES ICIN TEST KULLANICISI (Sifre: password123)
+INSERT IGNORE INTO Users (Id, Name, Surname, Email, UserName, PasswordHash, DailyWord, NativeLangId, CurrentTargetLangId, Active) VALUES 
+(1, 'Test', 'Kullanıcısı', 'test@vocabler.com', 'testuser', '$2y$10$n4qGfJ4E3y.i0/bF30Z/hOcYvOOMHhQ8RInJz/q3bQWzK7QyqFw8q', 10, 1, 2, 1);
