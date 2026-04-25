@@ -24,3 +24,16 @@ services:
       - ./api:/var/www/html
     depends_on:
       - db
+
+  # phpMyAdmin Servisi
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: vocabler_pma
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: root_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
