@@ -1,7 +1,4 @@
-/**
- * Vocabler - Authentication Logic
- * Handles Login, Registration, and Session Management
- */
+//Login formu için backend 
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -23,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(loginForm);
             const loginData = Object.fromEntries(formData.entries());
 
+
+            //veriyi backend e yolluyoruz 
             try {
                 const response = await fetch(`${API_BASE_URL}/user/login.php`, {
                     method: 'POST',
@@ -49,6 +48,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     // Error feedback
                     alert(`Hata: ${result.message || 'Giriş yapılamadı.'}`);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+
+            } catch (error) {
+                console.error('Bağlantı hatası:', error);
+                alert('Sunucuya ulaşılamıyor. Docker konteynerlerinin çalıştığından ve 8080 portunun açık olduğundan emin olun.');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+    }
+    
+    //register kısmı 
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('registerBtn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            // UI Loading State
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Kayıt Yapılıyor...';
+
+            // Prepare Data
+            const formData = new FormData(registerForm);
+            const registerData = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/user/register.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registerData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    // Success feedback and redirect
+                    submitBtn.className = 'btn btn-success w-100 mb-4 py-3';
+                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 1500);
+                } else {
+                    // Error feedback
+                    alert(`Hata: ${result.message || 'Kayıt yapılamadı.'}`);
                     submitBtn.disabled = false;
                     submitBtn.innerHTML = originalBtnText;
                 }

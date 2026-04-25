@@ -55,7 +55,7 @@
         <form id="registerForm">
             <div class="mb-3 text-start">
                 <label class="form-label small ms-2">Ad Soyad</label>
-                <input type="text" class="form-control" placeholder="Adınız Soyadınız" required>
+                <input type="text" name="fullname" class="form-control" placeholder="Adınız Soyadınız" required> <!--name="fullname" parametresini ekledim.-->
             </div>
             <div class="mb-3 text-start">
                 <label class="form-label small ms-2">E-posta Adresi</label>
@@ -83,9 +83,9 @@
             </div>
             <div class="mb-4 text-start">
                 <label class="form-label small ms-2">Şifre</label>
-                <input type="password" class="form-control" placeholder="••••••••" required>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required> <!--name="password" parametresini ekledim.-->
             </div>
-            <button type="submit" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button>
+            <button type="submit" id="registerBtn" class="btn btn-primary w-100 mb-4 py-3">Kayıt Ol</button> <!--name="password" parametresini ekledim.Kayıt yapılıyor... animasyonu için-->
         </form>
 
         <p class="mb-0 small opacity-75" style="color: #EEEEEE;">Zaten hesabın var mı? <a href="login.html" class="text-decoration-none" style="color: var(--accent);">Giriş Yap</a></p>
