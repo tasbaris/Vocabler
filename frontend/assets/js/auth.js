@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
             options += `<option value="${lang.Id}">${lang.LangName}</option>`;
           });
           if (nativeLangSelect) nativeLangSelect.innerHTML = options;
+          if (targetLangSelect) targetLangSelect.innerHTML = options;
         }
       })
       .catch((err) => console.error("Diller yuklenirken hata olustu:", err));
