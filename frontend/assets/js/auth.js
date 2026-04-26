@@ -1,117 +1,140 @@
-//Login formu için backend 
+//Login formu için backend
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = "http://localhost:8080";
 
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('loginForm');
+document.addEventListener("DOMContentLoaded", () => {
+  //Veritabanindan Cekme
+  const nativeLangSelect = document.getElementById("nativeLanguage");
+  const targetLangSelect = document.getElementById("targetLanguage");
 
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+  if (nativeLangSelect || targetLangSelect) {
+    fetch(`${API_BASE_URL}/languages/get_active.php`)
+      .then((res) => res.json())
 
-            const submitBtn = document.getElementById('loginBtn');
-            const originalBtnText = submitBtn.innerHTML;
-            
-            // UI Loading State
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Giriş Yapılıyor...';
+      .then((data) => {
+        if (data.status === "success") {
+          let options = '<option value="" disabled selected>Seçiniz</option>';
 
-            // Prepare Data
-            const formData = new FormData(loginForm);
-            const loginData = Object.fromEntries(formData.entries());
+          data.languages.forEach((lang) => {
+            options += `<option value="${lang.Id}">${lang.LangName}</option>`;
+          });
+          if (nativeLangSelect) nativeLangSelect.innerHTML = options;
+        }
+      })
+      .catch((err) => console.error("Diller yuklenirken hata olustu:", err));
+  }
+  const loginForm = document.getElementById("loginForm");
 
+  if (loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            //veriyi backend e yolluyoruz 
-            try {
-                const response = await fetch(`${API_BASE_URL}/user/login.php`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(loginData)
-                });
+      const submitBtn = document.getElementById("loginBtn");
+      const originalBtnText = submitBtn.innerHTML;
 
-                const result = await response.json();
+      // UI Loading State
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Giriş Yapılıyor...';
 
-                if (response.ok && result.status === 'success') {
-                    // Store session data
-                    localStorage.setItem('vocabler_token', result.token);
-                    localStorage.setItem('vocabler_user', JSON.stringify(result.user));
-                    
-                    // Success feedback and redirect
-                    submitBtn.className = 'btn btn-success w-100 mb-4 py-3';
-                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
-                    
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 800);
-                } else {
-                    // Error feedback
-                    alert(`Hata: ${result.message || 'Giriş yapılamadı.'}`);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
-                }
+      // Prepare Data
+      const formData = new FormData(loginForm);
+      const loginData = Object.fromEntries(formData.entries());
 
-            } catch (error) {
-                console.error('Bağlantı hatası:', error);
-                alert('Sunucuya ulaşılamıyor. Docker konteynerlerinin çalıştığından ve 8080 portunun açık olduğundan emin olun.');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+      //veriyi backend e yolluyoruz
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/login.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(loginData),
         });
-    }
-    
-    //register kısmı 
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
 
-            const submitBtn = document.getElementById('registerBtn');
-            const originalBtnText = submitBtn.innerHTML;
-            
-            // UI Loading State
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Kayıt Yapılıyor...';
+        const result = await response.json();
 
-            // Prepare Data
-            const formData = new FormData(registerForm);
-            const registerData = Object.fromEntries(formData.entries());
+        if (response.ok && result.status === "success") {
+          // Store session data
+          localStorage.setItem("vocabler_token", result.token);
+          localStorage.setItem("vocabler_user", JSON.stringify(result.user));
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/user/register.php`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(registerData)
-                });
+          // Success feedback and redirect
+          submitBtn.className = "btn btn-success w-100 mb-4 py-3";
+          submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
 
-                const result = await response.json();
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 800);
+        } else {
+          // Error feedback
+          alert(`Hata: ${result.message || "Giriş yapılamadı."}`);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      } catch (error) {
+        console.error("Bağlantı hatası:", error);
+        alert(
+          "Sunucuya ulaşılamıyor. Docker konteynerlerinin çalıştığından ve 8080 portunun açık olduğundan emin olun.",
+        );
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    });
+  }
 
-                if (response.ok && result.status === 'success') {
-                    // Success feedback and redirect
-                    submitBtn.className = 'btn btn-success w-100 mb-4 py-3';
-                    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
-                    
-                    setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 1500);
-                } else {
-                    // Error feedback
-                    alert(`Hata: ${result.message || 'Kayıt yapılamadı.'}`);
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
-                }
+  //register kısmı
+  const registerForm = document.getElementById("registerForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-            } catch (error) {
-                console.error('Bağlantı hatası:', error);
-                alert('Sunucuya ulaşılamıyor. Docker konteynerlerinin çalıştığından ve 8080 portunun açık olduğundan emin olun.');
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = originalBtnText;
-            }
+      const submitBtn = document.getElementById("registerBtn");
+      const originalBtnText = submitBtn.innerHTML;
+
+      // UI Loading State
+      submitBtn.disabled = true;
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Kayıt Yapılıyor...';
+
+      // Prepare Data
+      const formData = new FormData(registerForm);
+      const registerData = Object.fromEntries(formData.entries());
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/register.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(registerData),
         });
-    }
+
+        const result = await response.json();
+
+        if (response.ok && result.status === "success") {
+          // Success feedback and redirect
+          submitBtn.className = "btn btn-success w-100 mb-4 py-3";
+          submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
+
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 1500);
+        } else {
+          // Error feedback
+          alert(`Hata: ${result.message || "Kayıt yapılamadı."}`);
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnText;
+        }
+      } catch (error) {
+        console.error("Bağlantı hatası:", error);
+        alert(
+          "Sunucuya ulaşılamıyor. Docker konteynerlerinin çalıştığından ve 8080 portunun açık olduğundan emin olun.",
+        );
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnText;
+      }
+    });
+  }
 });
 
 /**
@@ -119,17 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
  * Useful for protected pages like profile.html or quiz.html
  */
 function checkAuth() {
-    const token = localStorage.getItem('vocabler_token');
-    if (!token && !window.location.pathname.includes('login.html')) {
-        window.location.href = 'login.html';
-    }
+  const token = localStorage.getItem("vocabler_token");
+  if (!token && !window.location.pathname.includes("login.html")) {
+    window.location.href = "login.html";
+  }
 }
 
 /**
  * Logout utility
  */
 function logout() {
-    localStorage.removeItem('vocabler_token');
-    localStorage.removeItem('vocabler_user');
-    window.location.href = 'login.html';
+  localStorage.removeItem("vocabler_token");
+  localStorage.removeItem("vocabler_user");
+  window.location.href = "login.html";
 }
