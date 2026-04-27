@@ -100,12 +100,14 @@
                         <form id="addWordForm" novalidate>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordEnglish">Hedef Dil (İngilizce)</label>
-                                    <input type="text" id="wordEnglish" name="wordEnglish" class="form-control" placeholder="Örn: Serendipity" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordEnglish">Ana Dil (İngilizce)</label>
+                                    <input type="text" id="wordEnglish" name="mainWord" class="form-control" placeholder="Örn: Serendipity" required>
+                                    <input type="hidden" name="mainLang" id="mainLang">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordTurkish">Ana Dil (Türkçe)</label>
-                                    <input type="text" id="wordTurkish" name="wordTurkish" class="form-control" placeholder="Örn: Tesadüf" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordTurkish"> Dil (Türkçe)</label>
+                                    <input type="text" id="wordTurkish" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required>
+                                    <input type="hidden" name="targetLang" id="targetLang">
                                 </div>
                             </div>
 
