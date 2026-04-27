@@ -186,5 +186,6 @@ function checkAuth() {
 function logout() {
   localStorage.removeItem("vocabler_token");
   localStorage.removeItem("vocabler_user");
-  window.location.href = "login.html";
+  window.location.href = "index.html";
 }
+
