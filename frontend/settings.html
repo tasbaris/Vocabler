@@ -79,7 +79,7 @@
             
             <a href="settings.html" class="profile-pill">
                 <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+                <span class="fw-medium small d-none d-sm-inline userNameDisplay">Nuri Çevik</span>
             </a>
         </header>
 
@@ -94,7 +94,8 @@
                         <h5 class="fw-bold mb-4 border-bottom border-white border-opacity-10 pb-3">Profil Bilgileri</h5>
                         
                         <div class="d-flex align-items-center gap-4 mb-4">
-                            <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&size=80&background=00ADB5&color=222831" class="rounded-circle" alt="Avatar">
+                            <!--id ekledim-->
+                            <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&size=80&background=00ADB5&color=222831" class="rounded-circle" alt="Avatar" id="settingsBigAvatar">
                             <div>
                                 <button class="btn btn-sm btn-outline-light border-opacity-25 mb-2"><i class="fas fa-upload me-2"></i>Fotoğraf Yükle</button>
                                 <p class="small  mb-0">JPG veya PNG (Maks 2MB)</p>
@@ -105,11 +106,13 @@
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label small opacity-50 ms-2">Ad Soyad</label>
-                                    <input type="text" class="form-control" value="Nuri Çevik">
+                                    <!--id ekledim-->
+                                    <input type="text" class="form-control" value="Nuri Çevik" id="settingsNameInput">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label small opacity-50 ms-2">E-posta Adresi</label>
-                                    <input type="email" class="form-control" value="ornek@gmail.com" readonly>
+                                    <!--id ekledim-->
+                                    <input type="email" class="form-control" value="ornek@gmail.com" readonly id="settingsEmailInput">
                                 </div>
                             </div>
                             <div class="text-end mt-4">
@@ -176,5 +179,8 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/settings.js"></script>
 </body>
 </html>
