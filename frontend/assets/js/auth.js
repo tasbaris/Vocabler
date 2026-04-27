@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
           submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
 
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "dashboard.html";
           }, 800);
         } else {
           // Error feedback
@@ -117,9 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
           submitBtn.className = "btn btn-success w-100 mb-4 py-3";
           submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
 
-          setTimeout(() => {
-            window.location.href = "login.html";
-          }, 1500);
+          window.location.replace("login.html");
         } else {
           // Error feedback
           alert(`Hata: ${result.message || "Kayıt yapılamadı."}`);
