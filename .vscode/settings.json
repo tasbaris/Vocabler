@@ -1,0 +1,13 @@
+{
+    "liveServer.settings.ignoreFiles": [
+        ".vscode/**",
+        "backend/**",
+        "api/**",
+        "uploads/**",
+        "**/*.php",
+        "**/*.sqlite",
+        "**/*.json"
+    ]
+}
+
+//live server sorun çıkartıyordu kelime gönderme ksımı eklenti yüzünden düzgün çalışmıyordu bu kod onu düzeltiyor
