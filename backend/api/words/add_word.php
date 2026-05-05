@@ -17,7 +17,7 @@ if (!$input) {
     $input = $_POST;
 }
 
-if (empty($input['wordEnglish']) || empty($input['wordTurkish']) || empty($input['wordLevel']) || empty($input['wordCategory']) || empty($input['wordType'])) {
+if (empty($input['mainWord']) || empty($input['targetWord']) || empty($input['wordLevel']) || empty($input['wordCategory']) || empty($input['wordType'])) {
     http_response_code(400);
     exit(json_encode(['status' => 'error', 'message' => 'Gerekli alanlar eksik.']));
 }
@@ -48,11 +48,11 @@ try {
 
     // 2. WordTranslations tablosuna İngilizce ekle (LangId = 2)
     $stmtEn = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 2, ?, ?, ?, ?)");
-    $stmtEn->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['wordEnglish']), $input['wordPronunciation'] ?? null]);
+    $stmtEn->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['mainWord']), $input['wordPronunciation'] ?? null]);
 
     // 3. WordTranslations tablosuna Türkçe ekle (LangId = 1)
     $stmtTr = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 1, ?, ?, ?, ?)");
-    $stmtTr->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['wordTurkish']), null]); 
+    $stmtTr->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]); 
 
     // 4. Örnek cümle varsa WordSamples'a ekle (İngilizce örnek, LangId = 2)
     if (!empty($input['wordSentence'])) {
