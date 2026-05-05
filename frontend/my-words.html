@@ -102,13 +102,13 @@
                             <input type="hidden" id="wordId" name="wordId" value="">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordEnglish">Ana Dil (İngilizce)</label>
-                                    <input type="text" id="wordEnglish" name="mainWord" class="form-control" placeholder="Örn: Serendipity" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordEnglish">Ana Dil</label>
+                                    <input type="text" id="mainWord name="mainWord" class="form-control" placeholder="Örn: Serendipity" required>
                                     <input type="hidden" name="mainLang" id="mainLang">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordTurkish"> Dil (Türkçe)</label>
-                                    <input type="text" id="wordTurkish" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordTurkish">Hedef Dil</label>
+                                    <input type="text" id="targetWord" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required>
                                     <input type="hidden" name="targetLang" id="targetLang">
                                 </div>
                             </div>
@@ -163,8 +163,26 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordSentence">Örnek Cümle</label>
-                                <textarea id="wordSentence" name="wordSentence" class="form-control" rows="2" placeholder="Örn: It was a moment of serendipity."></textarea>
+                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1">Örnek Cümleler</label>
+                                <div class="sentences-container border border-white border-opacity-10 rounded-3 p-3">
+                                    <div id="sentenceList" class="mb-3">
+                                        <!-- Eklenen cümleler burada listelenecek -->
+                                        <p class="small opacity-50 text-center py-2 mb-0" id="noSentencesMsg">Henüz cümle eklenmedi.</p>
+                                    </div>
+                                    
+                                    <div class="sentence-input-group">
+                                        <div class="mb-2">
+                                            <input type="text" id="sentenceText" class="form-control form-control-sm" placeholder="Örnek Cümle (Hedef Dil)">
+                                        </div>
+                                        <div class="mb-2">
+                                            <input type="text" id="sentenceTranslation" class="form-control form-control-sm" placeholder="Anlamı (Ana Dil)">
+                                        </div>
+                                        <button type="button" id="addSentenceBtn" class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="fas fa-plus me-1"></i> Cümle Ekle
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="form-text small opacity-50 ms-1">Kelimenin kullanımına dair birden fazla örnek cümle ekleyebilirsiniz.</div>
                             </div>
 
                             <button type="submit" id="submitWordBtn" class="btn btn-primary w-100 py-2">
@@ -193,6 +211,9 @@
                                     <tr>
                                         <th class=" small fw-normal border-bottom border-white border-opacity-10">Kelime</th>
                                         <th class=" small fw-normal border-bottom border-white border-opacity-10">Anlamı</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Tür</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Seviye</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Kategori</th>
                                         <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center">Durum</th>
                                         <th class=" small fw-normal border-bottom border-white border-opacity-10 text-end">İşlem</th>
                                     </tr>
@@ -200,7 +221,7 @@
                                 <tbody id="wordTableBody">
                                     <!-- Veriler JavaScript ile buraya eklenecek -->
                                     <tr id="noWordsRow">
-                                        <td colspan="4" class="text-center py-5 text-white opacity-50">
+                                        <td colspan="7" class="text-center py-5 text-white opacity-50">
                                             <i class="fas fa-book-open d-block mb-3 fs-1"></i>
                                             Henüz kelime eklenmemiş veya arama sonucu bulunamadı.
                                         </td>

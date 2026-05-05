@@ -131,7 +131,8 @@
         </header>
 
         <div class="container-fluid p-4">
-            <div class="custom-card quiz-card shadow-lg">
+            <!-- Quiz Area -->
+            <div id="quiz-area" class="custom-card quiz-card shadow-lg">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="badge bg-dark px-3 py-2 border border-secondary text-white-50">
                         Soru <span id="current-question-num">0</span> / <span id="total-questions-num">0</span>
@@ -143,29 +144,28 @@
                     </div>
                 </div>
 
-                <!-- Soru Navigasyon Butonları -->
                 <div class="d-flex justify-content-end gap-2 mb-4">
                     <button id="prev-question-btn-top" class="btn btn-sm btn-outline-secondary rounded-pill px-3 opacity-50">
                         <i class="fas fa-chevron-left me-1"></i> Önceki
                     </button>
-                    <button id="next-question-btn-top" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
-                        Sonraki <i class="fas fa-chevron-right ms-1"></i>
-                    </button>
                 </div>
 
-                <div class="text-center my-4">
-                    <!-- Soru Kelimesi ve İkonu -->
+                <div id="question-container" class="text-center my-4">
                     <h1 id="question-word" class="display-4 fw-bold mb-3" style="letter-spacing: 2px;">YÜKLENİYOR...</h1>
-                    <div class="mb-4"><i id="question-icon" class="fas fa-question-circle fa-5x opacity-25"></i></div>
+                    <div id="question-image-container" class="mb-4 d-none">
+                        <img id="question-image" src="" alt="Soru Görseli" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;">
+                    </div>
+                    <div id="question-icon-container" class="mb-4">
+                        <i id="question-icon" class="fas fa-question-circle fa-5x opacity-25"></i>
+                    </div>
                     
-                    <!-- İpucu Kutusu -->
                     <div id="quiz-hint-box" class="collapse mb-3">
                         <div class="p-2 small text-warning border border-warning border-opacity-25 rounded bg-warning bg-opacity-10">
                             <i class="fas fa-lightbulb me-2"></i> İpucu: <span id="quiz-hint-text">İpucu yükleniyor...</span>
                         </div>
                     </div>
 
-                    <p class="">Bu kelimenin Türkçe karşılığı nedir?</p>
+                    <p id="question-prompt" class="">Bu kelimenin Türkçe karşılığı nedir?</p>
                 </div>
 
                 <div id="options-container" class="options-list">
@@ -181,6 +181,35 @@
                         </button>
                     </div>
                     <button id="next-question-btn" class="btn btn-primary px-4 rounded-pill">Sonraki Soru <i class="fas fa-arrow-right ms-2"></i></button>
+                </div>
+            </div>
+
+            <!-- Quiz Results (Hidden by default) -->
+            <div id="quiz-results" class="custom-card quiz-card shadow-lg d-none text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-trophy fa-5x text-warning"></i>
+                </div>
+                <h2 class="fw-bold mb-2">Tebrikler!</h2>
+                <p class="mb-4">Quizi başarıyla tamamladın.</p>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="p-3 border border-white border-opacity-10 rounded-3">
+                            <h3 class="fw-bold mb-0" id="correct-count">0</h3>
+                            <p class="small mb-0 opacity-50">Doğru</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 border border-white border-opacity-10 rounded-3">
+                            <h3 class="fw-bold mb-0" id="wrong-count">0</h3>
+                            <p class="small mb-0 opacity-50">Yanlış</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary rounded-pill py-3" onclick="location.reload()">Tekrar Çöz</button>
+                    <a href="dashboard.html" class="btn btn-outline-light border-opacity-25 rounded-pill py-3">Dashboard'a Dön</a>
                 </div>
             </div>
         </div>

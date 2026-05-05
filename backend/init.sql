@@ -280,16 +280,14 @@ END //
 DELIMITER ;
 
 -- 5. Kullanıcının Kendi Kelimesini Eklemesi
--- Bu procedure; Words, WordTranslations (Native & Target), WordSamples ve UserWords tablolarını tek seferde günceller.
+-- Bu procedure; Words, WordTranslations (Native & Target) ve UserWords tablolarını günceller.
 CREATE PROCEDURE sp_AddUserWord(
     IN p_UserId INT,
     IN p_TargetTranslation VARCHAR(255), -- Hedef dildeki kelime (örn: Apple)
     IN p_NativeTranslation VARCHAR(255), -- Ana dildeki karşılığı (örn: Elma)
     IN p_Level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'),
     IN p_CategoryId INT,
-    IN p_WordType VARCHAR(20),
-    IN p_SampleText VARCHAR(255),
-    IN p_SampleTranslated VARCHAR(255)
+    IN p_WordType VARCHAR(20)
 )
 BEGIN
     DECLARE v_NativeLangId INT;
@@ -313,17 +311,23 @@ BEGIN
     INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
     VALUES (v_WordId, v_NativeLangId, p_Level, p_WordType, p_NativeTranslation);
 
-    -- 4. Örnek Cümle (Varsa)
-    IF p_SampleText IS NOT NULL AND p_SampleText != '' THEN
-        INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText)
-        VALUES (v_WordId, v_TargetLangId, p_SampleText, p_SampleTranslated);
-    END IF;
-
-    -- 5. Kullanıcının öğrenme listesine (UserWords) ekle (Hemen başlasın)
+    -- 4. Kullanıcının öğrenme listesine (UserWords) ekle (Hemen başlasın)
     INSERT INTO UserWords (UserId, SourceLangId, TargetLangId, WordId, Status, NextReviewDate)
     VALUES (p_UserId, v_NativeLangId, v_TargetLangId, v_WordId, 1, NOW());
 
     SELECT v_WordId as WordId;
+END //
+
+-- 5.1 Örnek Cümle Ekleme Procedure'ü
+CREATE PROCEDURE sp_AddWordSample(
+    IN p_WordId INT,
+    IN p_LangId INT,
+    IN p_SampleText VARCHAR(255),
+    IN p_TranslatedText VARCHAR(255)
+)
+BEGIN
+    INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText)
+    VALUES (p_WordId, p_LangId, p_SampleText, p_TranslatedText);
 END //
 
 -- 6. Anlık/Direkt Test (Custom Quiz)
