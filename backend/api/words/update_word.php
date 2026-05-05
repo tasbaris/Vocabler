@@ -43,7 +43,6 @@ try {
     // 1. Words tablosunu güncelle
     $updateWords = [];
     $paramsWords = [];
-    if (isset($input['wordLevel'])) { $updateWords[] = "Level = ?"; $paramsWords[] = $input['wordLevel']; }
     if (isset($input['wordCategory'])) { $updateWords[] = "CategoryId = ?"; $paramsWords[] = $input['wordCategory']; }
     
     // Resim güncellemesi
@@ -69,41 +68,46 @@ try {
         $stmt->execute($paramsWords);
     }
 
-    // 2. WordTranslations (İngilizce)
-    $updateEn = [];
-    $paramsEn = [];
-    if (isset($input['wordEnglish'])) { $updateEn[] = "Translation = ?"; $paramsEn[] = trim($input['wordEnglish']); }
-    if (isset($input['wordType'])) { $updateEn[] = "WordType = ?"; $paramsEn[] = $input['wordType']; }
-    if (isset($input['wordPronunciation'])) { $updateEn[] = "Pronunciation = ?"; $paramsEn[] = $input['wordPronunciation']; }
-    
-    if (!empty($updateEn)) {
-        $paramsEn[] = $input['wordId'];
-        $stmtEn = $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $updateEn) . " WHERE WordId = ? AND LangId = 2");
-        $stmtEn->execute($paramsEn);
+    // 2. WordTranslations (İngilizce & Türkçe - Level ve WordType ikisi için de ortak)
+    $updateTrans = [];
+    $paramsTrans = [];
+    if (isset($input['wordLevel'])) { $updateTrans[] = "Level = ?"; $paramsTrans[] = $input['wordLevel']; }
+    if (isset($input['wordType'])) { $updateTrans[] = "WordType = ?"; $paramsTrans[] = $input['wordType']; }
+
+    if (!empty($updateTrans)) {
+        $tempParams = $paramsTrans;
+        $tempParams[] = $input['wordId'];
+        $stmtTrans = $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $updateTrans) . " WHERE WordId = ?");
+        $stmtTrans->execute($tempParams);
     }
 
-    // 3. WordTranslations (Türkçe)
-    $updateTr = [];
-    $paramsTr = [];
-    if (isset($input['wordTurkish'])) { $updateTr[] = "Translation = ?"; $paramsTr[] = trim($input['wordTurkish']); }
-    if (isset($input['wordType'])) { $updateTr[] = "WordType = ?"; $paramsTr[] = $input['wordType']; }
-    
-    if (!empty($updateTr)) {
-        $paramsTr[] = $input['wordId'];
-        $stmtTr = $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $updateTr) . " WHERE WordId = ? AND LangId = 1");
-        $stmtTr->execute($paramsTr);
+    // İngilizce spesifik
+    if (isset($input['wordEnglish']) || isset($input['wordPronunciation'])) {
+        $upEn = []; $pEn = [];
+        if (isset($input['wordEnglish'])) { $upEn[] = "Translation = ?"; $pEn[] = trim($input['wordEnglish']); }
+        if (isset($input['wordPronunciation'])) { $upEn[] = "Pronunciation = ?"; $pEn[] = $input['wordPronunciation']; }
+        $pEn[] = $input['wordId'];
+        $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $upEn) . " WHERE WordId = ? AND LangId = 2")->execute($pEn);
+    }
+
+    // Türkçe spesifik
+    if (isset($input['wordTurkish'])) {
+        $pdo->prepare("UPDATE WordTranslations SET Translation = ? WHERE WordId = ? AND LangId = 1")->execute([trim($input['wordTurkish']), $input['wordId']]);
     }
 
     // 4. WordSamples
-    if (isset($input['wordSentence'])) {
+    if (isset($input['wordSentence']) || isset($input['wordSentenceTurkish'])) {
         $stmtCheckSample = $pdo->prepare("SELECT Id FROM WordSamples WHERE WordId = ? AND LangId = 2");
         $stmtCheckSample->execute([$input['wordId']]);
         if ($stmtCheckSample->fetch()) {
-            $stmtSample = $pdo->prepare("UPDATE WordSamples SET SampleText = ? WHERE WordId = ? AND LangId = 2");
-            $stmtSample->execute([trim($input['wordSentence']), $input['wordId']]);
+            $upSamp = []; $pSamp = [];
+            if (isset($input['wordSentence'])) { $upSamp[] = "SampleText = ?"; $pSamp[] = trim($input['wordSentence']); }
+            if (isset($input['wordSentenceTurkish'])) { $upSamp[] = "TranslatedText = ?"; $pSamp[] = trim($input['wordSentenceTurkish']); }
+            $pSamp[] = $input['wordId'];
+            $pdo->prepare("UPDATE WordSamples SET " . implode(", ", $upSamp) . " WHERE WordId = ? AND LangId = 2")->execute($pSamp);
         } else {
-            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText) VALUES (?, 2, ?)");
-            $stmtSample->execute([$input['wordId'], trim($input['wordSentence'])]);
+            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, 2, ?, ?)");
+            $stmtSample->execute([$input['wordId'], trim($input['wordSentence'] ?? ''), $input['wordSentenceTurkish'] ?? null]);
         }
     }
 

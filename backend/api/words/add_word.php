@@ -41,23 +41,23 @@ try {
     }
 
     // 1. Words tablosuna ekle
-    $stmt = $pdo->prepare("INSERT INTO Words (Level, CategoryId, Picture, AddedById, Active) VALUES (?, ?, ?, ?, 1)");
-    $stmt->execute([$input['wordLevel'], $input['wordCategory'], $picture, $userId]);
+    $stmt = $pdo->prepare("INSERT INTO Words (CategoryId, Picture, AddedById, Active) VALUES (?, ?, ?, 1)");
+    $stmt->execute([$input['wordCategory'], $picture, $userId]);
     
     $wordId = $pdo->lastInsertId();
 
     // 2. WordTranslations tablosuna İngilizce ekle (LangId = 2)
-    $stmtEn = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, WordType, Translation, Pronunciation) VALUES (?, 2, ?, ?, ?)");
-    $stmtEn->execute([$wordId, $input['wordType'], trim($input['wordEnglish']), $input['wordPronunciation'] ?? null]);
+    $stmtEn = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 2, ?, ?, ?, ?)");
+    $stmtEn->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['wordEnglish']), $input['wordPronunciation'] ?? null]);
 
     // 3. WordTranslations tablosuna Türkçe ekle (LangId = 1)
-    $stmtTr = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, WordType, Translation, Pronunciation) VALUES (?, 1, ?, ?, ?)");
-    $stmtTr->execute([$wordId, $input['wordType'], trim($input['wordTurkish']), null]); 
+    $stmtTr = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 1, ?, ?, ?, ?)");
+    $stmtTr->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['wordTurkish']), null]); 
 
     // 4. Örnek cümle varsa WordSamples'a ekle (İngilizce örnek, LangId = 2)
     if (!empty($input['wordSentence'])) {
-        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText) VALUES (?, 2, ?)");
-        $stmtSample->execute([$wordId, trim($input['wordSentence'])]);
+        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, 2, ?, ?)");
+        $stmtSample->execute([$wordId, trim($input['wordSentence']), $input['wordSentenceTurkish'] ?? null]);
     }
 
     $pdo->commit();
