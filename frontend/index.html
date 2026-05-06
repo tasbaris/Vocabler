@@ -33,9 +33,9 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link px-3" href="#features">Özellikler</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#how-it-works">Nasıl Çalışır?</a></li>
-                    <li class="nav-item"><a class="nav-link px-3" href="#pricing">Planlar</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#features" data-i18n="nav_features">Özellikler</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#how-it-works" data-i18n="nav_how_it_works">Nasıl Çalışır?</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#pricing" data-i18n="nav_pricing">Planlar</a></li>
                 </ul>
                 
                 <div class="d-flex align-items-center gap-3">
@@ -45,17 +45,17 @@
                     
                     <!-- Misafir Kullanıcı Görünümü -->
                     <div id="auth-guest" class="d-flex align-items-center gap-3">
-                        <a href="login.html" class="text-decoration-none small fw-medium text-white-50 hover-text-white transition-all px-2">Giriş Yap</a>
-                        <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" style="min-width: 120px; padding: 10px 0;">Ücretsiz Başla</a> 
+                        <a href="login.html" class="text-decoration-none small fw-medium text-white-50 hover-text-white transition-all px-2" data-i18n="nav_login">Giriş Yap</a>
+                        <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" style="min-width: 120px; padding: 10px 0;" data-i18n="nav_register">Ücretsiz Başla</a> 
                     </div>
 
                     <!-- Giriş Yapmış Kullanıcı Görünümü -->
                     <div id="auth-user" class="d-flex align-items-center gap-3 d-none">
                         <div class="d-flex align-items-center gap-2 me-1">
                             <img src="" alt="Profil" class="rounded-circle border border-primary userAvatar" style="width: 32px; height: 32px; object-fit: cover;">
-                            <span class="text-white-50 small d-none d-md-inline">Hoş geldin, <span class="userNameDisplay fw-bold text-white"></span>!</span>
+                            <span class="text-white-50 small d-none d-md-inline"><span data-i18n="nav_welcome">Hoş geldin</span>, <span class="userNameDisplay fw-bold text-white"></span>!</span>
                         </div>
-                        <a href="dashboard.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm">Panele Git</a>
+                        <a href="dashboard.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" data-i18n="nav_dashboard">Panele Git</a>
                     </div>
                 </div>
             </div>
@@ -67,11 +67,11 @@
         <div class="container py-5">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-3 fw-bold mb-4">Yeni Bir Dil Öğrenmenin En <span class="text-bevel">Eğlenceli</span> Yolu</h1>
-                    <p class="lead mb-5 ">Quiz çöz, kelime öğren, oyunlarla geliş. Vocabler ile dil öğrenmek artık bir oyun.</p>
+                    <h1 class="display-3 fw-bold mb-4" data-i18n="hero_title">Yeni Bir Dil Öğrenmenin En <span class="text-bevel">Eğlenceli</span> Yolu</h1>
+                    <p class="lead mb-5" data-i18n="hero_subtitle">Quiz çöz, kelime öğren, oyunlarla geliş. Vocabler ile dil öğrenmek artık bir oyun.</p>
                     <div class="d-flex gap-3">
-                        <a href="login.html" class="btn btn-primary btn-lg px-4">Hemen Başla</a>
-                        <a href="#features" class="btn btn-outline-secondary btn-lg px-4 rounded-pill">Daha Fazla Bilgi</a>
+                        <a href="login.html" class="btn btn-primary btn-lg px-4" data-i18n="hero_cta_start">Hemen Başla</a>
+                        <a href="#features" class="btn btn-outline-secondary btn-lg px-4 rounded-pill" data-i18n="hero_cta_info">Daha Fazla Bilgi</a>
                     </div>
                 </div>
                 <div class="col-lg-6 d-none d-lg-block text-center">
@@ -83,34 +83,34 @@
 
     <!-- Features -->
     <main class="container mb-5" id="features">
-        <h2 class="text-center fw-bold mb-5">Öne Çıkan Özellikler</h2>
+        <h2 class="text-center fw-bold mb-5" data-i18n="features_title">Öne Çalışan Özellikler</h2>
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="custom-card h-100 p-4 text-center">
                     <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-tasks"></i></div>
-                    <h4 class="fw-bold">Quiz</h4>
-                    <p class="small ">Binlerce kelime arasından seçilen testlerle kendini dene.</p>
+                    <h4 class="fw-bold" data-i18n="feature_quiz_title">Quiz</h4>
+                    <p class="small" data-i18n="feature_quiz_desc">Binlerce kelime arasından seçilen testlerle kendini dene.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="custom-card h-100 p-4 text-center">
                     <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-grid-2"></i></div>
-                    <h4 class="fw-bold">Wordle</h4>
-                    <p class="small ">Gizli kelimeyi bulmak için stratejini geliştir.</p>
+                    <h4 class="fw-bold" data-i18n="feature_wordle_title">Wordle</h4>
+                    <p class="small" data-i18n="feature_wordle_desc">Gizli kelimeyi bulmak için stratejini geliştir.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="custom-card h-100 p-4 text-center">
                     <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-link"></i></div>
-                    <h4 class="fw-bold">Kelime Zinciri</h4>
-                    <p class="small ">Kelimeleri birbirine bağlayarak hazineni genişlet.</p>
+                    <h4 class="fw-bold" data-i18n="feature_chain_title">Kelime Zinciri</h4>
+                    <p class="small" data-i18n="feature_chain_desc">Kelimeleri birbirine bağlayarak hazineni genişlet.</p>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="custom-card h-100 p-4 text-center">
                     <div class="mb-3 fs-1" style="color: var(--accent);"><i class="fas fa-book"></i></div>
-                    <h4 class="fw-bold">Konular</h4>
-                    <p class="small ">İlgini çeken kategorilerde spesifik öğrenme sağla.</p>
+                    <h4 class="fw-bold" data-i18n="feature_topics_title">Konular</h4>
+                    <p class="small" data-i18n="feature_topics_desc">İlgini çeken kategorilerde spesifik öğrenme sağla.</p>
                 </div>
             </div>
         </div>
@@ -119,9 +119,9 @@
     <!-- CTA Section -->
     <section class="py-5 text-center" style="background: var(--card);">
         <div class="container">
-            <h2 class="fw-bold mb-3">Öğrenmeye Başlamaya Hazır Mısın?</h2>
-            <p class="lead  mb-4">Hemen şimdi ücretsiz bir hesap oluştur ve kelime dağarcığını genişletmeye başla!</p>
-            <a href="login.html" class="btn btn-primary btn-lg px-5">Şimdi Kayıt Ol</a>
+            <h2 class="fw-bold mb-3" data-i18n="cta_ready_title">Öğrenmeye Başlamaya Hazır Mısın?</h2>
+            <p class="lead mb-4" data-i18n="cta_ready_desc">Hemen şimdi ücretsiz bir hesap oluştur ve kelime dağarcığını genişletmeye başla!</p>
+            <a href="login.html" class="btn btn-primary btn-lg px-5" data-i18n="cta_register_btn">Şimdi Kayıt Ol</a>
         </div>
     </section>
 
@@ -131,30 +131,31 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <h5 class="fw-bold mb-3"><a href="index.html" class="text-decoration-none" style="color: var(--accent);">Vocabler</a></h5>
-                    <p class="small opacity-50">Kelime ezberlemeyi kolaylaştıran modern bir öğrenme uygulaması.</p>
+                    <p class="small opacity-50" data-i18n="footer_desc">Kelime ezberlemeyi kolaylaştıran modern bir öğrenme uygulaması.</p>
                 </div>
                 <div class="col-md-4">
-                    <h5 class="fw-bold mb-3">Hızlı Linkler</h5>
+                    <h5 class="fw-bold mb-3" data-i18n="footer_quick_links">Hızlı Linkler</h5>
                     <ul class="list-unstyled small">
-                        <li><a href="index.html" class="text-decoration-none text-white-50">Anasayfa</a></li>
-                        <li><a href="quiz.html" class="text-decoration-none text-white-50">Quiz</a></li>
-                        <li><a href="dashboard.html" class="text-decoration-none text-white-50">Profil</a></li>
+                        <li><a href="index.html" class="text-decoration-none text-white-50" data-i18n="footer_home">Anasayfa</a></li>
+                        <li><a href="quiz.html" class="text-decoration-none text-white-50" data-i18n="footer_quiz">Quiz</a></li>
+                        <li><a href="dashboard.html" class="text-decoration-none text-white-50" data-i18n="footer_profile">Profil</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4 ">
-                    <h5 class="fw-bold mb-3">İletişim</h5>
+                    <h5 class="fw-bold mb-3" data-i18n="footer_contact">İletişim</h5>
                     <p class="small opacity-50 "><i class="fas fa-envelope me-2"></i> info@vocabler.com</p>
                     <p class="small opacity-50 "><i class="fas fa-code me-2"></i> Ismail Nuri Çevik</p>
                 </div>
             </div>
             <hr class="my-4 opacity-10">
-            <div class="small  text-center">
+            <div class="small text-center" data-i18n="footer_rights">
                 © 2026 Vocabler. Tüm hakları saklıdır.
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/translations.js"></script>
     <script src="assets/js/theme.js"></script>
     <script src="assets/js/auth.js"></script>
 </body>
