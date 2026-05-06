@@ -42,8 +42,21 @@
                     <button class="theme-toggle" title="Tema Değiştir">
                         <i class="fas fa-moon"></i>
                     </button>
-                    <a href="login.html" class="text-decoration-none small fw-medium text-white-50 hover-text-white transition-all px-2">Giriş Yap</a>
-                    <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" style="min-width: 120px; padding: 10px 0;">Ücretsiz Başla</a> 
+                    
+                    <!-- Misafir Kullanıcı Görünümü -->
+                    <div id="auth-guest" class="d-flex align-items-center gap-3">
+                        <a href="login.html" class="text-decoration-none small fw-medium text-white-50 hover-text-white transition-all px-2">Giriş Yap</a>
+                        <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" style="min-width: 120px; padding: 10px 0;">Ücretsiz Başla</a> 
+                    </div>
+
+                    <!-- Giriş Yapmış Kullanıcı Görünümü -->
+                    <div id="auth-user" class="d-flex align-items-center gap-3 d-none">
+                        <div class="d-flex align-items-center gap-2 me-1">
+                            <img src="" alt="Profil" class="rounded-circle border border-primary userAvatar" style="width: 32px; height: 32px; object-fit: cover;">
+                            <span class="text-white-50 small d-none d-md-inline">Hoş geldin, <span class="userNameDisplay fw-bold text-white"></span>!</span>
+                        </div>
+                        <a href="dashboard.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm">Panele Git</a>
+                    </div>
                 </div>
             </div>
         </div>

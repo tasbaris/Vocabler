@@ -153,10 +153,18 @@ document.addEventListener("DOMContentLoaded", () => {
     nameDisplays.forEach(el => el.textContent = fullName);
 
     // Kullanıcı ismine özel dinamik profil ikonları (Avatar) oluştur ve yerleştir
-    const avatars = document.querySelectorAll(".profile-pill img");
+    const avatars = document.querySelectorAll(".profile-pill img, .userAvatar");
     avatars.forEach(img => {
       img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00ADB5&color=222831`;
     });
+
+    // Navigasyon Auth Kontrolü (Giriş yapılmışsa butonları değiştir)
+    const authGuest = document.getElementById("auth-guest");
+    const authUser = document.getElementById("auth-user");
+    if (authGuest && authUser) {
+        authGuest.classList.add("d-none");
+        authUser.classList.remove("d-none");
+    }
 
     // Dashboard'a özel karşılama mesajını kişiselleştir
     const welcomeMessage = document.getElementById("welcomeMessage");
