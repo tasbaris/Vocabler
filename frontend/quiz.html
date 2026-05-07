@@ -23,89 +23,108 @@
             margin: 0 auto;
         }
 
-        /* Radio Inputlarını Gizle */
-        .option-input {
-            display: none;
+        /* Flashcard Container */
+        .flashcard-container {
+            perspective: 1000px;
+            height: 350px;
+            margin-bottom: 30px;
         }
 
-        /* Label (Şık Butonları) Temel Stil */
-        .option-label {
-            display: block;
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--text);
-            text-align: left;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            transition: var(--transition);
-            width: 100%;
-            cursor: pointer;
+        .flashcard {
             position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            cursor: pointer;
         }
 
-        .option-label:hover {
-            background: rgba(255,255,255,0.08);
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            border-radius: 20px;
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .flashcard-back {
+            transform: rotateY(180deg);
+            background: rgba(0, 173, 181, 0.05);
             border-color: var(--accent);
         }
 
-        /* Herhangi bir şık seçildiğinde tıklamaları devre dışı bırak */
-        .options-list:has(input:checked) {
-            pointer-events: none;
+        .front-image-container {
+            width: 150px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
-        /* DOĞRU CEVAP MANTIĞI: Her durumda doğru olanı yeşil yap (seçim yapıldıysa) */
-        .options-list:has(input:checked) .option-input.correct + .option-label {
-            background: rgba(46, 213, 115, 0.15) !important;
-            border-color: #2ed573 !important;
-            color: #2ed573 !important;
-        }
-        
-        /* Doğru şık seçildiyse ikon ekle (isteğe bağlı) */
-        .options-list:has(.correct:checked) .option-input.correct + .option-label::after {
-            content: '\f058';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            float: right;
+        .front-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        /* YANLIŞ CEVAP MANTIĞI: Eğer yanlış olan seçildiyse kırmızı yap */
-        .option-input.wrong:checked + .option-label {
-            background: rgba(255, 71, 87, 0.15) !important;
-            border-color: #ff4757 !important;
-            color: #ff4757 !important;
+        .btn-correct {
+            background-color: #2ed573;
+            color: #fff;
+            border: none;
         }
-
-        .option-input.wrong:checked + .option-label::after {
-            content: '\f057';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            float: right;
+        .btn-correct:hover {
+            background-color: #26af5f;
+            color: #fff;
+        }
+        .btn-wrong {
+            background-color: #ff4757;
+            color: #fff;
+            border: none;
+        }
+        .btn-wrong:hover {
+            background-color: #e0404e;
+            color: #fff;
         }
 
         @media (max-width: 576px) {
-            .display-4 { font-size: 2.2rem; }
+            .flashcard-container { height: 300px; }
+            .display-4 { font-size: 2.5rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="dashboard-container">
+    <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header d-flex justify-content-between align-items-center">
             <a href="index.html" class="text-decoration-none h4 fw-bold mb-0" style="color: var(--accent);">Vocabler</a>
             <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
         </div>
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <p class="small fw-bold text-uppercase mb-3 px-3">Menü</p>
             <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
             <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
             <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> Konular</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
             <a href="quiz.html" class="menu-item active"><i class="fas fa-tasks"></i> Quiz Çöz</a>
             <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
             <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> Kelime Zinciri</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
             <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
         </div>
         <div class="sidebar-footer">
@@ -118,6 +137,7 @@
         </div>
     </aside>
 
+    <!-- Main Content -->
     <main class="main-content">
         <header class="topbar">
             <div class="d-flex align-items-center">
@@ -125,17 +145,17 @@
                 <h5 class="mb-0 fw-bold">Quiz</h5>
             </div>
             <a href="settings.html" class="profile-pill">
-                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+                <img src="" alt="Avatar" class="userAvatar">
+                <span class="fw-medium small d-none d-sm-inline userNameDisplay">Yükleniyor...</span>
             </a>
         </header>
 
         <div class="container-fluid p-4">
             <!-- Quiz Area -->
-            <div id="quiz-area" class="custom-card quiz-card shadow-lg">
-                <div class="d-flex justify-content-between align-items-center mb-2">
+            <div id="quiz-area" class="quiz-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
                     <span class="badge bg-dark px-3 py-2 border border-secondary text-white-50">
-                        Soru <span id="current-question-num">0</span> / <span id="total-questions-num">0</span>
+                        <span data-i18n="quiz_question">Soru</span> <span id="current-question-num">0</span> / <span id="total-questions-num">0</span>
                     </span>
                     <div class="w-50">
                         <div class="progress" style="height: 8px; background: rgba(255,255,255,0.05);">
@@ -144,43 +164,45 @@
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2 mb-4">
-                    <button id="prev-question-btn-top" class="btn btn-sm btn-outline-secondary rounded-pill px-3 opacity-50">
-                        <i class="fas fa-chevron-left me-1"></i> Önceki
-                    </button>
-                </div>
-
-                <div id="question-container" class="text-center my-4">
-                    <h1 id="question-word" class="display-4 fw-bold mb-3" style="letter-spacing: 2px;">YÜKLENİYOR...</h1>
-                    <div id="question-image-container" class="mb-4 d-none">
-                        <img id="question-image" src="" alt="Soru Görseli" class="img-fluid rounded-3 shadow-sm" style="max-height: 200px;">
-                    </div>
-                    <div id="question-icon-container" class="mb-4">
-                        <i id="question-icon" class="fas fa-question-circle fa-5x opacity-25"></i>
-                    </div>
-                    
-                    <div id="quiz-hint-box" class="collapse mb-3">
-                        <div class="p-2 small text-warning border border-warning border-opacity-25 rounded bg-warning bg-opacity-10">
-                            <i class="fas fa-lightbulb me-2"></i> İpucu: <span id="quiz-hint-text">İpucu yükleniyor...</span>
+                <!-- Flashcard -->
+                <div class="flashcard-container">
+                    <div class="flashcard" id="main-flashcard">
+                        <!-- Ön Yüz -->
+                        <div class="flashcard-front">
+                            <div class="front-image-container d-none">
+                                <img id="front-image" src="" alt="Word Image">
+                            </div>
+                            <h1 id="front-word" class="display-4 fw-bold mb-2">Word</h1>
+                            <p id="front-pronunciation" class="text-accent mb-3">/pronunciation/</p>
+                            <span id="front-type-level" class="badge bg-white bg-opacity-10 text-white-50 border border-white border-opacity-10">Type / Level</span>
+                            <div class="mt-4 small opacity-25">
+                                <i class="fas fa-sync-alt me-2"></i> <span data-i18n="quiz_flip_btn">Çevirmek için tıkla</span>
+                            </div>
+                        </div>
+                        <!-- Arka Yüz -->
+                        <div class="flashcard-back">
+                            <p class="small text-accent fw-bold mb-1" data-i18n="quiz_meaning">Anlam</p>
+                            <h2 id="back-word" class="fw-bold mb-4">...</h2>
+                            <div class="p-3 rounded bg-white bg-opacity-5 w-100 text-start">
+                                <p class="small text-accent fw-bold mb-1" data-i18n="quiz_sample_sentence">Örnek Cümle:</p>
+                                <p id="back-sentence" class="mb-2 italic">...</p>
+                                <p id="back-translation" class="small opacity-50">...</p>
+                            </div>
                         </div>
                     </div>
-
-                    <p id="question-prompt" class="">Bu kelimenin Türkçe karşılığı nedir?</p>
                 </div>
 
-                <div id="options-container" class="options-list">
-                    <!-- Seçenekler JS ile buraya gelecek -->
-                    <div class="text-center text-muted py-4">Seçenekler hazırlanıyor...</div>
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <div>
-                        <button class="btn btn-link text-decoration-none p-0 small me-3"><i class="fas fa-flag me-2"></i>Bildir</button>
-                        <button id="hint-btn" class="btn btn-link text-warning text-decoration-none p-0 small" data-bs-toggle="collapse" data-bs-target="#quiz-hint-box">
-                            <i class="fas fa-lightbulb me-2"></i>İpucu Al
-                        </button>
-                    </div>
-                    <button id="next-question-btn" class="btn btn-primary px-4 rounded-pill">Sonraki Soru <i class="fas fa-arrow-right ms-2"></i></button>
+                <!-- Kontrol Butonları -->
+                <div class="d-flex gap-3">
+                    <button id="quiz-wrong-btn" class="btn btn-wrong flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="fas fa-times-circle me-2"></i> <span data-i18n="quiz_wrong_btn">Bilemedim</span>
+                    </button>
+                    <button id="flip-card-btn" class="btn btn-outline-light border-opacity-25 flex-fill py-3 rounded-pill fw-bold">
+                        <i class="fas fa-sync-alt me-2"></i> <span data-i18n="quiz_flip_btn">Kartı Çevir</span>
+                    </button>
+                    <button id="quiz-correct-btn" class="btn btn-correct flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="fas fa-check-circle me-2"></i> <span data-i18n="quiz_correct_btn">Doğru Bildim</span>
+                    </button>
                 </div>
             </div>
 
@@ -189,27 +211,27 @@
                 <div class="mb-4">
                     <i class="fas fa-trophy fa-5x text-warning"></i>
                 </div>
-                <h2 class="fw-bold mb-2">Tebrikler!</h2>
-                <p class="mb-4">Quizi başarıyla tamamladın.</p>
+                <h2 class="fw-bold mb-2" data-i18n="quiz_completed_title">Tebrikler!</h2>
+                <p class="mb-4" data-i18n="quiz_completed_text">Quizi başarıyla tamamladın.</p>
                 
                 <div class="row g-3 mb-4">
                     <div class="col-6">
                         <div class="p-3 border border-white border-opacity-10 rounded-3">
-                            <h3 class="fw-bold mb-0" id="correct-count">0</h3>
-                            <p class="small mb-0 opacity-50">Doğru</p>
+                            <h3 class="fw-bold mb-0 text-success" id="correct-count">0</h3>
+                            <p class="small mb-0 opacity-50" data-i18n="quiz_correct_count">Doğru</p>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-3 border border-white border-opacity-10 rounded-3">
-                            <h3 class="fw-bold mb-0" id="wrong-count">0</h3>
-                            <p class="small mb-0 opacity-50">Yanlış</p>
+                            <h3 class="fw-bold mb-0 text-danger" id="wrong-count">0</h3>
+                            <p class="small mb-0 opacity-50" data-i18n="quiz_wrong_count">Yanlış</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-grid gap-2">
-                    <button class="btn btn-primary rounded-pill py-3" onclick="location.reload()">Tekrar Çöz</button>
-                    <a href="dashboard.html" class="btn btn-outline-light border-opacity-25 rounded-pill py-3">Dashboard'a Dön</a>
+                <div class="d-grid gap-2 px-5">
+                    <button class="btn btn-primary rounded-pill py-3 fw-bold text-dark" onclick="location.reload()" data-i18n="quiz_try_again">Tekrar Çöz</button>
+                    <a href="dashboard.html" class="btn btn-outline-light border-opacity-25 rounded-pill py-3 fw-bold" data-i18n="quiz_back_home">Dashboard'a Dön</a>
                 </div>
             </div>
         </div>
@@ -222,8 +244,17 @@
     const closeBtn = document.getElementById('closeSidebar');
     if(openBtn) openBtn.addEventListener('click', () => sidebar.classList.add('show'));
     if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
+
+    // Kartın kendisine tıklayınca da dönmesi için
+    document.getElementById('main-flashcard').addEventListener('click', function() {
+        this.classList.toggle('flipped');
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="assets/js/translations.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/quiz.js"></script>
 </body>
 </html>

@@ -33,8 +33,16 @@ async function fetchWords() {
 
   if (!wordTableBody) return;
 
+  // URL'den kategori filtresini kontrol et
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryId = urlParams.get("category");
+  let apiUrl = `${API_BASE_URL}/words/get_words.php`;
+  if (categoryId) {
+    apiUrl += `?category=${categoryId}`;
+  }
+
   try {
-    const response = await fetch(`${API_BASE_URL}/words/get_words.php`, {
+    const response = await fetch(apiUrl, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
