@@ -7,6 +7,7 @@ header('Content-Type: application/json');
 $userData = authenticate();
 $userId = $userData['userId'];
 $mode = $_GET['mode'] ?? 'all'; // 'all' (tüm liste) veya 'daily' (o günkü quiz)
+$categoryId = $_GET['category'] ?? null;
 
 try {
     if ($mode === 'daily') {
@@ -15,7 +16,7 @@ try {
         $stmt->execute(['userId' => $userId]);
     } else {
         // Tüm kelime listesi (Genel Havuz)
-        $stmt = $pdo->prepare("
+        $query = "
             SELECT 
                 w.Id, w.CategoryId, w.Picture, w.AddedById,
                 wt_en.Translation as EnglishTranslation, wt_en.Pronunciation, wt_en.WordType, wt_en.Level,
@@ -26,9 +27,18 @@ try {
             LEFT JOIN WordTranslations wt_tr ON w.Id = wt_tr.WordId AND wt_tr.LangId = 1
             LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.LangId = 2
             WHERE w.Active = 1
-            ORDER BY w.Id DESC
-        ");
-        $stmt->execute();
+        ";
+        
+        $params = [];
+        if ($categoryId) {
+            $query .= " AND w.CategoryId = ?";
+            $params[] = $categoryId;
+        }
+        
+        $query .= " ORDER BY w.Id DESC";
+        
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($params);
     }
     
     $words = $stmt->fetchAll();

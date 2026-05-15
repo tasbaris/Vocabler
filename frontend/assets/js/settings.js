@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         // LocalStorage yerine doğrudan veritabanından güncel bilgileri talep et
-        const profileRes = await fetch(`${API_BASE_URL}/user/get_profile.php`, {
+        const profileRes = await fetch(`${API_BASE_URL}/user/get_user_data.php`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${token}` // JWT Güvenlik biletini Header içine ekle
