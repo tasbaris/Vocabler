@@ -362,15 +362,24 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>İşlem yapılıyor...';
 
       const payload = new FormData();
-      payload.append("wordEnglish", mainWord);
-      payload.append("wordTurkish", targetWord);
+      payload.append("mainWord", mainWord);
+      payload.append("targetWord", targetWord);
       payload.append("wordType", wordType);
       payload.append("wordLevel", wordLevel);
       payload.append("wordCategory", wordCategory);
       payload.append("wordPronunciation", document.getElementById("wordPronunciation").value.trim());
       
-      // Cümleleri JSON formatında ekle
+      // Cümleleri JSON formatında ekle (Gelecek hazırlığı)
       payload.append("sentences", JSON.stringify(exampleSentences));
+
+      // Backend şu an sadece tek cümle desteklediği için ilk cümleyi özel alanlarda gönder
+      if (exampleSentences.length > 0) {
+        payload.append("wordSentence", exampleSentences[0].target);
+        payload.append("wordSentenceTurkish", exampleSentences[0].native);
+      } else {
+        payload.append("wordSentence", "");
+        payload.append("wordSentenceTurkish", "");
+      }
 
       const pictureFile = document.getElementById("wordPicture").files[0];
       if (pictureFile) payload.append("wordPicture", pictureFile);
