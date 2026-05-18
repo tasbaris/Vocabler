@@ -6,7 +6,18 @@ const translations = {
         "nav_pricing": "Planlar",
         "nav_login": "Giriş Yap",
         "nav_register": "Ücretsiz Başla",
-        "nav_dashboard": "Panele Git",
+        "nav_dashboard": "Dashboard",
+        "nav_words": "Kelimelerim",
+        "nav_topics": "Konular",
+        "nav_quiz": "Quiz Çöz",
+        "nav_wordle": "Wordle",
+        "nav_chain": "Kelime Zinciri",
+        "nav_settings": "Ayarlar",
+        "nav_logout": "Çıkış Yap",
+        "nav_theme": "Tema Değiştir",
+        "nav_menu": "MENÜ",
+        "nav_games": "OYUNLAR & TESTLER",
+        "nav_account": "HESAP",
         "nav_welcome": "Hoş geldin",
         "hero_title": "Yeni Bir Dil Öğrenmenin En <span class='text-bevel'>Eğlenceli</span> Yolu",
         "hero_subtitle": "Quiz çöz, kelime öğren, oyunlarla geliş. Vocabler ile dil öğrenmek artık bir oyun.",
@@ -59,7 +70,24 @@ const translations = {
         "word_type_verb": "Fiil",
         "word_type_adjective": "Sıfat",
         "word_type_adverb": "Zarf",
-        "word_type_phrase": "Kalıp"
+        "word_type_phrase": "Kalıp",
+        "label_new_word": "Yeni Kelime Ekle",
+        "label_main_word": "Ana Dil",
+        "label_target_word": "Hedef Dil",
+        "label_word_type": "Kelime Tipi",
+        "label_pronunciation": "Okunuşu",
+        "label_level": "Zorluk Seviyesi",
+        "label_category": "Kategori",
+        "label_picture": "Kelime Görseli",
+        "label_example_sentences": "Örnek Cümleler",
+        "msg_no_sentences": "Henüz cümle eklenmedi.",
+        "btn_add_sentence": "Cümle Ekle",
+        "btn_submit_word": "Listeme Ekle",
+        "placeholder_main_word": "Örn: Serendipity",
+        "placeholder_target_word": "Örn: Tesadüf",
+        "placeholder_pronunciation": "Örn: /ˌserənˈdipədē/",
+        "placeholder_sentence_text": "Örnek Cümle (Hedef Dil)",
+        "placeholder_sentence_translation": "Anlamı (Ana Dil)"
     },
     "en": {
         "inspect_btn": "Review",
@@ -68,7 +96,18 @@ const translations = {
         "nav_pricing": "Pricing",
         "nav_login": "Login",
         "nav_register": "Get Started",
-        "nav_dashboard": "Go to Dashboard",
+        "nav_dashboard": "Dashboard",
+        "nav_words": "My Words",
+        "nav_topics": "Topics",
+        "nav_quiz": "Solve Quiz",
+        "nav_wordle": "Wordle",
+        "nav_chain": "Word Chain",
+        "nav_settings": "Settings",
+        "nav_logout": "Logout",
+        "nav_theme": "Toggle Theme",
+        "nav_menu": "MENU",
+        "nav_games": "GAMES & QUIZZES",
+        "nav_account": "ACCOUNT",
         "nav_welcome": "Welcome",
         "hero_title": "The Most <span class='text-bevel'>Fun</span> Way to Learn a New Language",
         "hero_subtitle": "Solve quizzes, learn words, improve with games. Learning a language is now a game with Vocabler.",
@@ -121,7 +160,24 @@ const translations = {
         "word_type_verb": "Verb",
         "word_type_adjective": "Adjective",
         "word_type_adverb": "Adverb",
-        "word_type_phrase": "Phrase"
+        "word_type_phrase": "Phrase",
+        "label_new_word": "Add New Word",
+        "label_main_word": "Main Language",
+        "label_target_word": "Target Language",
+        "label_word_type": "Word Type",
+        "label_pronunciation": "Pronunciation",
+        "label_level": "Difficulty Level",
+        "label_category": "Category",
+        "label_picture": "Word Image",
+        "label_example_sentences": "Example Sentences",
+        "msg_no_sentences": "No sentences added yet.",
+        "btn_add_sentence": "Add Sentence",
+        "btn_submit_word": "Add to My List",
+        "placeholder_main_word": "Ex: Serendipity",
+        "placeholder_target_word": "Ex: Tesadüf",
+        "placeholder_pronunciation": "Ex: /ˌserənˈdipədē/",
+        "placeholder_sentence_text": "Example Sentence (Target Lang)",
+        "placeholder_sentence_translation": "Meaning (Main Lang)"
     }
 };
 
@@ -144,6 +200,14 @@ function applyLanguage(langCode) {
             } else {
                 el.textContent = dictionary[key];
             }
+        }
+        
+        // Placeholder desteği
+        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+           const placeholderKey = `placeholder_${key.replace('label_', '').replace('nav_', '')}`;
+           if (dictionary[placeholderKey]) {
+              el.setAttribute("placeholder", dictionary[placeholderKey]);
+           }
         }
     });
 

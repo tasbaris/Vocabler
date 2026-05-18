@@ -23,6 +23,51 @@ function showToast(message, type = "success") {
   });
 }
 
+// Örnek cümleleri tutacak yerel dizi
+let exampleSentences = [];
+
+/**
+ * Örnek cümleleri UI üzerinde listeler
+ */
+function renderSentences() {
+  const sentenceList = document.getElementById("sentenceList");
+  const noSentencesMsg = document.getElementById("noSentencesMsg");
+  
+  if (!sentenceList) return;
+
+  // Temizle (mesaj hariç)
+  sentenceList.innerHTML = '';
+  
+  if (exampleSentences.length === 0) {
+    sentenceList.innerHTML = '<p class="small opacity-50 text-center py-2 mb-0" id="noSentencesMsg">Henüz cümle eklenmedi.</p>';
+    return;
+  }
+
+  exampleSentences.forEach((s, index) => {
+    const div = document.createElement("div");
+    div.className = "sentence-item d-flex justify-content-between align-items-start mb-2 p-2 rounded bg-white bg-opacity-5 border border-white border-opacity-10";
+    div.innerHTML = `
+      <div class="flex-grow-1 me-2">
+        <div class="small fw-bold text-accent">${s.target}</div>
+        <div class="small opacity-75 italic">${s.native}</div>
+      </div>
+      <button type="button" class="btn btn-link text-danger p-0 ms-2 remove-sentence-btn" data-index="${index}">
+        <i class="fas fa-times-circle"></i>
+      </button>
+    `;
+    sentenceList.appendChild(div);
+  });
+
+  // Silme butonları için event listener
+  document.querySelectorAll(".remove-sentence-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const idx = e.currentTarget.getAttribute("data-index");
+      exampleSentences.splice(idx, 1);
+      renderSentences();
+    });
+  });
+}
+
 /**
  * Backend'den kullanıcının kelimelerini çeker ve tabloyu günceller
  */
@@ -130,6 +175,31 @@ document.addEventListener("DOMContentLoaded", () => {
   const wordSearchInput = document.getElementById("wordSearchInput");
   const wordTableBody = document.getElementById("wordTableBody");
 
+  // Örnek Cümle Ekleme Butonu
+  const addSentenceBtn = document.getElementById("addSentenceBtn");
+  if (addSentenceBtn) {
+    addSentenceBtn.addEventListener("click", () => {
+      const sentenceText = document.getElementById("sentenceText").value.trim();
+      const sentenceTranslation = document.getElementById("sentenceTranslation").value.trim();
+
+      if (!sentenceText || !sentenceTranslation) {
+        showToast("Lütfen her iki alanı da doldurun.", "warning");
+        return;
+      }
+
+      exampleSentences.push({
+        target: sentenceText,
+        native: sentenceTranslation
+      });
+
+      // İnputları temizle
+      document.getElementById("sentenceText").value = "";
+      document.getElementById("sentenceTranslation").value = "";
+
+      renderSentences();
+    });
+  }
+
   // 1. ARAMA / FİLTRELEME
   if (wordSearchInput) {
     wordSearchInput.addEventListener("input", (e) => {
@@ -213,14 +283,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Formu doldur
         document.getElementById("wordId").value = wordData.Id;
-        document.getElementById("wordEnglish").value = wordData.EnglishTranslation;
-        document.getElementById("wordTurkish").value = wordData.TurkishTranslation;
+        document.getElementById("mainWord").value = wordData.EnglishTranslation;
+        document.getElementById("targetWord").value = wordData.TurkishTranslation;
         document.getElementById("wordType").value = wordData.WordType;
         document.getElementById("wordLevel").value = wordData.Level;
         document.getElementById("wordCategory").value = wordData.CategoryId;
         document.getElementById("wordPronunciation").value = wordData.Pronunciation || "";
-        document.getElementById("wordSentence").value = wordData.SampleSentence || "";
         document.getElementById("wordPicture").value = "";
+        
+        // Örnek cümleler varsa doldur (Backend'den geliyorsa)
+        if (wordData.Sentences) {
+           exampleSentences = Array.isArray(wordData.Sentences) ? wordData.Sentences : JSON.parse(wordData.Sentences);
+           renderSentences();
+        } else {
+           exampleSentences = [];
+           renderSentences();
+        }
 
         // UI Güncelle
         if (formTitle) formTitle.textContent = "Kelimeyi Güncelle";
@@ -248,6 +326,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetAddForm() {
     addWordForm.reset();
     document.getElementById("wordId").value = "";
+    exampleSentences = [];
+    renderSentences();
+    
     if (formTitle) formTitle.textContent = "Yeni Kelime Ekle";
     const submitBtn = document.getElementById("submitWordBtn");
     submitBtn.innerHTML = '<i class="fas fa-plus-circle me-2"></i>Listeme Ekle';
@@ -260,23 +341,36 @@ document.addEventListener("DOMContentLoaded", () => {
   if (addWordForm) {
     addWordForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      
       const wordId = document.getElementById("wordId").value;
       const submitBtn = document.getElementById("submitWordBtn");
       const originalBtnContent = submitBtn.innerHTML;
 
+      // Zorunlu alanların kontrolü
+      const mainWord = document.getElementById("mainWord").value.trim();
+      const targetWord = document.getElementById("targetWord").value.trim();
+      const wordType = document.getElementById("wordType").value;
+      const wordLevel = document.getElementById("wordLevel").value;
+      const wordCategory = document.getElementById("wordCategory").value;
+
+      if (!mainWord || !targetWord || !wordType || !wordLevel || !wordCategory) {
+        showToast("Lütfen tüm zorunlu alanları doldurun.", "warning");
+        return;
+      }
+
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>İşlem yapılıyor...';
 
-      const formData = new FormData(addWordForm);
       const payload = new FormData();
-
-      payload.append("wordEnglish", formData.get("mainWord"));
-      payload.append("wordTurkish", formData.get("targetWord"));
-      payload.append("wordType", formData.get("wordType"));
-      payload.append("wordPronunciation", formData.get("wordPronunciation"));
-      payload.append("wordLevel", formData.get("wordLevel"));
-      payload.append("wordCategory", formData.get("wordCategory"));
-      payload.append("wordSentence", formData.get("wordSentence"));
+      payload.append("wordEnglish", mainWord);
+      payload.append("wordTurkish", targetWord);
+      payload.append("wordType", wordType);
+      payload.append("wordLevel", wordLevel);
+      payload.append("wordCategory", wordCategory);
+      payload.append("wordPronunciation", document.getElementById("wordPronunciation").value.trim());
+      
+      // Cümleleri JSON formatında ekle
+      payload.append("sentences", JSON.stringify(exampleSentences));
 
       const pictureFile = document.getElementById("wordPicture").files[0];
       if (pictureFile) payload.append("wordPicture", pictureFile);

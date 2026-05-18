@@ -30,40 +30,40 @@
         </div>
         
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
             <a href="dashboard.html" class="menu-item">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span>
             </a>
             <a href="my-words.html" class="menu-item active">
-                <i class="fas fa-book-open"></i> Kelimelerim
+                <i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span>
             </a>
             <a href="topics.html" class="menu-item">
-                <i class="fas fa-layer-group"></i> Konular
+                <i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
             <a href="quiz.html" class="menu-item">
-                <i class="fas fa-tasks"></i> Quiz Çöz
+                <i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span>
             </a>
             <a href="wordle.html" class="menu-item">
-                <i class="fas fa-border-all"></i> Wordle
+                <i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span>
             </a>
             <a href="wordchain.html" class="menu-item">
-                <i class="fas fa-link"></i> Kelime Zinciri
+                <i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
             <a href="settings.html" class="menu-item">
-                <i class="fas fa-cog"></i> Ayarlar
+                <i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span>
             </a>
             
         </div>
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="login.html" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>
@@ -76,7 +76,7 @@
                 <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar">
                     <i class="fas fa-bars fs-5"></i>
                 </button>
-                <h5 class="mb-0 fw-bold d-none d-sm-block">Kelimelerim</h5>
+                <h5 class="mb-0 fw-bold d-none d-sm-block" data-i18n="nav_words">Kelimelerim</h5>
             </div>
             
             <a href="settings.html" class="profile-pill">
@@ -96,46 +96,46 @@
                             <div class="icon-box-sm bg-primary bg-opacity-10 text-primary me-3">
                                 <i class="fas fa-plus"></i>
                             </div>
-                            <h5 class="fw-bold mb-0">Yeni Kelime Ekle</h5>
+                            <h5 class="fw-bold mb-0" data-i18n="label_new_word">Yeni Kelime Ekle</h5>
                         </div>
                         <form id="addWordForm" novalidate>
                             <input type="hidden" id="wordId" name="wordId" value="">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordEnglish">Ana Dil</label>
-                                    <input type="text" id="mainWord name="mainWord" class="form-control" placeholder="Örn: Serendipity" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="mainWord" data-i18n="label_main_word">Ana Dil</label>
+                                    <input type="text" id="mainWord" name="mainWord" class="form-control" placeholder="Örn: Serendipity" required data-i18n="label_main_word">
                                     <input type="hidden" name="mainLang" id="mainLang">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordTurkish">Hedef Dil</label>
-                                    <input type="text" id="targetWord" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="targetWord" data-i18n="label_target_word">Hedef Dil</label>
+                                    <input type="text" id="targetWord" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required data-i18n="label_target_word">
                                     <input type="hidden" name="targetLang" id="targetLang">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordType">Kelime Tipi</label>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordType" data-i18n="label_word_type">Kelime Tipi</label>
                                     <select id="wordType" name="wordType" class="form-select" required>
-                                        <option value="" selected disabled>Seçiniz</option>
-                                        <option value="Noun">İsim (Noun)</option>
-                                        <option value="Verb">Fiil (Verb)</option>
-                                        <option value="Adjective">Sıfat (Adj)</option>
-                                        <option value="Adverb">Zarf (Adv)</option>
+                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
+                                        <option value="Noun" data-i18n="word_type_noun">İsim (Noun)</option>
+                                        <option value="Verb" data-i18n="word_type_verb">Fiil (Verb)</option>
+                                        <option value="Adjective" data-i18n="word_type_adjective">Sıfat (Adj)</option>
+                                        <option value="Adverb" data-i18n="word_type_adverb">Zarf (Adv)</option>
                                         <option value="Conjunction">Bağlaç (Conj)</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPronunciation">Okunuşu</label>
-                                    <input type="text" id="wordPronunciation" name="wordPronunciation" class="form-control" placeholder="Örn: /ˌserənˈdipədē/">
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPronunciation" data-i18n="label_pronunciation">Okunuşu</label>
+                                    <input type="text" id="wordPronunciation" name="wordPronunciation" class="form-control" placeholder="Örn: /ˌserənˈdipədē/" data-i18n="label_pronunciation">
                                 </div>
                             </div>
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordLevel">Zorluk Seviyesi</label>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordLevel" data-i18n="label_level">Zorluk Seviyesi</label>
                                     <select id="wordLevel" name="wordLevel" class="form-select" required>
-                                        <option value="" selected disabled>Seçiniz</option>
+                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
                                         <option value="A1">A1 - Başlangıç</option>
                                         <option value="A2">A2 - Temel</option>
                                         <option value="B1">B1 - Orta</option>
@@ -145,9 +145,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordCategory">Kategori</label>
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordCategory" data-i18n="label_category">Kategori</label>
                                     <select id="wordCategory" name="wordCategory" class="form-select" required>
-                                        <option value="" selected disabled>Seçiniz</option>
+                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
                                         <option value="1">Genel</option>
                                         <option value="2">Mutfak</option>
                                         <option value="3">Seyahat</option>
@@ -157,36 +157,36 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPicture">Kelime Görseli</label>
+                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPicture" data-i18n="label_picture">Kelime Görseli</label>
                                 <input type="file" id="wordPicture" name="wordPicture" class="form-control" accept="image/*">
-                                <div class="form-text small opacity-50 ms-1">Kelimeyi hatırlatacak bir görsel seçebilirsiniz.</div>
+                                <div class="form-text small opacity-50 ms-1" data-i18n="label_picture">Kelimeyi hatırlatacak bir görsel seçebilirsiniz.</div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1">Örnek Cümleler</label>
+                                <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" data-i18n="label_example_sentences">Örnek Cümleler</label>
                                 <div class="sentences-container border border-white border-opacity-10 rounded-3 p-3">
                                     <div id="sentenceList" class="mb-3">
                                         <!-- Eklenen cümleler burada listelenecek -->
-                                        <p class="small opacity-50 text-center py-2 mb-0" id="noSentencesMsg">Henüz cümle eklenmedi.</p>
+                                        <p class="small opacity-50 text-center py-2 mb-0" id="noSentencesMsg" data-i18n="msg_no_sentences">Henüz cümle eklenmedi.</p>
                                     </div>
                                     
                                     <div class="sentence-input-group">
                                         <div class="mb-2">
-                                            <input type="text" id="sentenceText" class="form-control form-control-sm" placeholder="Örnek Cümle (Hedef Dil)">
+                                            <input type="text" id="sentenceText" class="form-control form-control-sm" placeholder="Örnek Cümle (Hedef Dil)" data-i18n="placeholder_sentence_text">
                                         </div>
                                         <div class="mb-2">
-                                            <input type="text" id="sentenceTranslation" class="form-control form-control-sm" placeholder="Anlamı (Ana Dil)">
+                                            <input type="text" id="sentenceTranslation" class="form-control form-control-sm" placeholder="Anlamı (Ana Dil)" data-i18n="placeholder_sentence_translation">
                                         </div>
                                         <button type="button" id="addSentenceBtn" class="btn btn-sm btn-outline-primary w-100">
-                                            <i class="fas fa-plus me-1"></i> Cümle Ekle
+                                            <i class="fas fa-plus me-1"></i> <span data-i18n="btn_add_sentence">Cümle Ekle</span>
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text small opacity-50 ms-1">Kelimenin kullanımına dair birden fazla örnek cümle ekleyebilirsiniz.</div>
+                                <div class="form-text small opacity-50 ms-1" data-i18n="label_example_sentences">Kelimenin kullanımına dair birden fazla örnek cümle ekleyebilirsiniz.</div>
                             </div>
 
                             <button type="submit" id="submitWordBtn" class="btn btn-primary w-100 py-2">
-                                <i class="fas fa-plus-circle me-2"></i>Listeme Ekle
+                                <i class="fas fa-plus-circle me-2"></i><span data-i18n="btn_submit_word">Listeme Ekle</span>
                             </button>
                         </form>
                     </div>
