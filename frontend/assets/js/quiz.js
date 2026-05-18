@@ -12,8 +12,10 @@ let wrongCount = 0;
  */
 async function fetchQuizWords() {
     const token = localStorage.getItem("vocabler_token");
-    const quizArea = document.getElementById("quiz-area");
-    const topicsContainer = document.getElementById("question-container");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
     try {
         const response = await fetch(`${API_BASE_URL}/quiz/get_quiz_words.php`, {
@@ -28,12 +30,15 @@ async function fetchQuizWords() {
 
         if (response.ok && result.status === "success") {
             quizData = result.data;
-            if (quizData.length > 0) {
+            if (quizData && quizData.length > 0) {
                 document.getElementById("total-questions-num").textContent = quizData.length;
                 showQuestion();
             } else {
                 showEmptyState();
             }
+        } else {
+            console.error("Quiz fetch failed:", result.message);
+            showEmptyState();
         }
     } catch (error) {
         console.error("Quiz verileri alınırken hata:", error);
@@ -55,18 +60,19 @@ function showQuestion() {
     
     // UI Güncelleme
     document.getElementById("current-question-num").textContent = currentIndex + 1;
-    const progress = ((currentIndex) / quizData.length) * 100;
+    const progress = (currentIndex / quizData.length) * 100;
     document.getElementById("quiz-progress-bar").style.width = `${progress}%`;
 
     // Kartı ön yüzüne çevir ve içeriği hazırla
-    const flashcard = document.querySelector(".flashcard");
+    const flashcard = document.getElementById("main-flashcard");
     if (flashcard) flashcard.classList.remove("flipped");
 
     // Kelime Türü Çevirisi (Noun -> İsim vb.)
     const typeKey = `word_type_${(word.WordType || "").toLowerCase()}`;
-    const translatedType = translations[lang][typeKey] || word.WordType || "";
+    const dict = translations[lang] || translations['tr'];
+    const translatedType = dict[typeKey] || word.WordType || "";
 
-    document.getElementById("front-word").textContent = word.TargetWord;
+    document.getElementById("currentWord").textContent = word.TargetWord;
     document.getElementById("front-pronunciation").textContent = word.Pronunciation ? `/${word.Pronunciation}/` : "";
     document.getElementById("front-type-level").textContent = `${translatedType} / ${word.Level}`;
 
@@ -74,11 +80,12 @@ function showQuestion() {
     document.getElementById("back-sentence").textContent = word.SampleSentence || "";
     document.getElementById("back-translation").textContent = word.SampleTranslation || "";
 
+    const frontImage = document.getElementById("front-image");
     if (word.Picture) {
-        document.getElementById("front-image").src = `${API_BASE_URL}/uploads/${word.Picture}`;
-        document.getElementById("front-image").parentElement.classList.remove("d-none");
+        frontImage.src = `${API_BASE_URL}/uploads/${word.Picture}`;
+        frontImage.parentElement.classList.remove("d-none");
     } else {
-        document.getElementById("front-image").parentElement.classList.add("d-none");
+        frontImage.parentElement.classList.add("d-none");
     }
 }
 
@@ -86,6 +93,8 @@ function showQuestion() {
  * Kullanıcı sonucunu backend'e gönderir
  */
 async function submitResult(isCorrect) {
+    if (currentIndex >= quizData.length) return;
+
     const word = quizData[currentIndex];
     const token = localStorage.getItem("vocabler_token");
 
@@ -93,8 +102,8 @@ async function submitResult(isCorrect) {
     else wrongCount++;
 
     try {
-        // Arka planda sonucu gönder (await etmiyoruz ki akış hızlansın, ama hata kontrolü yapıyoruz)
-        fetch(`${API_BASE_URL}/quiz/submit_quiz_result.php`, {
+        // API_BASE_URL/quiz/submit_result.php ucuna POST isteği
+        fetch(`${API_BASE_URL}/quiz/submit_result.php`, {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -107,6 +116,12 @@ async function submitResult(isCorrect) {
         });
         
         currentIndex++;
+        
+        // Progress bar'ı son kelimeden sonra %100 yap
+        if (currentIndex === quizData.length) {
+            document.getElementById("quiz-progress-bar").style.width = "100%";
+        }
+        
         showQuestion();
     } catch (err) {
         console.error("Sonuç gönderilemedi:", err);
@@ -118,12 +133,14 @@ async function submitResult(isCorrect) {
  */
 function showEmptyState() {
     const lang = localStorage.getItem("vocabler_lang") || "tr";
+    const dict = translations[lang] || translations['tr'];
+    
     document.getElementById("quiz-area").innerHTML = `
         <div class="text-center py-5">
             <i class="fas fa-check-circle fa-5x text-success mb-4 opacity-50"></i>
-            <h2 class="fw-bold mb-3" data-i18n="quiz_empty_title">${translations[lang].quiz_empty_title}</h2>
-            <p class="text-muted mb-4" data-i18n="quiz_empty_text">${translations[lang].quiz_empty_text}</p>
-            <a href="topics.html" class="btn btn-primary px-5 rounded-pill" data-i18n="feature_topics_title">${translations[lang].feature_topics_title}</a>
+            <h2 class="fw-bold mb-3">${dict.quiz_empty_title || 'Harika İş!'}</h2>
+            <p class="text-muted mb-4">${dict.quiz_empty_text || 'Şu an gözden geçirilecek kelimen kalmadı.'}</p>
+            <a href="topics.html" class="btn btn-primary px-5 rounded-pill">${dict.feature_topics_title || 'Konular'}</a>
         </div>
     `;
 }
@@ -133,6 +150,8 @@ function showEmptyState() {
  */
 function showResults() {
     const lang = localStorage.getItem("vocabler_lang") || "tr";
+    const dict = translations[lang] || translations['tr'];
+    
     document.getElementById("quiz-area").classList.add("d-none");
     document.getElementById("quiz-results").classList.remove("d-none");
     
@@ -140,32 +159,35 @@ function showResults() {
     document.getElementById("wrong-count").textContent = wrongCount;
 
     Swal.fire({
-        title: translations[lang].quiz_completed_title,
-        text: translations[lang].quiz_completed_text,
+        title: dict.quiz_completed_title || "Quiz Tamamlandı! 🎉",
+        text: dict.quiz_completed_text || "Tebrikler, quizi tamamladın!",
         icon: "success",
-        confirmButtonText: "Harika!",
+        confirmButtonText: "Tamam",
         confirmButtonColor: "#00ADB5"
     });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof checkAuth === "function") checkAuth();
+    // Auth kontrolü (eğer auth.js yüklüyse)
+    if (typeof checkAuth === "function") {
+        checkAuth();
+    }
 
     fetchQuizWords();
 
-    // Kartı çevirme
+    // Kartı çevirme butonu
     const flipBtn = document.getElementById("flip-card-btn");
-    const flashcard = document.querySelector(".flashcard");
+    const flashcard = document.getElementById("main-flashcard");
     if (flipBtn && flashcard) {
         flipBtn.addEventListener("click", () => {
             flashcard.classList.toggle("flipped");
         });
     }
 
-    // Bildim/Bilemedim Butonları
-    const correctBtn = document.getElementById("quiz-correct-btn");
-    const wrongBtn = document.getElementById("quiz-wrong-btn");
+    // Doğru (Known) / Yanlış (Unknown) Butonları
+    const btnKnown = document.getElementById("btnKnown");
+    const btnUnknown = document.getElementById("btnUnknown");
 
-    if (correctBtn) correctBtn.addEventListener("click", () => submitResult(true));
-    if (wrongBtn) wrongBtn.addEventListener("click", () => submitResult(false));
+    if (btnKnown) btnKnown.addEventListener("click", () => submitResult(true));
+    if (btnUnknown) btnUnknown.addEventListener("click", () => submitResult(false));
 });

@@ -116,23 +116,23 @@
             <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
         </div>
         <div class="sidebar-menu">
-            <p class="small fw-bold text-uppercase mb-3 px-3">Menü</p>
-            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
-            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> Konular</a>
-            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
-            <a href="quiz.html" class="menu-item active"><i class="fas fa-tasks"></i> Quiz Çöz</a>
-            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
-            <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> Kelime Zinciri</a>
-            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
-            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
+            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span></a>
+            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span></a>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item active"><i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span></a>
+            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span></a>
+            <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span></a>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
+            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span></a>
         </div>
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="login.html" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>
@@ -142,7 +142,7 @@
         <header class="topbar">
             <div class="d-flex align-items-center">
                 <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar"><i class="fas fa-bars fs-5"></i></button>
-                <h5 class="mb-0 fw-bold">Quiz</h5>
+                <h5 class="mb-0 fw-bold" data-i18n="feature_quiz_title">Quiz</h5>
             </div>
             <a href="settings.html" class="profile-pill">
                 <img src="" alt="Avatar" class="userAvatar">
@@ -172,7 +172,7 @@
                             <div class="front-image-container d-none">
                                 <img id="front-image" src="" alt="Word Image">
                             </div>
-                            <h1 id="front-word" class="display-4 fw-bold mb-2">Word</h1>
+                            <h1 id="currentWord" class="display-4 fw-bold mb-2">Word</h1>
                             <p id="front-pronunciation" class="text-accent mb-3">/pronunciation/</p>
                             <span id="front-type-level" class="badge bg-white bg-opacity-10 text-white-50 border border-white border-opacity-10">Type / Level</span>
                             <div class="mt-4 small opacity-25">
@@ -183,7 +183,7 @@
                         <div class="flashcard-back">
                             <p class="small text-accent fw-bold mb-1" data-i18n="quiz_meaning">Anlam</p>
                             <h2 id="back-word" class="fw-bold mb-4">...</h2>
-                            <div class="p-3 rounded bg-white bg-opacity-5 w-100 text-start">
+                            <div class="p-3 rounded bg-opacity-5 w-100 text-start" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
                                 <p class="small text-accent fw-bold mb-1" data-i18n="quiz_sample_sentence">Örnek Cümle:</p>
                                 <p id="back-sentence" class="mb-2 italic">...</p>
                                 <p id="back-translation" class="small opacity-50">...</p>
@@ -194,13 +194,13 @@
 
                 <!-- Kontrol Butonları -->
                 <div class="d-flex gap-3">
-                    <button id="quiz-wrong-btn" class="btn btn-wrong flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                    <button id="btnUnknown" class="btn btn-wrong flex-fill py-3 rounded-pill fw-bold shadow-sm">
                         <i class="fas fa-times-circle me-2"></i> <span data-i18n="quiz_wrong_btn">Bilemedim</span>
                     </button>
                     <button id="flip-card-btn" class="btn btn-outline-light border-opacity-25 flex-fill py-3 rounded-pill fw-bold">
                         <i class="fas fa-sync-alt me-2"></i> <span data-i18n="quiz_flip_btn">Kartı Çevir</span>
                     </button>
-                    <button id="quiz-correct-btn" class="btn btn-correct flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                    <button id="btnKnown" class="btn btn-correct flex-fill py-3 rounded-pill fw-bold shadow-sm">
                         <i class="fas fa-check-circle me-2"></i> <span data-i18n="quiz_correct_btn">Doğru Bildim</span>
                     </button>
                 </div>
