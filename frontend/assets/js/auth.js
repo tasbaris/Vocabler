@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         if (data.status === "success") {
           // Gelen veriyi HTML <option> etiketlerine dönüştürerek kutuların içini doldur
-          let options = '<option value="" disabled selected>Seçiniz</option>';
+          let options = `<option value="" disabled selected>${t('placeholder_select')}</option>`;
           data.languages.forEach((lang) => {
             options += `<option value="${lang.Id}">${lang.LangName}</option>`;
           });
@@ -118,8 +118,24 @@ document.addEventListener("DOMContentLoaded", () => {
           // Butonu 'Başarılı' moduna sokarak kullanıcıya onay ver
           submitBtn.className = "btn btn-success w-100 mb-4 py-3";
           submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
-          // Kayıt sonrası tarayıcı yenileme tuzağına düşmemek için anında Login sayfasına yönlendir
-          window.location.replace("login.html");
+          
+          // Otomatik login yapıp placement.html'e yönlendir
+          fetch(`${API_BASE_URL}/user/login.php`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ emailOrUsername: email, password: password })
+          })
+          .then(res => res.json())
+          .then(loginData => {
+              if (loginData.status === "success") {
+                  localStorage.setItem("vocabler_token", loginData.token);
+                  localStorage.setItem("vocabler_user", JSON.stringify(loginData.user));
+                  window.location.replace("placement.html");
+              } else {
+                  window.location.replace("login.html");
+              }
+          }).catch(() => window.location.replace("login.html"));
+
         } else {
           alert(`Hata: ${result.message || "Kayıt yapılamadı."}`);
           // Formu tekrar kullanılabilir hale getir
@@ -158,6 +174,14 @@ document.addEventListener("DOMContentLoaded", () => {
       img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=00ADB5&color=222831`;
     });
 
+    // Dil Tercihini NativeLangId'ye göre ayarla (1: TR, 2: EN)
+    const nativeLangId = user.NativeLangId || user.native_lang_id || user.nativeLangId;
+    const langCode = (nativeLangId == 2) ? 'en' : 'tr';
+    localStorage.setItem("vocabler_lang", langCode);
+    if (typeof applyLanguage === "function") {
+        applyLanguage(langCode);
+    }
+
     // Navigasyon Auth Kontrolü (Giriş yapılmışsa butonları değiştir)
     const authGuest = document.getElementById("auth-guest");
     const authUser = document.getElementById("auth-user");
@@ -169,7 +193,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Dashboard'a özel karşılama mesajını kişiselleştir
     const welcomeMessage = document.getElementById("welcomeMessage");
     if (welcomeMessage) {
-      welcomeMessage.innerHTML = `Tekrar Hoş Geldin, ${firstName}! 👋`;
+      const levelHtml = user.Level ? `<span class="badge bg-warning text-dark ms-2 align-middle fs-6">${user.Level}</span>` : '';
+      welcomeMessage.innerHTML = `${t('msg_welcome_back')}, ${firstName}! 👋 ${levelHtml}`;
     }
   }
 

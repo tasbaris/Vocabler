@@ -3,31 +3,6 @@
  */
 
 /**
- * Ortak Bildirim Fonksiyonu (SweetAlert2 tabanlı)
- */
-function showToast(message, type = "success") {
-    const isLight = document.documentElement.classList.contains("light-theme");
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true,
-      background: isLight ? "#FFFFFF" : "#1E2128",
-      color: isLight ? "#1E2128" : "#F9F9F9",
-      didOpen: (toast) => {
-        toast.addEventListener("mouseenter", Swal.stopTimer);
-        toast.addEventListener("mouseleave", Swal.resumeTimer);
-      },
-    });
-  
-    Toast.fire({
-      icon: type,
-      title: message,
-    });
-}
-
-/**
  * Backend'den kategorileri çeker ve grid yapısını günceller
  */
 async function fetchCategories() {
@@ -60,6 +35,12 @@ async function fetchCategories() {
                     const icons = ["fa-language", "fa-book", "fa-graduation-cap", "fa-brain", "fa-globe", "fa-lightbulb"];
                     const randomIcon = icons[category.Id % icons.length];
 
+                    const isSubscribed = category.UserWordCount > 0;
+                    const btnClass = isSubscribed ? "btn-success" : "btn-primary";
+                    const btnText = isSubscribed ? t('btn_added') : t('btn_learn_topic');
+                    const btnDisabled = isSubscribed ? "disabled" : "";
+                    const btnIcon = isSubscribed ? "fa-check-circle" : "fa-plus-circle";
+
                     col.innerHTML = `
                         <div class="custom-card h-100 p-4 text-center position-relative">
                             <div class="topic-actions position-absolute top-0 end-0 p-2">
@@ -74,24 +55,31 @@ async function fetchCategories() {
                                 <i class="fas ${randomIcon}"></i>
                             </div>
                             <h4 class="fw-bold mb-2">${category.CategoryName}</h4>
-                            <a href="my-words.html?category=${category.Id}" class="btn btn-outline-primary btn-sm rounded-pill px-4 mt-2" data-i18n="inspect_btn">
-                                ${translations[localStorage.getItem("vocabler_lang") || "tr"].inspect_btn}
-                            </a>
+                            <div class="d-grid gap-2 mt-3">
+                                <button class="btn ${btnClass} btn-sm rounded-pill subscribe-cat-btn" data-id="${category.Id}" ${btnDisabled}>
+                                    <i class="fas ${btnIcon} me-1"></i> ${btnText}
+                                </button>
+                                <a href="my-words.html?category=${category.Id}" class="btn btn-outline-light btn-sm rounded-pill opacity-75" data-i18n="inspect_btn">
+                                    ${translations[localStorage.getItem("vocabler_lang") || "tr"].inspect_btn}
+                                </a>
+                            </div>
                         </div>
                     `;
                     topicsContainer.appendChild(col);
                 });
             } else {
+                const lang = localStorage.getItem("vocabler_lang") || "tr";
+                const dict = translations[lang] || translations['tr'];
                 topicsContainer.innerHTML = `
                     <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
-                        <p class="text-muted">Henüz konu eklenmemiş.</p>
+                        <p class="text-muted">${dict.msg_no_words_found || 'Henüz konu eklenmemiş.'}</p>
                     </div>
                 `;
             }
         }
     } catch (error) {
         console.error("Kategoriler getirilirken hata oluştu:", error);
-        showToast("Konular listelenirken bir hata oluştu.", "error");
+        showToast(t('msg_list_error'), "error");
     }
 }
 
@@ -140,10 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
                             showToast(res.message, "success");
                             fetchCategories();
                         } else {
-                            showToast(res.message || "Ekleme hatası.", "error");
+                            showToast(res.message || t('msg_update_error'), "error");
                         }
                     } catch (err) {
-                        showToast("Bağlantı hatası.", "error");
+                        showToast(t('msg_connection_error'), "error");
                     }
                 }
             });
@@ -190,10 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
                                 showToast(result.message, "success");
                                 fetchCategories();
                             } else {
-                                showToast(result.message || "Silme başarısız.", "error");
+                                showToast(result.message || t('msg_update_error'), "error");
                             }
                         } catch (err) {
-                            showToast("Bağlantı hatası.", "error");
+                            showToast(t('msg_connection_error'), "error");
                         }
                     }
                 });
@@ -239,13 +227,52 @@ document.addEventListener("DOMContentLoaded", () => {
                                 showToast(res.message, "success");
                                 fetchCategories();
                             } else {
-                                showToast(res.message || "Güncelleme hatası.", "error");
+                                showToast(res.message || t('msg_update_error'), "error");
                             }
                         } catch (err) {
-                            showToast("Bağlantı hatası.", "error");
+                            showToast(t('msg_connection_error'), "error");
                         }
                     }
                 });
+            }
+
+            // Kategoriye Abone Olma (Kelimeleri Havuza Ekleme)
+            if (e.target.closest(".subscribe-cat-btn")) {
+                const btn = e.target.closest(".subscribe-cat-btn");
+                const id = btn.getAttribute("data-id");
+                const token = localStorage.getItem("vocabler_token");
+
+                // Butonu yükleniyor durumuna getir
+                const originalHtml = btn.innerHTML;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/categories/subscribe.php`, {
+                        method: "POST",
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ categoryId: id }),
+                    });
+
+                    const res = await response.json();
+                    if (response.ok && res.status === "success") {
+                        showToast(res.message, "success");
+                        btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> ${t('btn_added')}`;
+                        btn.classList.replace("btn-primary", "btn-success");
+                        btn.disabled = true;
+                    } else {
+                        showToast(res.message || t('msg_update_error'), "error");
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                    }
+                } catch (err) {
+                    showToast(t('msg_server_error'), "error");
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                }
             }
         });
     }

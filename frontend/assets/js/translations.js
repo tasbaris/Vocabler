@@ -45,12 +45,23 @@ const translations = {
         "topics_title": "Öğrenebileceğiniz Konular",
         "topics_loading": "Konular yükleniyor...",
         "btn_add_topic": "Yeni Konu Ekle",
+        "btn_learn_topic": "Konuyu Öğrenmeye Başla",
+        "btn_added": "Eklendi",
         "modal_add_topic": "Yeni Konu Ekle",
         "modal_edit_topic": "Konuyu Güncelle",
+        "modal_edit_word": "Kelimeyi Güncelle",
         "label_topic_name": "Konu Adı",
         "btn_save": "Kaydet",
         "btn_cancel": "Vazgeç",
         "confirm_delete_topic": "Bu konuyu silmek istediğinize emin misiniz? Bu işlem bağlı tüm kelimeleri silebilir.",
+        "confirm_delete_word": "Bu kelimeyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+        "btn_yes_delete": "Evet, Sil!",
+        "btn_update_save": "Güncelle ve Kaydet",
+        "qtype_multiple": "Çoktan Seçmeli",
+        "qtype_tf": "Doğru / Yanlış",
+        "qtype_short": "Kısa Cevap",
+        "qtype_matching": "Eşleştirme",
+        "quiz_options": "Seçenekler:",
         "quiz_question": "Soru",
         "quiz_total": "Toplam",
         "quiz_correct_btn": "Doğru Bildim",
@@ -69,16 +80,18 @@ const translations = {
         "word_type_noun": "İsim",
         "word_type_verb": "Fiil",
         "word_type_adjective": "Sıfat",
+        "word_type_conjunction": "Bağlaç",
         "word_type_adverb": "Zarf",
         "word_type_phrase": "Kalıp",
         "label_new_word": "Yeni Kelime Ekle",
-        "label_main_word": "Ana Dil",
-        "label_target_word": "Hedef Dil",
+        "label_main_word": "Kelime",
+        "label_target_word": "Anlamı",
         "label_word_type": "Kelime Tipi",
         "label_pronunciation": "Okunuşu",
         "label_level": "Zorluk Seviyesi",
         "label_category": "Kategori",
         "label_picture": "Kelime Görseli",
+        "label_picture_desc": "Kelimeyi hatırlatacak bir görsel seçebilirsiniz.",
         "label_example_sentences": "Örnek Cümleler",
         "msg_no_sentences": "Henüz cümle eklenmedi.",
         "btn_add_sentence": "Cümle Ekle",
@@ -86,8 +99,74 @@ const translations = {
         "placeholder_main_word": "Örn: Serendipity",
         "placeholder_target_word": "Örn: Tesadüf",
         "placeholder_pronunciation": "Örn: /ˌserənˈdipədē/",
-        "placeholder_sentence_text": "Örnek Cümle (Hedef Dil)",
-        "placeholder_sentence_translation": "Anlamı (Ana Dil)"
+        "placeholder_sentence_text": "Örnek Cümle",
+        "placeholder_sentence_translation": "Anlamı",
+        "label_word_pool": "Kelime Havuzum",
+        "placeholder_search_word": "Kelime ara...",
+        "header_word": "Kelime",
+        "header_meaning": "Anlamı",
+        "header_type": "Tür",
+        "header_level": "Seviye",
+        "header_category": "Kategori",
+        "header_status": "Durum",
+        "header_action": "İşlem",
+        "dashboard_stats_title": "İstatistiklerin",
+        "dashboard_daily_goal": "Günlük Hedef",
+        "dashboard_words_learned": "Öğrenilen Kelimeler",
+        "dashboard_streak": "Öğrenme Serisi",
+        "dashboard_recent_activity": "Son Aktiviteler",
+        "dashboard_pending_review": "Tekrar Bekleyen",
+        "label_quick_activities": "Hızlı Aktiviteler",
+        "dashboard_continue_learning": "Öğrenmeye Devam Et",
+        "dashboard_start_quiz": "Quiz'e Başla",
+        "dashboard_view_all": "Tümünü Gör",
+        "dashboard_analysis": "Öğrenme Analizi",
+        "msg_welcome_back": "Tekrar Hoş Geldin",
+        "msg_no_words_found": "Henüz kelime eklenmemiş veya arama sonucu bulunamadı.",
+        "login_title": "Öğrenmeye kaldığın yerden devam et",
+        "register_title": "Kelime dünyasına adım at",
+        "label_email": "E-posta Adresi",
+        "label_password": "Şifre",
+        "label_name": "Ad",
+        "label_surname": "Soyad",
+        "label_username": "Kullanıcı Adı",
+        "label_forgot_password": "Şifremi Unuttum",
+        "btn_login": "Giriş Yap",
+        "btn_register": "Kayıt Ol",
+        "btn_select_picture": "Görseli Seç",
+        "link_no_account": "Hesabın yok mu? Hemen Kayıt Ol",
+        "link_have_account": "Zaten hesabın var mı? Giriş Yap",
+        "btn_back_home": "Ana Sayfaya Dön",
+        "placeholder_email": "örnek@gmail.com",
+        "placeholder_name": "Adınız",
+        "placeholder_surname": "Soyadınız",
+        "placeholder_username": "kullanici_adi",
+        "forgot_password_title": "Şifreni Sıfırla",
+        "forgot_password_desc": "Kayıtlı e-posta adresini girerek şifre sıfırlama bağlantısı alabilirsin.",
+        "btn_send_link": "Bağlantı Gönder",
+        "link_back_to_login": "Giriş Yap'a Dön",
+        "label_security": "Güvenlik",
+        "security_desc": "Hesabınızın güvenliğini sağlamak için şifrenizi güncel tutun.",
+        "btn_change_password": "Şifre Değiştir",
+        "label_learning_preferences": "Öğrenme Tercihleri",
+        "label_full_name": "Ad Soyad",
+        "label_words": "Kelime",
+        "placeholder_select": "Seçiniz",
+        "msg_update_success": "Başarıyla güncellendi!",
+        "msg_update_error": "Güncelleme sırasında bir hata oluştu.",
+        "btn_delete_selected": "Seçilileri Sil",
+        "filter_all_types": "Tüm Türler",
+        "filter_all_levels": "Tüm Seviyeler",
+        "filter_all_categories": "Tüm Kategoriler",
+        "sort_newest": "En Yeni",
+        "sort_oldest": "En Eski",
+        "sort_az": "A-Z",
+        "sort_za": "Z-A",
+        "msg_server_error": "Sunucuya bağlanılamadı.",
+        "msg_fill_required": "Lütfen tüm zorunlu alanları doldurun.",
+        "msg_connection_error": "Bağlantı hatası.",
+        "msg_list_error": "Listeleme sırasında bir hata oluştu.",
+        "msg_invalid_input": "Geçersiz giriş."
     },
     "en": {
         "inspect_btn": "Review",
@@ -135,12 +214,23 @@ const translations = {
         "topics_title": "Topics You Can Learn",
         "topics_loading": "Loading topics...",
         "btn_add_topic": "Add New Topic",
+        "btn_learn_topic": "Start Learning Topic",
+        "btn_added": "Added",
         "modal_add_topic": "Add New Topic",
         "modal_edit_topic": "Update Topic",
+        "modal_edit_word": "Update Word",
         "label_topic_name": "Topic Name",
         "btn_save": "Save",
         "btn_cancel": "Cancel",
         "confirm_delete_topic": "Are you sure you want to delete this topic? This action may delete all related words.",
+        "confirm_delete_word": "Are you sure you want to delete this word? This action cannot be undone.",
+        "btn_yes_delete": "Yes, Delete!",
+        "btn_update_save": "Update and Save",
+        "qtype_multiple": "Multiple Choice",
+        "qtype_tf": "True / False",
+        "qtype_short": "Short Answer",
+        "qtype_matching": "Matching",
+        "quiz_options": "Options:",
         "quiz_question": "Question",
         "quiz_total": "Total",
         "quiz_correct_btn": "I Knew It",
@@ -159,16 +249,18 @@ const translations = {
         "word_type_noun": "Noun",
         "word_type_verb": "Verb",
         "word_type_adjective": "Adjective",
+        "word_type_conjunction": "Conjunction",
         "word_type_adverb": "Adverb",
         "word_type_phrase": "Phrase",
         "label_new_word": "Add New Word",
-        "label_main_word": "Main Language",
-        "label_target_word": "Target Language",
+        "label_main_word": "Word",
+        "label_target_word": "Meaning",
         "label_word_type": "Word Type",
         "label_pronunciation": "Pronunciation",
         "label_level": "Difficulty Level",
         "label_category": "Category",
         "label_picture": "Word Image",
+        "label_picture_desc": "You can choose an image to remind you of the word.",
         "label_example_sentences": "Example Sentences",
         "msg_no_sentences": "No sentences added yet.",
         "btn_add_sentence": "Add Sentence",
@@ -176,46 +268,141 @@ const translations = {
         "placeholder_main_word": "Ex: Serendipity",
         "placeholder_target_word": "Ex: Tesadüf",
         "placeholder_pronunciation": "Ex: /ˌserənˈdipədē/",
-        "placeholder_sentence_text": "Example Sentence (Target Lang)",
-        "placeholder_sentence_translation": "Meaning (Main Lang)"
+        "placeholder_sentence_text": "Example Sentence",
+        "placeholder_sentence_translation": "Meaning",
+        "label_word_pool": "My Word Pool",
+        "placeholder_search_word": "Search word...",
+        "header_word": "Word",
+        "header_meaning": "Meaning",
+        "header_type": "Type",
+        "header_level": "Level",
+        "header_category": "Category",
+        "header_status": "Status",
+        "header_action": "Action",
+        "dashboard_stats_title": "Your Statistics",
+        "dashboard_daily_goal": "Daily Goal",
+        "dashboard_words_learned": "Words Learned",
+        "dashboard_streak": "Learning Streak",
+        "dashboard_recent_activity": "Recent Activities",
+        "dashboard_pending_review": "Pending Review",
+        "label_quick_activities": "Quick Activities",
+        "dashboard_continue_learning": "Continue Learning",
+        "dashboard_start_quiz": "Start Quiz",
+        "dashboard_view_all": "View All",
+        "dashboard_analysis": "Learning Analysis",
+        "msg_welcome_back": "Welcome Back",
+        "msg_no_words_found": "No words added yet or no search results found.",
+        "login_title": "Continue learning from where you left off",
+        "register_title": "Step into the world of words",
+        "label_email": "Email Address",
+        "label_password": "Password",
+        "label_name": "First Name",
+        "label_surname": "Last Name",
+        "label_username": "Username",
+        "label_forgot_password": "Forgot Password?",
+        "btn_login": "Login",
+        "btn_register": "Register",
+        "btn_select_picture": "Select Image",
+        "link_no_account": "Don't have an account? Register Now",
+        "link_have_account": "Already have an account? Login",
+        "btn_back_home": "Back to Home",
+        "placeholder_email": "example@gmail.com",
+        "placeholder_name": "Your name",
+        "placeholder_surname": "Your surname",
+        "placeholder_username": "username",
+        "forgot_password_title": "Reset Your Password",
+        "forgot_password_desc": "Enter your registered email address to receive a password reset link.",
+        "btn_send_link": "Send Link",
+        "link_back_to_login": "Back to Login",
+        "label_security": "Security",
+        "security_desc": "Keep your password up to date to ensure your account security.",
+        "btn_change_password": "Change Password",
+        "label_learning_preferences": "Learning Preferences",
+        "label_full_name": "Full Name",
+        "label_words": "Words",
+        "placeholder_select": "Select",
+        "msg_update_success": "Successfully updated!",
+        "msg_update_error": "An error occurred during update.",
+        "btn_delete_selected": "Delete Selected",
+        "filter_all_types": "All Types",
+        "filter_all_levels": "All Levels",
+        "filter_all_categories": "All Categories",
+        "sort_newest": "Newest",
+        "sort_oldest": "Oldest",
+        "sort_az": "A-Z",
+        "sort_za": "Z-A",
+        "msg_server_error": "Could not connect to the server.",
+        "msg_fill_required": "Please fill in all required fields.",
+        "msg_connection_error": "Connection error.",
+        "msg_list_error": "An error occurred during listing.",
+        "msg_invalid_input": "Invalid input."
     }
 };
 
-/**
- * Belirtilen dil koduna göre sayfadaki metinleri günceller.
- * @param {string} langCode - 'tr' veya 'en' gibi dil kodu.
- */
 function applyLanguage(langCode) {
     const dictionary = translations[langCode] || translations['tr'];
-    
-    // data-i18n özniteliğine sahip tüm elemanları bul
     const elements = document.querySelectorAll("[data-i18n]");
     
     elements.forEach(el => {
         const key = el.getAttribute("data-i18n");
-        if (dictionary[key]) {
-            // Eğer HTML içeriği varsa (örn: span etiketi), innerHTML kullan
-            if (dictionary[key].includes("<")) {
-                el.innerHTML = dictionary[key];
+        const translation = dictionary[key];
+
+        if (translation) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+                if (key.startsWith("placeholder_")) {
+                    el.setAttribute("placeholder", translation);
+                } else if (el.type === "submit" || el.type === "button") {
+                    el.value = translation;
+                } else {
+                    const placeholderKey = `placeholder_${key.replace('label_', '').replace('nav_', '')}`;
+                    if (dictionary[placeholderKey]) {
+                        el.setAttribute("placeholder", dictionary[placeholderKey]);
+                    }
+                }
             } else {
-                el.textContent = dictionary[key];
+                if (translation.includes("<")) {
+                    el.innerHTML = translation;
+                } else {
+                    el.textContent = translation;
+                }
             }
-        }
-        
-        // Placeholder desteği
-        if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-           const placeholderKey = `placeholder_${key.replace('label_', '').replace('nav_', '')}`;
-           if (dictionary[placeholderKey]) {
-              el.setAttribute("placeholder", dictionary[placeholderKey]);
-           }
         }
     });
 
-    // Sayfa başlığını da güncelle (isteğe bağlı)
-    // document.title = `Vocabler | ${langCode === 'tr' ? 'Dil Öğrenme' : 'Language Learning'}`;
+    document.documentElement.lang = langCode;
 }
 
-// Sayfa yüklendiğinde dil tercihini kontrol et
+function t(key) {
+    const lang = localStorage.getItem("vocabler_lang") || "tr";
+    const dictionary = translations[lang] || translations['tr'];
+    return dictionary[key] || key;
+}
+
+/**
+ * Ortak Bildirim Fonksiyonu (SweetAlert2 tabanlı)
+ */
+function showToast(message, type = "success") {
+    const isLight = document.documentElement.classList.contains("light-theme");
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      background: isLight ? "#FFFFFF" : "#1E2128",
+      color: isLight ? "#1E2128" : "#F9F9F9",
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+  
+    Toast.fire({
+      icon: type,
+      title: message,
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const savedLang = localStorage.getItem("vocabler_lang") || "tr";
     applyLanguage(savedLang);

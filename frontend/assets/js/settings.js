@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // HTML Elementlerini Yakala
     const nameInput = document.getElementById("settingsNameInput");
+    const levelInput = document.getElementById("settingsLevelInput");
     const emailInput = document.getElementById("settingsEmailInput");
     const bigAvatar = document.getElementById("settingsBigAvatar");
     const nativeLangSelect = document.getElementById("nativeLanguage");
@@ -17,13 +18,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const goalSlider = document.getElementById("goalSlider");
     const goalValue = document.getElementById("goalValue");
 
+    const profileForm = document.getElementById("profileForm");
+    const preferencesForm = document.getElementById("preferencesForm");
+
     try {
         // Sayfa yüklendiğinde mevcut dilleri backend'den canlı olarak çek
         const langRes = await fetch(`${API_BASE_URL}/languages/get_active.php`);
         const langData = await langRes.json();
         
         if (langData.status === "success") {
-            let options = '<option value="" disabled>Seçiniz</option>';
+            let options = `<option value="" disabled>${t('placeholder_select')}</option>`;
             langData.languages.forEach(lang => {
                 options += `<option value="${lang.Id}">${lang.LangName}</option>`;
             });
@@ -35,7 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const profileRes = await fetch(`${API_BASE_URL}/user/get_user_data.php`, {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}` // JWT Güvenlik biletini Header içine ekle
+                "Authorization": `Bearer ${token}`
             }
         });
         const profileData = await profileRes.json();
@@ -48,16 +52,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const lastName = user.Surname || "";
             const fullName = `${firstName} ${lastName}`.trim() || user.UserName || "Kullanıcı";
 
-            // Gelen taze verileri inputların içine yerleştir (Kullanıcı bunları güncelleyebilir)
             if (nameInput) nameInput.value = fullName;
+            if (levelInput) levelInput.value = user.Level || "A1";
             if (emailInput) emailInput.value = user.Email;
             
-            // Büyük profil fotoğrafını kullanıcı ismine göre oluştur
             if (bigAvatar) {
                 bigAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&size=80&background=00ADB5&color=222831`;
             }
 
-            // Seçim kutularını (Select) kullanıcının mevcut tercihlerine göre otomatik ayarla
             if (nativeLangSelect && user.NativeLangId) {
                 nativeLangSelect.value = user.NativeLangId;
             }
@@ -65,16 +67,82 @@ document.addEventListener("DOMContentLoaded", async () => {
                 targetLangSelect.value = user.CurrentTargetLangId;
             }
 
-            // Günlük kelime hedefi kaydırıcısını veritabanındaki değere konumlandır
             if (goalSlider && user.DailyWord) {
                 goalSlider.value = user.DailyWord;
-                if (goalValue) goalValue.innerText = `${user.DailyWord} Kelime`;
+                if (goalValue) goalValue.innerText = `${user.DailyWord} ${t('label_words')}`;
             }
-        } else {
-            console.error("Profil çekilemedi:", profileData.message);
         }
-
     } catch (error) {
-        console.error("Sunucuya bağlanırken hata oluştu:", error);
+        console.error("Yükleme hatası:", error);
+    }
+
+    // Slider değiştiğinde anlık olarak değeri güncelle
+    if (goalSlider) {
+        goalSlider.addEventListener("input", () => {
+            if (goalValue) {
+                goalValue.innerText = `${goalSlider.value} ${t('label_words')}`;
+            }
+        });
+    }
+
+    // --- Kayıt İşlemleri ---
+
+    async function updateUserData(data) {
+        try {
+            const res = await fetch(`${API_BASE_URL}/user/update_user.php`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            if (result.status === "success") {
+                showToast(t('msg_update_success'), "success");
+                // LocalStorage'daki user verisini de güncelle
+                const localUser = JSON.parse(localStorage.getItem("vocabler_user") || "{}");
+                
+                // Gelen verideki küçük harfli anahtarları veritabanı formatına (Büyük harf) çevirerek sakla
+                const updatedData = {
+                    Name: data.name || localUser.Name,
+                    Surname: data.surname || localUser.Surname,
+                    NativeLangId: data.nativeLangId || localUser.NativeLangId,
+                    CurrentTargetLangId: data.targetLangId || localUser.CurrentTargetLangId,
+                    DailyWord: data.dailyWord || localUser.DailyWord
+                };
+                
+                localStorage.setItem("vocabler_user", JSON.stringify({...localUser, ...updatedData}));
+                setTimeout(() => location.reload(), 1500); 
+            } else {
+                showToast(t('msg_update_error') + ": " + result.message, "error");
+            }
+        } catch (error) {
+            console.error("Güncelleme hatası:", error);
+            showToast(t('msg_server_error'), "error");
+        }
+    }
+
+    if (profileForm) {
+        profileForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const fullName = nameInput.value.trim();
+            const parts = fullName.split(" ");
+            const name = parts[0] || "";
+            const surname = parts.slice(1).join(" ") || "";
+            updateUserData({ name, surname });
+        });
+    }
+
+    if (preferencesForm) {
+        preferencesForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const data = {
+                nativeLangId: nativeLangSelect.value,
+                targetLangId: targetLangSelect.value,
+                dailyWord: goalSlider.value
+            };
+            updateUserData(data);
+        });
     }
 });
