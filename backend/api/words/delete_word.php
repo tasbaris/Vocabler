@@ -23,27 +23,14 @@ if (empty($input['wordId'])) {
 }
 
 try {
-    // Kelimenin kullanıcıya ait olduğunu kontrol et
-    $stmtCheck = $pdo->prepare("SELECT AddedById FROM Words WHERE Id = ?");
-    $stmtCheck->execute([$input['wordId']]);
-    $word = $stmtCheck->fetch();
+    // Kelimeyi kullanıcının kelime havuzundan (UserWords) çıkar
+    $stmt = $pdo->prepare("DELETE FROM UserWords WHERE UserId = ? AND WordId = ?");
+    $stmt->execute([$userId, $input['wordId']]);
+    
+    // Eğer kelimeyi bizzat kullanıcı oluşturmuşsa ve başka kimsede yoksa, kelimeyi Words tablosundan da silebiliriz (İsteğe bağlı temizlik).
+    // Ancak standart bir "Listeden Çıkar" mantığı için UserWords'ten silmek yeterlidir.
 
-    if (!$word) {
-        http_response_code(404);
-        exit(json_encode(['status' => 'error', 'message' => 'Kelime bulunamadı.']));
-    }
-
-    if ($word['AddedById'] != $userId) {
-        http_response_code(403);
-        exit(json_encode(['status' => 'error', 'message' => 'Sadece kendi eklediğiniz kelimeleri silebilirsiniz.']));
-    }
-
-    // ON DELETE CASCADE tanımlı olduğu için Words tablosundan silmek yeterli olacaktır.
-    // Diğer tablolardaki ilişkili veriler de silinir.
-    $stmt = $pdo->prepare("DELETE FROM Words WHERE Id = ?");
-    $stmt->execute([$input['wordId']]);
-
-    echo json_encode(['status' => 'success', 'message' => 'Kelime başarıyla silindi.']);
+    echo json_encode(['status' => 'success', 'message' => 'Kelime listenizden başarıyla çıkarıldı.']);
 } catch (\PDOException $e) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatası: ' . $e->getMessage()]);

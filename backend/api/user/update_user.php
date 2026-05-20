@@ -18,6 +18,7 @@ $allowed = [
     'name' => 'Name',
     'surname' => 'Surname',
     'dailyWord' => 'DailyWord',
+    'level' => 'Level',
     'nativeLangId' => 'NativeLangId',
     'targetLangId' => 'CurrentTargetLangId'
 ];

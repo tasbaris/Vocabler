@@ -38,6 +38,13 @@ try {
         exit(json_encode(['status' => 'error', 'message' => 'Sadece kendi eklediğiniz kelimeleri güncelleyebilirsiniz.']));
     }
 
+    // Kullanıcının dillerini al
+    $stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId FROM Users WHERE Id = ?");
+    $stmtUser->execute([$userId]);
+    $userLangs = $stmtUser->fetch();
+    $nativeLangId = $userLangs['NativeLangId'] ?? 1;
+    $targetLangId = $userLangs['CurrentTargetLangId'] ?? 2;
+
     $pdo->beginTransaction();
 
     // 1. Words tablosunu güncelle
@@ -68,7 +75,7 @@ try {
         $stmt->execute($paramsWords);
     }
 
-    // 2. WordTranslations (İngilizce & Türkçe - Level ve WordType ikisi için de ortak)
+    // 2. WordTranslations (Hedef & Ana Dil - Level ve WordType ikisi için de ortak)
     $updateTrans = [];
     $paramsTrans = [];
     if (isset($input['wordLevel'])) { $updateTrans[] = "Level = ?"; $paramsTrans[] = $input['wordLevel']; }
@@ -81,33 +88,35 @@ try {
         $stmtTrans->execute($tempParams);
     }
 
-    // İngilizce spesifik
-    if (isset($input['wordEnglish']) || isset($input['wordPronunciation'])) {
+    // Hedef Dil spesifik
+    if (isset($input['mainWord']) || isset($input['wordPronunciation'])) {
         $upEn = []; $pEn = [];
-        if (isset($input['wordEnglish'])) { $upEn[] = "Translation = ?"; $pEn[] = trim($input['wordEnglish']); }
+        if (isset($input['mainWord'])) { $upEn[] = "Translation = ?"; $pEn[] = trim($input['mainWord']); }
         if (isset($input['wordPronunciation'])) { $upEn[] = "Pronunciation = ?"; $pEn[] = $input['wordPronunciation']; }
         $pEn[] = $input['wordId'];
-        $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $upEn) . " WHERE WordId = ? AND LangId = 2")->execute($pEn);
+        $pEn[] = $targetLangId;
+        $pdo->prepare("UPDATE WordTranslations SET " . implode(", ", $upEn) . " WHERE WordId = ? AND LangId = ?")->execute($pEn);
     }
 
-    // Türkçe spesifik
-    if (isset($input['wordTurkish'])) {
-        $pdo->prepare("UPDATE WordTranslations SET Translation = ? WHERE WordId = ? AND LangId = 1")->execute([trim($input['wordTurkish']), $input['wordId']]);
+    // Ana Dil spesifik
+    if (isset($input['targetWord'])) {
+        $pdo->prepare("UPDATE WordTranslations SET Translation = ? WHERE WordId = ? AND LangId = ?")->execute([trim($input['targetWord']), $input['wordId'], $nativeLangId]);
     }
 
     // 4. WordSamples
     if (isset($input['wordSentence']) || isset($input['wordSentenceTurkish'])) {
-        $stmtCheckSample = $pdo->prepare("SELECT Id FROM WordSamples WHERE WordId = ? AND LangId = 2");
-        $stmtCheckSample->execute([$input['wordId']]);
+        $stmtCheckSample = $pdo->prepare("SELECT Id FROM WordSamples WHERE WordId = ? AND LangId = ?");
+        $stmtCheckSample->execute([$input['wordId'], $targetLangId]);
         if ($stmtCheckSample->fetch()) {
             $upSamp = []; $pSamp = [];
             if (isset($input['wordSentence'])) { $upSamp[] = "SampleText = ?"; $pSamp[] = trim($input['wordSentence']); }
             if (isset($input['wordSentenceTurkish'])) { $upSamp[] = "TranslatedText = ?"; $pSamp[] = trim($input['wordSentenceTurkish']); }
             $pSamp[] = $input['wordId'];
-            $pdo->prepare("UPDATE WordSamples SET " . implode(", ", $upSamp) . " WHERE WordId = ? AND LangId = 2")->execute($pSamp);
+            $pSamp[] = $targetLangId;
+            $pdo->prepare("UPDATE WordSamples SET " . implode(", ", $upSamp) . " WHERE WordId = ? AND LangId = ?")->execute($pSamp);
         } else {
-            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, 2, ?, ?)");
-            $stmtSample->execute([$input['wordId'], trim($input['wordSentence'] ?? ''), $input['wordSentenceTurkish'] ?? null]);
+            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?)");
+            $stmtSample->execute([$input['wordId'], $targetLangId, trim($input['wordSentence'] ?? ''), $input['wordSentenceTurkish'] ?? null]);
         }
     }
 

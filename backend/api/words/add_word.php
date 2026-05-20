@@ -40,24 +40,31 @@ try {
         $picture = $input['wordPicture'];
     }
 
+    // Kullanıcının dillerini al
+    $stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId FROM Users WHERE Id = ?");
+    $stmtUser->execute([$userId]);
+    $userLangs = $stmtUser->fetch();
+    $nativeLangId = $userLangs['NativeLangId'] ?? 1;
+    $targetLangId = $userLangs['CurrentTargetLangId'] ?? 2;
+
     // 1. Words tablosuna ekle
     $stmt = $pdo->prepare("INSERT INTO Words (CategoryId, Picture, AddedById, Active) VALUES (?, ?, ?, 1)");
     $stmt->execute([$input['wordCategory'], $picture, $userId]);
     
     $wordId = $pdo->lastInsertId();
 
-    // 2. WordTranslations tablosuna İngilizce ekle (LangId = 2)
-    $stmtEn = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 2, ?, ?, ?, ?)");
-    $stmtEn->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['mainWord']), $input['wordPronunciation'] ?? null]);
+    // 2. WordTranslations tablosuna Hedef Dil ekle
+    $stmtTarget = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmtTarget->execute([$wordId, $targetLangId, $input['wordLevel'], $input['wordType'], trim($input['mainWord']), $input['wordPronunciation'] ?? null]);
 
-    // 3. WordTranslations tablosuna Türkçe ekle (LangId = 1)
-    $stmtTr = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, 1, ?, ?, ?, ?)");
-    $stmtTr->execute([$wordId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]); 
+    // 3. WordTranslations tablosuna Ana Dil ekle
+    $stmtNative = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmtNative->execute([$wordId, $nativeLangId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]); 
 
-    // 4. Örnek cümle varsa WordSamples'a ekle (İngilizce örnek, LangId = 2)
+    // 4. Örnek cümle varsa WordSamples'a ekle (Hedef Dil örnek)
     if (!empty($input['wordSentence'])) {
-        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, 2, ?, ?)");
-        $stmtSample->execute([$wordId, trim($input['wordSentence']), $input['wordSentenceTurkish'] ?? null]);
+        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?)");
+        $stmtSample->execute([$wordId, $targetLangId, trim($input['wordSentence']), $input['wordSentenceTurkish'] ?? null]);
     }
 
     $pdo->commit();

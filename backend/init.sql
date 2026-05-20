@@ -236,8 +236,6 @@ BEGIN
     LIMIT v_DailyLimit;
 END //
 
-DELIMITER ;
-
 -- 3. Kullanıcıya Kelime Atama (Otomatik veya Kategori Bazlı)
 -- Yeni bir kategoriye başlamak veya genel kelime havuzunu genişletmek için kullanılır.
 CREATE PROCEDURE sp_AssignWordsToUser(
@@ -276,8 +274,6 @@ BEGIN
     LEFT JOIN UserWords uw ON w.Id = uw.WordId AND uw.UserId = p_UserId
     GROUP BY c.Id, c.CategoryName;
 END //
-
-DELIMITER ;
 
 -- 5. Kullanıcının Kendi Kelimesini Eklemesi
 -- Bu procedure; Words, WordTranslations (Native & Target) ve UserWords tablolarını günceller.

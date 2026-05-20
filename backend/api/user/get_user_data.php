@@ -10,7 +10,7 @@ $userId = $userData['userId'];
 try {
     // 1. Temel Profil Bilgileri
     $stmtProfile = $pdo->prepare("
-        SELECT u.Id, u.Name, u.Surname, u.Email, u.UserName, u.DailyWord, u.StreakDays,
+        SELECT u.Id, u.Name, u.Surname, u.Email, u.UserName, u.DailyWord, u.Level, u.StreakDays,
                n.LangName as NativeLanguage, t.LangName as TargetLanguage,
                u.NativeLangId, u.CurrentTargetLangId
         FROM Users u
@@ -28,10 +28,8 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'data' => [
-            'profile' => $profile,
-            'analysis' => $stats
-        ]
+        'user' => $profile,
+        'analysis' => $stats
     ]);
 } catch (\PDOException $e) {
     http_response_code(500);

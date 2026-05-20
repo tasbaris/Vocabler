@@ -48,8 +48,8 @@ try {
     $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
     // 3. Kullanıcıyı veritabanına kaydediyoruz
-    $sql = "INSERT INTO Users (Name, Surname, Email, UserName, PasswordHash, NativeLangId, CurrentTargetLangId) 
-            VALUES (:name, :surname, :email, :username, :passwordHash, :nativeLangId, :targetLangId)";
+    $sql = "INSERT INTO Users (Name, Surname, Email, UserName, PasswordHash, NativeLangId, CurrentTargetLangId, Level) 
+            VALUES (:name, :surname, :email, :username, :passwordHash, :nativeLangId, :targetLangId, :level)";
     
     $stmt = $pdo->prepare($sql);
     $result = $stmt->execute([
@@ -59,7 +59,8 @@ try {
         'username'     => $username,
         'passwordHash' => $passwordHash,
         'nativeLangId' => $nativeLangId,
-        'targetLangId' => $currentTargetLangId
+        'targetLangId' => $currentTargetLangId,
+        'level'        => $level
     ]);
 
     if ($result) {
