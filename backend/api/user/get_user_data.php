@@ -21,15 +21,23 @@ try {
     $stmtProfile->execute([$userId]);
     $profile = $stmtProfile->fetch();
 
-    // 2. Analiz Raporu (Hocanın Story 5 İsteği)
+    // 2. Analiz Raporu (Kategori bazlı)
     $stmtStats = $pdo->prepare("CALL sp_GetUserStats(:userId)");
     $stmtStats->execute(['userId' => $userId]);
     $stats = $stmtStats->fetchAll();
+    $stmtStats->closeCursor();
+
+    // 3. Genel Özet İstatistikleri (Dashboard için)
+    $stmtSummary = $pdo->prepare("CALL sp_GetDashboardSummary(?)");
+    $stmtSummary->execute([$userId]);
+    $summary = $stmtSummary->fetch();
+    $stmtSummary->closeCursor();
 
     echo json_encode([
         'status' => 'success',
         'user' => $profile,
-        'analysis' => $stats
+        'analysis' => $stats,
+        'summary' => $summary
     ]);
 } catch (\PDOException $e) {
     http_response_code(500);

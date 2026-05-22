@@ -97,5 +97,15 @@
     {"en": "Bird", "tr": "Kuş", "cat": 10, "type": "Noun", "lvl": "A1", "sentence": "The bird is flying.", "sentence_tr": "Kuş uçuyor."},
     {"en": "Fish", "tr": "Balık", "cat": 10, "type": "Noun", "lvl": "A1", "sentence": "The fish is in the water.", "sentence_tr": "Balık suyun içinde."},
     {"en": "Cat", "tr": "Kedi", "cat": 10, "type": "Noun", "lvl": "A1", "sentence": "My cat is cute.", "sentence_tr": "Kedim tatlı."},
-    {"en": "Dog", "tr": "Köpek", "cat": 10, "type": "Noun", "lvl": "A1", "sentence": "The dog is barking.", "sentence_tr": "Köpek havlıyor."}
+    {"en": "Dog", "tr": "Köpek", "cat": 10, "type": "Noun", "lvl": "A1", "sentence": "The dog is barking.", "sentence_tr": "Köpek havlıyor."},
+    {"en": "Apple", "tr": "Elma", "cat": 2, "type": "Noun", "lvl": "A1", "sentence": "I eat an apple.", "sentence_tr": "Bir elma yerim."},
+    {"en": "Table", "tr": "Masa", "cat": 2, "type": "Noun", "lvl": "A1", "sentence": "The book is on the table.", "sentence_tr": "Kitap masanın üzerinde."},
+    {"en": "Chair", "tr": "Sandalye", "cat": 2, "type": "Noun", "lvl": "A1", "sentence": "Sit on the chair.", "sentence_tr": "Sandalyeye otur."},
+    {"en": "Bread", "tr": "Ekmek", "cat": 2, "type": "Noun", "lvl": "A1", "sentence": "I like fresh bread.", "sentence_tr": "Taze ekmeği severim."},
+    {"en": "Water", "tr": "Su", "cat": 2, "type": "Noun", "lvl": "A1", "sentence": "Drink more water.", "sentence_tr": "Daha fazla su iç."},
+    {"en": "Green", "tr": "Yeşil", "cat": 1, "type": "Adjective", "lvl": "A1", "sentence": "The grass is green.", "sentence_tr": "Çim yeşildir."},
+    {"en": "Small", "tr": "Küçük", "cat": 1, "type": "Adjective", "lvl": "A1", "sentence": "It is a small house.", "sentence_tr": "Küçük bir ev."},
+    {"en": "Large", "tr": "Büyük", "cat": 1, "type": "Adjective", "lvl": "A1", "sentence": "It is a large city.", "sentence_tr": "Büyük bir şehir."},
+    {"en": "World", "tr": "Dünya", "cat": 1, "type": "Noun", "lvl": "A1", "sentence": "The world is round.", "sentence_tr": "Dünya yuvarlaktır."},
+    {"en": "House", "tr": "Ev", "cat": 1, "type": "Noun", "lvl": "A1", "sentence": "I am at home.", "sentence_tr": "Evdeyim."}
 ]

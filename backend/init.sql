@@ -213,26 +213,25 @@ BEGIN
     -- Kullanıcının günlük limitini al
     SELECT DailyWord INTO v_DailyLimit FROM Users WHERE Id = p_UserId;
 
-    -- 1. Önce tekrar zamanı gelmiş (NextReviewDate <= NOW) olanları getir
-    -- 2. Eğer limit dolmadıysa, henüz hiç başlanmamış (Status = 0) olanlardan ekle
-    
-    (SELECT uw.*, wt.Translation, wt.Level
-     FROM UserWords uw
-     JOIN WordTranslations wt ON uw.WordId = wt.WordId AND wt.LangId = uw.TargetLangId
-     WHERE uw.UserId = p_UserId 
-       AND uw.Status = 1 
-       AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL)
-     LIMIT v_DailyLimit)
-    
-    UNION
-    
-    (SELECT uw.*, wt.Translation, wt.Level
-     FROM UserWords uw
-     JOIN WordTranslations wt ON uw.WordId = wt.WordId AND wt.LangId = uw.TargetLangId
-     WHERE uw.UserId = p_UserId 
-       AND uw.Status = 0
-     LIMIT v_DailyLimit)
-    
+    -- Önce tekrar zamanı gelmiş (Status = 1 ve NextReviewDate <= NOW) olanları, 
+    -- sonra hiç başlanmamış (Status = 0) olanları getir.
+    SELECT WordId, TargetLangId, SourceLangId FROM (
+        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, 1 as Priority, uw.NextReviewDate
+         FROM UserWords uw
+         WHERE uw.UserId = p_UserId 
+           AND uw.Status = 1 
+           AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL)
+         LIMIT v_DailyLimit)
+        
+        UNION ALL
+        
+        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, 2 as Priority, uw.NextReviewDate
+         FROM UserWords uw
+         WHERE uw.UserId = p_UserId 
+           AND uw.Status = 0
+         LIMIT v_DailyLimit)
+    ) as Combined
+    ORDER BY Priority ASC, NextReviewDate ASC
     LIMIT v_DailyLimit;
 END //
 
@@ -273,6 +272,20 @@ BEGIN
     LEFT JOIN Words w ON c.Id = w.CategoryId
     LEFT JOIN UserWords uw ON w.Id = uw.WordId AND uw.UserId = p_UserId
     GROUP BY c.Id, c.CategoryName;
+END //
+
+-- 4.1 Dashboard Özet İstatistikleri
+CREATE PROCEDURE sp_GetDashboardSummary(
+    IN p_UserId INT
+)
+BEGIN
+    SELECT 
+        SUM(CASE WHEN Status = 2 THEN 1 ELSE 0 END) as MasteredCount,
+        SUM(CASE WHEN Status = 1 AND (NextReviewDate <= NOW() OR NextReviewDate IS NULL) THEN 1 ELSE 0 END) as OverdueCount,
+        SUM(CASE WHEN Status = 1 THEN 1 ELSE 0 END) as LearningCount,
+        COUNT(*) as TotalWords
+    FROM UserWords 
+    WHERE UserId = p_UserId;
 END //
 
 -- 5. Kullanıcının Kendi Kelimesini Eklemesi
