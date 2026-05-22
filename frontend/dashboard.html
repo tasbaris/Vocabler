@@ -29,40 +29,40 @@
         </div>
         
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
             <a href="dashboard.html" class="menu-item active">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span>
             </a>
             <a href="my-words.html" class="menu-item">
-                <i class="fas fa-book-open"></i> Kelimelerim
+                <i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span>
             </a>
             <a href="topics.html" class="menu-item">
-                <i class="fas fa-layer-group"></i> Konular
+                <i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
             <a href="quiz.html" class="menu-item">
-                <i class="fas fa-tasks"></i> Quiz Çöz
+                <i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span>
             </a>
             <a href="wordle.html" class="menu-item">
-                <i class="fas fa-border-all"></i> Wordle
+                <i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span>
             </a>
             <a href="wordchain.html" class="menu-item">
-                <i class="fas fa-link"></i> Kelime Zinciri
+                <i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
             <a href="settings.html" class="menu-item">
-                <i class="fas fa-cog"></i> Ayarlar
+                <i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span>
             </a>
         </div>
         
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="javascript:void(0);" onclick="logout()" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>
@@ -75,12 +75,12 @@
                 <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar">
                     <i class="fas fa-bars fs-5"></i>
                 </button>
-                <h5 class="mb-0 fw-bold d-none d-sm-block">Dashboard</h5>
+                <h5 class="mb-0 fw-bold d-none d-sm-block" data-i18n="nav_dashboard">Dashboard</h5>
             </div>
             
             <div class="d-flex align-items-center gap-3">
                 <button class="btn btn-primary btn-sm rounded-pill px-3" onclick="window.location.href='my-words.html'">
-                    <i class="fas fa-plus me-1"></i> Kelime Ekle
+                    <i class="fas fa-plus me-1"></i> <span data-i18n="label_new_word">Kelime Ekle</span>
                 </button>
                 
                 <a href="settings.html" class="profile-pill">
@@ -97,11 +97,8 @@
             <div class="custom-card mb-4" style="background: linear-gradient(135deg, rgba(0, 173, 181, 0.1) 0%, rgba(57, 62, 70, 0) 100%); border-left: 4px solid var(--accent);">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="fw-bold mb-1" id="welcomeMessage">Tekrar Hoş Geldin! 👋</h4>
-                        <p class="mb-0 small ">Bugün 15 kelime daha öğrenerek hedefine ulaşabilirsin.</p>
-                    </div>
-                    <div class="d-none d-md-block">
-                        <span class="badge bg-dark border border-secondary px-3 py-2 rounded-pill fs-6">🔥 7 Günlük Seri</span>
+                        <h4 class="fw-bold mb-1" id="welcomeMessage"><span data-i18n="msg_welcome_back">Tekrar Hoş Geldin</span>, <span class="userNameDisplay">!</span> 👋</h4>
+                        <p class="mb-0 small " data-i18n="hero_subtitle">Dil öğrenmek Vocabler ile artık daha kolay.</p>
                     </div>
                 </div>
             </div>
@@ -112,7 +109,7 @@
                     <div class="custom-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                <p class=" small mb-1">Toplam Öğrenilen</p>
+                                <p class=" small mb-1" data-i18n="dashboard_words_learned">Toplam Öğrenilen</p>
                                 <h2 class="fw-bold mb-0" id="totalLearnedCount">0</h2>
                             </div>
                             <div class="p-3 rounded-3" style="background: rgba(0, 173, 181, 0.1); color: var(--accent);">
@@ -122,7 +119,6 @@
                         <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
                             <div class="progress-bar" id="totalLearnedProgress" role="progressbar" style="width: 0%; background: var(--accent);"></div>
                         </div>
-                        <p class="small  mt-2 mb-0" id="totalLearnedSubtitle">Hedefine ulaşmak için çalışmaya devam et!</p>
                     </div>
                 </div>
                 
@@ -130,7 +126,7 @@
                     <div class="custom-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                <p class=" small mb-1">Quiz Başarısı</p>
+                                <p class=" small mb-1" data-i18n="feature_quiz_title">Quiz Başarısı</p>
                                 <h2 class="fw-bold mb-0" id="successRatePercent">%0</h2>
                             </div>
                             <div class="p-3 rounded-3" style="background: rgba(76, 175, 80, 0.1); color: #4CAF50;">
@@ -140,7 +136,6 @@
                         <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
                             <div class="progress-bar bg-success" id="successRateProgress" role="progressbar" style="width: 0%;"></div>
                         </div>
-                        <p class="small  mt-2 mb-0" id="successRateSubtitle">Son quizlerin ortalaması</p>
                     </div>
                 </div>
 
@@ -148,14 +143,14 @@
                     <div class="custom-card">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <div>
-                                <p class=" small mb-1">Tekrar Bekleyen</p>
+                                <p class=" small mb-1" data-i18n="dashboard_pending_review">Tekrar Bekleyen</p>
                                 <h2 class="fw-bold mb-0" id="pendingWordsCount">0</h2>
                             </div>
                             <div class="p-3 rounded-3" style="background: rgba(255, 211, 105, 0.1); color: #FFD369;">
                                 <i class="fas fa-clock fs-4"></i>
                             </div>
                         </div>
-                        <a href="quiz.html" class="btn btn-sm btn-secondary rounded-pill w-100 border-opacity-25 mt-1">Hemen Tekrar Et</a>
+                        <a href="quiz.html" class="btn btn-sm btn-secondary rounded-pill w-100 border-opacity-25 mt-1" data-i18n="dashboard_continue_learning">Hemen Tekrar Et</a>
                     </div>
                 </div>
             </div>
@@ -166,24 +161,24 @@
                 <div class="col-lg-8">
                     <div class="custom-card h-100">
                         <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold mb-0">Son Eklenen Kelimeler</h5>
-                            <a href="my-words.html" class="btn btn-link btn-sm text-decoration-none p-0" style="color: var(--accent);">Tümünü Gör</a>
+                            <h5 class="fw-bold mb-0" data-i18n="dashboard_recent_activity">Son Eklenen Kelimeler</h5>
+                            <a href="my-words.html" class="btn btn-link btn-sm text-decoration-none p-0" style="color: var(--accent);" data-i18n="dashboard_view_all">Tümünü Gör</a>
                         </div>
                         
                         <div class="table-responsive">
                             <table class="table table-dark table-hover mb-0" style="background: transparent;">
                                 <thead>
                                     <tr>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Kelime</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Anlamı</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Seviye</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center">Durum</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10" data-i18n="header_word">Kelime</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10" data-i18n="header_meaning">Anlamı</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center" data-i18n="header_level">Seviye</th>
+                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center" data-i18n="header_status">Durum</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recentWordsTableBody">
                                     <tr>
                                         <td colspan="4" class="text-center py-4 text-white opacity-50">
-                                            <i class="fas fa-spinner fa-spin me-2"></i>Kelimeler yükleniyor...
+                                            <i class="fas fa-spinner fa-spin me-2"></i><span data-i18n="topics_loading">Kelimeler yükleniyor...</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -195,21 +190,21 @@
                 <!-- Quick Actions -->
                 <div class="col-lg-4">
                     <div class="custom-card h-100">
-                        <h5 class="fw-bold mb-4">Hızlı Aktiviteler</h5>
+                        <h5 class="fw-bold mb-4" data-i18n="label_quick_activities">Hızlı Aktiviteler</h5>
                         
                         <div class="d-grid gap-3">
                             <button class="btn btn-outline-light border-opacity-25 d-flex align-items-center justify-content-between p-3 rounded-3 text-start" onclick="window.location.href='quiz.html'">
                                 <div>
-                                    <h6 class="mb-1 fw-bold">10 Soruluk Quiz</h6>
-                                    <p class="mb-0 small ">Öğrendiklerini test et</p>
+                                    <h6 class="mb-1 fw-bold" data-i18n="feature_quiz_title">10 Soruluk Quiz</h6>
+                                    <p class="mb-0 small " data-i18n="feature_quiz_desc">Öğrendiklerini test et</p>
                                 </div>
                                 <i class="fas fa-chevron-right "></i>
                             </button>
                             
                             <button class="btn btn-outline-light border-opacity-25 d-flex align-items-center justify-content-between p-3 rounded-3 text-start" onclick="window.location.href='wordle.html'">
                                 <div>
-                                    <h6 class="mb-1 fw-bold">Günün Wordle'ı</h6>
-                                    <p class="mb-0 small ">Kelime tahmin oyunu</p>
+                                    <h6 class="mb-1 fw-bold" data-i18n="feature_wordle_title">Günün Wordle'ı</h6>
+                                    <p class="mb-0 small " data-i18n="feature_wordle_desc">Kelime tahmin oyunu</p>
                                 </div>
                                 <i class="fas fa-chevron-right "></i>
                             </button>
@@ -233,6 +228,8 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/translations.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/dashboard.js"></script>
 </body>
 </html>

@@ -53,23 +53,40 @@
             <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
         </div>
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
-            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
-            <a href="topics.html" class="menu-item active"><i class="fas fa-layer-group"></i> Konular</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
-            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> Quiz Çöz</a>
-            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
-            <a href="wordchain.html" class="menu-item"><i class="fas fa-link"></i> Kelime Zinciri</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
-            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
+            <a href="dashboard.html" class="menu-item">
+                <i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span>
+            </a>
+            <a href="my-words.html" class="menu-item">
+                <i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span>
+            </a>
+            <a href="topics.html" class="menu-item active">
+                <i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span>
+            </a>
+            
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item">
+                <i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span>
+            </a>
+            <a href="wordle.html" class="menu-item">
+                <i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span>
+            </a>
+            <a href="wordchain.html" class="menu-item">
+                <i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span>
+            </a>
+            
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
+            <a href="settings.html" class="menu-item">
+                <i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span>
+            </a>
         </div>
+        
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="login.html" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>

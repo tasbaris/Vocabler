@@ -102,13 +102,13 @@
                             <input type="hidden" id="wordId" name="wordId" value="">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="mainWord" data-i18n="label_main_word">Ana Dil</label>
-                                    <input type="text" id="mainWord" name="mainWord" class="form-control" placeholder="Örn: Serendipity" required data-i18n="label_main_word">
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="mainWord" data-i18n="label_main_word">Kelime</label>
+                                    <input type="text" id="mainWord" name="mainWord" class="form-control" placeholder="Örn: Serendipity" required data-i18n="placeholder_main_word">
                                     <input type="hidden" name="mainLang" id="mainLang">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="targetWord" data-i18n="label_target_word">Hedef Dil</label>
-                                    <input type="text" id="targetWord" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required data-i18n="label_target_word">
+                                    <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="targetWord" data-i18n="label_target_word">Anlamı</label>
+                                    <input type="text" id="targetWord" name="targetWord" class="form-control" placeholder="Örn: Tesadüf" required data-i18n="placeholder_target_word">
                                     <input type="hidden" name="targetLang" id="targetLang">
                                 </div>
                             </div>
@@ -117,7 +117,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordType" data-i18n="label_word_type">Kelime Tipi</label>
                                     <select id="wordType" name="wordType" class="form-select" required>
-                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
+                                        <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
                                         <option value="Noun" data-i18n="word_type_noun">İsim (Noun)</option>
                                         <option value="Verb" data-i18n="word_type_verb">Fiil (Verb)</option>
                                         <option value="Adjective" data-i18n="word_type_adjective">Sıfat (Adj)</option>
@@ -135,7 +135,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordLevel" data-i18n="label_level">Zorluk Seviyesi</label>
                                     <select id="wordLevel" name="wordLevel" class="form-select" required>
-                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
+                                        <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
                                         <option value="A1">A1 - Başlangıç</option>
                                         <option value="A2">A2 - Temel</option>
                                         <option value="B1">B1 - Orta</option>
@@ -147,7 +147,7 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordCategory" data-i18n="label_category">Kategori</label>
                                     <select id="wordCategory" name="wordCategory" class="form-select" required>
-                                        <option value="" selected disabled data-i18n="inspect_btn">Seçiniz</option>
+                                        <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
                                         <option value="1">Genel</option>
                                         <option value="2">Mutfak</option>
                                         <option value="3">Seyahat</option>
@@ -158,8 +158,11 @@
 
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPicture" data-i18n="label_picture">Kelime Görseli</label>
-                                <input type="file" id="wordPicture" name="wordPicture" class="form-control" accept="image/*">
-                                <div class="form-text small opacity-50 ms-1" data-i18n="label_picture">Kelimeyi hatırlatacak bir görsel seçebilirsiniz.</div>
+                                <div class="file-input-wrapper position-relative">
+                                    <input type="file" id="wordPicture" name="wordPicture" class="form-control" accept="image/*" style="opacity: 0; position: absolute; z-index: 1;">
+                                    <button type="button" class="btn btn-outline-secondary w-100" style="pointer-events: none;" data-i18n="btn_select_picture">Görsel Seç</button>
+                                </div>
+                                <div class="form-text small opacity-50 ms-1" data-i18n="label_picture_desc">Kelimeyi hatırlatacak bir görsel seçebilirsiniz.</div>
                             </div>
 
                             <div class="mb-4">
@@ -182,7 +185,6 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="form-text small opacity-50 ms-1" data-i18n="label_example_sentences">Kelimenin kullanımına dair birden fazla örnek cümle ekleyebilirsiniz.</div>
                             </div>
 
                             <button type="submit" id="submitWordBtn" class="btn btn-primary w-100 py-2">
@@ -195,13 +197,51 @@
                 <!-- Word List -->
                 <div class="col-lg-8">
                     <div class="custom-card h-100">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-                            <h5 class="fw-bold mb-0">Kelime Havuzum</h5>
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-3">
+                            <h5 class="fw-bold mb-0" data-i18n="label_word_pool">Kelime Havuzum</h5>
                             <div class="input-group" style="max-width: 250px;">
                                 <span class="input-group-text bg-transparent border-end-0 border-white border-opacity-10 ">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <input type="text" id="wordSearchInput" class="form-control border-start-0 ps-0" placeholder="Kelime ara...">
+                                <input type="text" id="wordSearchInput" class="form-control border-start-0 ps-0" placeholder="Kelime ara..." data-i18n="placeholder_search_word">
+                            </div>
+                        </div>
+
+                        <!-- Toolbar: Bulk Actions, Filter, Sort -->
+                        <div class="toolbar-container d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2 p-2 rounded">
+                            <div class="d-flex gap-2 align-items-center">
+                                <button id="bulkDeleteBtn" class="btn btn-sm btn-outline-danger" disabled>
+                                    <i class="fas fa-trash me-1"></i> <span data-i18n="btn_delete_selected">Seçilileri Sil</span> (<span id="selectedCount">0</span>)
+                                </button>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <select id="filterType" class="form-select form-select-sm" style="min-width: 130px;">
+                                    <option value="" data-i18n="filter_all_types">Tüm Türler</option>
+                                    <option value="Noun" data-i18n="word_type_noun">İsim</option>
+                                    <option value="Verb" data-i18n="word_type_verb">Fiil</option>
+                                    <option value="Adjective" data-i18n="word_type_adjective">Sıfat</option>
+                                    <option value="Adverb" data-i18n="word_type_adverb">Zarf</option>
+                                    <option value="Conjunction" data-i18n="word_type_conjunction">Bağlaç</option>
+                                </select>
+                                <select id="filterLevel" class="form-select form-select-sm" style="min-width: 130px;">
+                                    <option value="" data-i18n="filter_all_levels">Tüm Seviyeler</option>
+                                    <option value="A1">A1</option>
+                                    <option value="A2">A2</option>
+                                    <option value="B1">B1</option>
+                                    <option value="B2">B2</option>
+                                    <option value="C1">C1</option>
+                                    <option value="C2">C2</option>
+                                </select>
+                                <select id="filterCategory" class="form-select form-select-sm" style="min-width: 150px; width: auto;">
+                                    <option value="" data-i18n="filter_all_categories">Tüm Kategoriler</option>
+                                    <!-- Kategori seçenekleri buraya dolacak -->
+                                </select>
+                                <select id="sortOptions" class="form-select form-select-sm d-none" style="min-width: 120px; width: auto;">
+                                    <option value="newest" data-i18n="sort_newest">En Yeni</option>
+                                    <option value="oldest" data-i18n="sort_oldest">En Eski</option>
+                                    <option value="a-z" data-i18n="sort_az">A-Z</option>
+                                    <option value="z-a" data-i18n="sort_za">Z-A</option>
+                                </select>
                             </div>
                         </div>
                         
@@ -209,19 +249,34 @@
                             <table class="table table-dark table-hover mb-0" style="background: transparent;">
                                 <thead>
                                     <tr>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Kelime</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Anlamı</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Tür</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Seviye</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10">Kategori</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-center">Durum</th>
-                                        <th class=" small fw-normal border-bottom border-white border-opacity-10 text-end">İşlem</th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10" style="width: 40px;">
+                                            <input class="form-check-input" type="checkbox" id="selectAllCheckbox">
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 sortable-header user-select-none" data-sort="word" style="cursor: pointer;">
+                                            <span data-i18n="header_word">Kelime</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 sortable-header user-select-none" data-sort="meaning" style="cursor: pointer;">
+                                            <span data-i18n="header_meaning">Anlamı</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 text-center sortable-header user-select-none" data-sort="type" style="cursor: pointer;">
+                                            <span data-i18n="header_type">Tür</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 text-center sortable-header user-select-none" data-sort="level" style="cursor: pointer;">
+                                            <span data-i18n="header_level">Seviye</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 text-center sortable-header user-select-none" data-sort="category" style="cursor: pointer;">
+                                            <span data-i18n="header_category">Kategori</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 text-center sortable-header user-select-none" data-sort="status" style="cursor: pointer;">
+                                            <span data-i18n="header_status">Durum</span> <i class="fas fa-sort ms-1 opacity-50 sort-icon"></i>
+                                        </th>
+                                        <th class="small fw-normal border-bottom border-white border-opacity-10 text-end" data-i18n="header_action">İşlem</th>
                                     </tr>
                                 </thead>
                                 <tbody id="wordTableBody">
                                     <!-- Veriler JavaScript ile buraya eklenecek -->
                                     <tr id="noWordsRow">
-                                        <td colspan="7" class="text-center py-5 text-white opacity-50">
+                                        <td colspan="8" class="text-center py-5 text-white opacity-50" data-i18n="msg_no_words_found">
                                             <i class="fas fa-book-open d-block mb-3 fs-1"></i>
                                             Henüz kelime eklenmemiş veya arama sonucu bulunamadı.
                                         </td>
@@ -255,6 +310,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/translations.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/words.js"></script>
 

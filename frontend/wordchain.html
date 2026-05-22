@@ -50,23 +50,23 @@
             <button class="btn btn-link text-white d-lg-none p-0" id="closeSidebar"><i class="fas fa-times"></i></button>
         </div>
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
-            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> Kelimelerim</a>
-            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> Konular</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
-            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> Quiz Çöz</a>
-            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> Wordle</a>
-            <a href="wordchain.html" class="menu-item active"><i class="fas fa-link"></i> Kelime Zinciri</a>
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
-            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> Ayarlar</a>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
+            <a href="dashboard.html" class="menu-item"><i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span></a>
+            <a href="my-words.html" class="menu-item"><i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span></a>
+            <a href="topics.html" class="menu-item"><i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span></a>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
+            <a href="quiz.html" class="menu-item"><i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span></a>
+            <a href="wordle.html" class="menu-item"><i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span></a>
+            <a href="wordchain.html" class="menu-item active"><i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span></a>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
+            <a href="settings.html" class="menu-item"><i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span></a>
         </div>
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="login.html" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>
@@ -75,26 +75,25 @@
         <header class="topbar">
             <div class="d-flex align-items-center">
                 <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar"><i class="fas fa-bars fs-5"></i></button>
-                <h5 class="mb-0 fw-bold">Kelime Zinciri</h5>
+                <h5 class="mb-0 fw-bold" data-i18n="nav_chain">Kelime Zinciri</h5>
             </div>
             <a href="settings.html" class="profile-pill">
-                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                <span class="fw-medium small d-none d-sm-inline">Nuri Çevik</span>
+                <img alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline userNameDisplay"></span>
             </a>
         </header>
 
         <div class="container-fluid p-4 text-center">
             <div class="custom-card py-5">
-                <h2 class="fw-bold mb-5">Kelime Zinciri</h2>
-                <p class=" mb-3">Son kelime:</p>
+                <h2 class="fw-bold mb-5" data-i18n="nav_chain">Kelime Zinciri</h2>
+                <p class=" mb-3" data-i18n="feature_chain_desc">Yeni kelime, önceki kelimenin son harfiyle başlamalıdır.</p>
                 <div class="word-display">BAŞLANGIÇ</div>
                 <div class="input-area mt-4">
                     <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" placeholder="Yeni kelimeyi girin...">
-                        <button class="btn btn-primary px-4">Gönder</button>
+                        <input type="text" class="form-control" placeholder="Yeni kelimeyi girin..." data-i18n="placeholder_search_word">
+                        <button class="btn btn-primary px-4" data-i18n="btn_save">Gönder</button>
                     </div>
                 </div>
-                <p class="small  mt-5"><i class="fas fa-info-circle me-1"></i> Kural: Yeni kelime, önceki kelimenin son harfiyle başlamalıdır.</p>
             </div>
         </div>
     </main>
@@ -109,5 +108,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/theme.js"></script>
+<script src="assets/js/translations.js"></script>
+<script src="assets/js/auth.js"></script>
 </body>
 </html>

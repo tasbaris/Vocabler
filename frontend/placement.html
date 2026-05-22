@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seviye Tespit Sınavı | Vocabler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body { background-color: var(--bg-dark); color: var(--text-light); display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .placement-card { background-color: var(--card-bg); border-radius: 15px; padding: 30px; width: 100%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .option-btn { margin-bottom: 10px; transition: all 0.2s; }
+        .option-btn:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="placement-card text-center" id="intro-screen">
+        <h2 class="fw-bold mb-3" style="color: var(--accent);">Seviyeni Belirleyelim</h2>
+        <p class="mb-4 text-muted">Sana en uygun kelimeleri ve soruları sunabilmemiz için kısa bir seviye tespit sınavı hazırladık.</p>
+        <button class="btn btn-primary px-5 py-2 rounded-pill fw-bold" onclick="startTest()">Sınava Başla</button>
+        <button class="btn btn-link text-muted mt-3 d-block w-100" onclick="skipTest()">Atla (A1 Seviyesinden Başla)</button>
+    </div>
+
+    <div class="placement-card d-none" id="quiz-screen">
+        <div class="d-flex justify-content-between mb-4">
+            <span class="badge bg-secondary">Soru <span id="q-num">1</span>/10</span>
+        </div>
+        <h4 class="mb-4" id="question-text">Loading...</h4>
+        <div id="options-container" class="d-flex flex-column text-start">
+            <!-- Options here -->
+        </div>
+    </div>
+
+    <div class="placement-card d-none text-center" id="result-screen">
+        <i class="fas fa-graduation-cap fa-4x mb-3" style="color: var(--accent);"></i>
+        <h2 class="fw-bold mb-2">Harika!</h2>
+        <p class="mb-4 text-muted">Seviye tespit sınavını tamamladın.</p>
+        <div class="display-1 fw-bold mb-4" style="color: var(--accent);" id="level-result">B1</div>
+        <p class="mb-4">İçeriklerin bu seviyeye göre uyarlandı.</p>
+        <button class="btn btn-primary px-5 py-2 rounded-pill fw-bold" onclick="goToDashboard()">Dashboard'a Git</button>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        const questions = [
+            { q: "I ___ a student.", opts: { A: "am", B: "is", C: "are" }, ans: "am" },
+            { q: "She ___ to school every day.", opts: { A: "go", B: "goes", C: "going" }, ans: "goes" },
+            { q: "Yesterday, we ___ a great movie.", opts: { A: "see", B: "saw", C: "seen" }, ans: "saw" },
+            { q: "If it rains, I ___ stay at home.", opts: { A: "would", B: "will", C: "am" }, ans: "will" },
+            { q: "He has been living here ___ 5 years.", opts: { A: "for", B: "since", C: "from" }, ans: "for" },
+            { q: "By this time next year, I ___ graduated.", opts: { A: "will be", B: "will have", C: "would have" }, ans: "will have" },
+            { q: "I wish I ___ more money.", opts: { A: "have", B: "had", C: "having" }, ans: "had" },
+            { q: "She asked me where ___.", opts: { A: "was I going", B: "I was going", C: "did I go" }, ans: "I was going" },
+            { q: "Not only ___ late, but he also forgot his books.", opts: { A: "he was", B: "was he", C: "is he" }, ans: "was he" },
+            { q: "Scarcely ___ started when the lights went out.", opts: { A: "we had", B: "had we", C: "did we" }, ans: "had we" }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+
+        function startTest() {
+            document.getElementById('intro-screen').classList.add('d-none');
+            document.getElementById('quiz-screen').classList.remove('d-none');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('q-num').innerText = currentQ + 1;
+            document.getElementById('question-text').innerText = q.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            for (const [key, val] of Object.entries(q.opts)) {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-outline-light option-btn text-start p-3 rounded';
+                btn.innerHTML = `<span class="fw-bold me-2">${key})</span> ${val}`;
+                btn.onclick = () => answerQuestion(val, q.ans);
+                container.appendChild(btn);
+            }
+        }
+
+        function answerQuestion(selected, correct) {
+            if (selected === correct) score++;
+            currentQ++;
+            if (currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                finishTest();
+            }
+        }
+
+        async function finishTest() {
+            const token = localStorage.getItem('vocabler_token');
+            const userId = JSON.parse(localStorage.getItem('vocabler_user') || '{}').Id;
+            
+            if(!token || !userId) {
+                skipTest();
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:8080/user/placement_test.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: userId, correctCount: score, totalQuestions: questions.length })
+                });
+                const data = await res.json();
+                
+                document.getElementById('quiz-screen').classList.add('d-none');
+                document.getElementById('result-screen').classList.remove('d-none');
+                
+                if (data.status === 'success') {
+                    document.getElementById('level-result').innerText = data.level;
+                    // Update local storage level
+                    let user = JSON.parse(localStorage.getItem('vocabler_user'));
+                    user.Level = data.level;
+                    localStorage.setItem('vocabler_user', JSON.stringify(user));
+                } else {
+                    document.getElementById('level-result').innerText = "A1";
+                }
+            } catch (e) {
+                console.error(e);
+                skipTest();
+            }
+        }
+
+        function skipTest() {
+            goToDashboard();
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

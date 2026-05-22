@@ -29,39 +29,39 @@
         </div>
         
         <div class="sidebar-menu">
-            <p class="small  fw-bold text-uppercase mb-3 px-3">Menü</p>
+            <p class="small fw-bold text-uppercase mb-3 px-3" data-i18n="nav_menu">Menü</p>
             <a href="dashboard.html" class="menu-item">
-                <i class="fas fa-home"></i> Dashboard
+                <i class="fas fa-home"></i> <span data-i18n="nav_dashboard">Dashboard</span>
             </a>
             <a href="my-words.html" class="menu-item">
-                <i class="fas fa-book-open"></i> Kelimelerim
+                <i class="fas fa-book-open"></i> <span data-i18n="nav_words">Kelimelerim</span>
             </a>
             <a href="topics.html" class="menu-item">
-                <i class="fas fa-layer-group"></i> Konular
+                <i class="fas fa-layer-group"></i> <span data-i18n="nav_topics">Konular</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Oyunlar & Testler</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_games">Oyunlar & Testler</p>
             <a href="quiz.html" class="menu-item">
-                <i class="fas fa-tasks"></i> Quiz Çöz
+                <i class="fas fa-tasks"></i> <span data-i18n="nav_quiz">Quiz Çöz</span>
             </a>
             <a href="wordle.html" class="menu-item">
-                <i class="fas fa-border-all"></i> Wordle
+                <i class="fas fa-border-all"></i> <span data-i18n="nav_wordle">Wordle</span>
             </a>
             <a href="wordchain.html" class="menu-item">
-                <i class="fas fa-link"></i> Kelime Zinciri
+                <i class="fas fa-link"></i> <span data-i18n="nav_chain">Kelime Zinciri</span>
             </a>
             
-            <p class="small  fw-bold text-uppercase mt-4 mb-3 px-3">Hesap</p>
+            <p class="small fw-bold text-uppercase mt-4 mb-3 px-3" data-i18n="nav_account">Hesap</p>
             <a href="settings.html" class="menu-item active">
-                <i class="fas fa-cog"></i> Ayarlar
+                <i class="fas fa-cog"></i> <span data-i18n="nav_settings">Ayarlar</span>
             </a>
         </div>
         <div class="sidebar-footer">
             <button class="menu-item border-0 bg-transparent w-100 theme-toggle" title="Tema Değiştir">
-                <i class="fas fa-moon"></i> Tema Değiştir
+                <i class="fas fa-moon"></i> <span data-i18n="nav_theme">Tema Değiştir</span>
             </button>
             <a href="javascript:void(0);" onclick="logout()" class="menu-item text-danger">
-                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Çıkış Yap</span>
             </a>
         </div>
     </aside>
@@ -74,12 +74,12 @@
                 <button class="btn btn-link text-white p-0 me-3 d-lg-none" id="openSidebar">
                     <i class="fas fa-bars fs-5"></i>
                 </button>
-                <h5 class="mb-0 fw-bold d-none d-sm-block">Ayarlar</h5>
+                <h5 class="mb-0 fw-bold d-none d-sm-block" data-i18n="nav_settings">Ayarlar</h5>
             </div>
             
             <a href="settings.html" class="profile-pill">
-                <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&background=00ADB5&color=222831" alt="Avatar">
-                <span class="fw-medium small d-none d-sm-inline userNameDisplay">Nuri Çevik</span>
+                <img alt="Avatar">
+                <span class="fw-medium small d-none d-sm-inline userNameDisplay"></span>
             </a>
         </header>
 
@@ -91,76 +91,78 @@
                     
                     <!-- Profile Settings -->
                     <div class="custom-card mb-4">
-                        <h5 class="fw-bold mb-4 border-bottom border-white border-opacity-10 pb-3">Profil Bilgileri</h5>
+                        <h5 class="fw-bold mb-4 border-bottom border-white border-opacity-10 pb-3" data-i18n="footer_profile">Profil Bilgileri</h5>
                         
                         <div class="d-flex align-items-center gap-4 mb-4">
                             <!--id ekledim-->
-                            <img src="https://ui-avatars.com/api/?name=Nuri+Cevik&size=80&background=00ADB5&color=222831" class="rounded-circle" alt="Avatar" id="settingsBigAvatar">
+                            <img class="rounded-circle" alt="Avatar" id="settingsBigAvatar">
                             <div>
-                                <button class="btn btn-sm btn-outline-light border-opacity-25 mb-2"><i class="fas fa-upload me-2"></i>Fotoğraf Yükle</button>
-                                <p class="small  mb-0">JPG veya PNG (Maks 2MB)</p>
+                                <button class="btn btn-sm btn-outline-light border-opacity-25 mb-2"><i class="fas fa-upload me-2"></i><span data-i18n="label_picture">Fotoğraf Yükle</span></button>
                             </div>
                         </div>
 
-                        <form>
+                        <form id="profileForm">
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2">Ad Soyad</label>
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_full_name">Ad Soyad</label>
                                     <!--id ekledim-->
-                                    <input type="text" class="form-control" value="Nuri Çevik" id="settingsNameInput">
+                                    <input type="text" class="form-control" id="settingsNameInput" name="fullName">
                                 </div>
-                                <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2">E-posta Adresi</label>
+                                <div class="col-md-3">
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_level">Seviye</label>
+                                    <input type="text" class="form-control" id="settingsLevelInput" readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_email">E-posta Adresi</label>
                                     <!--id ekledim-->
-                                    <input type="email" class="form-control" value="ornek@gmail.com" readonly id="settingsEmailInput">
+                                    <input type="email" class="form-control" readonly id="settingsEmailInput">
                                 </div>
                             </div>
                             <div class="text-end mt-4">
-                                <button type="submit" class="btn btn-primary px-4">Değişiklikleri Kaydet</button>
+                                <button type="submit" class="btn btn-primary px-4" data-i18n="btn_save">Değişiklikleri Kaydet</button>
                             </div>
                         </form>
                     </div>
 
                     <!-- Learning Preferences -->
                     <div class="custom-card mb-4">
-                        <h5 class="fw-bold mb-4 border-bottom border-white border-opacity-10 pb-3">Öğrenme Tercihleri</h5>
+                        <h5 class="fw-bold mb-4 border-bottom border-white border-opacity-10 pb-3" data-i18n="label_learning_preferences">Öğrenme Tercihleri</h5>
                         
                         <form id="preferencesForm">
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2">Ana Dil</label>
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_main_word">Ana Dil</label>
                                     <select class="form-select" id="nativeLanguage" name="nativeLanguage">
-                                        <option value="" disabled selected>Yükleniyor...</option>
+                                        <option value="" disabled selected data-i18n="topics_loading">Yükleniyor...</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2">Öğrenilen Dil</label>
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_target_word">Öğrenilen Dil</label>
                                     <select class="form-select" id="targetLanguage" name="targetLanguage">
-                                        <option value="" disabled selected>Yükleniyor...</option>
+                                        <option value="" disabled selected data-i18n="topics_loading">Yükleniyor...</option>
                                     </select>
                                 </div>
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label small opacity-50 ms-2">Günlük Hedef</label>
+                                <label class="form-label small opacity-50 ms-2" data-i18n="dashboard_daily_goal">Günlük Hedef</label>
                                 <div class="d-flex align-items-center gap-3">
-                                    <input type="range" class="form-range flex-grow-1" min="1" max="100" step="1" value="10" id="goalSlider" name="dailyGoal" oninput="document.getElementById('goalValue').innerText = this.value + ' Kelime'">
-                                    <span id="goalValue" class="badge bg-dark border border-secondary p-2">10 Kelime</span>
+                                    <input type="range" class="form-range flex-grow-1" min="1" max="100" step="1" value="10" id="goalSlider" name="dailyGoal">
+                                    <span id="goalValue" class="badge bg-dark border border-secondary p-2">10</span>
                                 </div>
-                                <div class="form-text small opacity-50 ms-2">Günde kaç yeni kelime öğrenmek istediğinizi seçin.</div>
                             </div>
 
                             <div class="text-end mt-4">
-                                <button type="submit" class="btn btn-primary px-4">Tercihleri Güncelle</button>
+                                <button type="submit" class="btn btn-primary px-4" data-i18n="btn_save">Tercihleri Güncelle</button>
                             </div>
                         </form>
                     </div>
 
                     <!-- Security -->
                     <div class="custom-card">
-                        <h5 class="fw-bold mb-4 text-danger border-bottom border-white border-opacity-10 pb-3">Güvenlik</h5>
-                        <p class="small  mb-4">Hesabınızın güvenliğini sağlamak için şifrenizi güncel tutun.</p>
-                        <button class="btn btn-outline-danger">Şifre Değiştir</button>
+                        <h5 class="fw-bold mb-4 text-danger border-bottom border-white border-opacity-10 pb-3" data-i18n="label_security">Güvenlik</h5>
+                        <p class="small  mb-4" data-i18n="security_desc">Hesabınızın güvenliğini sağlamak için şifrenizi güncel tutun.</p>
+                        <button class="btn btn-outline-danger" data-i18n="btn_change_password">Şifre Değiştir</button>
                     </div>
 
                 </div>
@@ -179,8 +181,9 @@
     if(closeBtn) closeBtn.addEventListener('click', () => sidebar.classList.remove('show'));
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="assets/js/theme.js"></script>
-<script src="assets/js/theme.js"></script>
+<script src="assets/js/translations.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/settings.js"></script>
 </body>
