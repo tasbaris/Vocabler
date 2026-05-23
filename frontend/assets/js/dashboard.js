@@ -26,47 +26,55 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             // 1. Profil ve Analiz Verileri
             const profileRes = await fetch(`${API_BASE_URL}/user/get_user_data.php`, {
-                headers: { "Authorization": `Bearer ${token}` }
+                method: 'GET',
+                cache: 'no-store',
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "X-Vocabler-Token": token
+                }
             });
             const profileData = await profileRes.json();
 
             if (profileData.status === "success") {
                 const user = profileData.user;
-                const analysis = profileData.analysis || [];
+                const summary = profileData.summary;
 
-                // Toplam Öğrenilen (Status = 2 olanlar)
-                // Analiz verisinden çekilebilir veya ayrı bir endpoint
-                let learnedCount = 0;
-                let pendingCount = 0;
-                let totalSuccess = 0;
-                let quizCount = 0;
+                // İstatistikleri Yerleştir
+                const mastered = parseInt(summary.MasteredCount) || 0;
+                const overdue = parseInt(summary.OverdueCount) || 0;
+                const total = parseInt(summary.TotalWords) || 1; // 0'a bölmeyi önle
 
-                analysis.forEach(stat => {
-                    if (stat.Status == 2) learnedCount = stat.WordCount;
-                    if (stat.Status == 1) pendingCount = stat.WordCount;
-                    // Başarı oranı hesaplama (basit örnek)
-                });
-
-                if (totalLearnedCount) totalLearnedCount.innerText = learnedCount;
-                if (totalLearnedProgress) totalLearnedProgress.style.width = Math.min((learnedCount / 100) * 100, 100) + "%";
+                if (totalLearnedCount) totalLearnedCount.innerText = mastered;
+                if (totalLearnedProgress) {
+                    const progress = (mastered / total) * 100;
+                    totalLearnedProgress.style.width = progress + "%";
+                }
                 
-                if (pendingWordsCount) pendingWordsCount.innerText = pendingCount;
+                if (pendingWordsCount) pendingWordsCount.innerText = overdue;
+
+                // Başarı Oranı (Mastered / Total)
+                const successRate = Math.round((mastered / total) * 100);
+                if (successRatePercent) successRatePercent.innerText = `%${successRate}`;
+                if (successRateProgress) successRateProgress.style.width = successRate + "%";
                 
                 // Kullanıcı seviyesini göster
                 if (user.Level) {
                     const levelSpan = document.createElement("span");
                     levelSpan.className = "badge bg-warning text-dark ms-2 align-middle";
                     levelSpan.innerText = user.Level;
-                    const welcomeMsg = document.querySelector(".userNameDisplay").parentNode;
-                    if (welcomeMsg && welcomeMsg.tagName === 'H4') {
-                        welcomeMsg.appendChild(levelSpan);
+                    const welcomeMsgHeader = document.querySelector("#welcomeMessage");
+                    if (welcomeMsgHeader) {
+                        welcomeMsgHeader.appendChild(levelSpan);
                     }
                 }
             }
 
             // 2. Son Eklenen Kelimeler
             const wordsRes = await fetch(`${API_BASE_URL}/words/get_words.php`, {
-                headers: { "Authorization": `Bearer ${token}` }
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "X-Vocabler-Token": token
+                }
             });
             const wordsData = await wordsRes.json();
 

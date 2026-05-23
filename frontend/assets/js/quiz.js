@@ -103,8 +103,23 @@ function showQuestion() {
     // UI Güncelleme
     document.getElementById("current-question-num").textContent = currentIndex + 1;
 
-    // Soru metni
-    document.getElementById("currentWord").textContent = question.QuestionText;
+    // Soru metni ve Görsel
+    const wordDisplay = document.getElementById("currentWord");
+    wordDisplay.textContent = question.QuestionText;
+    
+    // Clear previous image if exists
+    const oldImg = document.getElementById("question-image");
+    if (oldImg) oldImg.remove();
+
+    if (question.ImageUrl) {
+        const img = document.createElement("img");
+        img.id = "question-image";
+        img.src = question.ImageUrl.startsWith('http') ? question.ImageUrl : `${API_BASE_URL}/../${question.ImageUrl}`;
+        img.className = "img-fluid rounded mb-3";
+        img.style.maxHeight = "200px";
+        wordDisplay.parentNode.insertBefore(img, wordDisplay);
+    }
+
     document.getElementById("front-pronunciation").textContent = question.Pronunciation || "";
     
     const qTypes = {
@@ -127,8 +142,11 @@ function showQuestion() {
         
         // Şıklar: A, B, C, D...
         const labels = ['a', 'b', 'c', 'd', 'e', 'f'];
-        let i = 0;
-        for (const [key, value] of Object.entries(question.Options)) {
+        
+        // Ensure options is an array
+        const options = Array.isArray(question.Options) ? question.Options : Object.values(question.Options);
+
+        options.forEach((value, i) => {
             const btn = document.createElement("button");
             btn.className = "btn btn-outline-light text-start p-3 rounded-3 option-btn";
             btn.innerHTML = `<span class="fw-bold me-3 border border-secondary rounded px-2">${labels[i].toUpperCase()}</span> ${value}`;
@@ -137,8 +155,7 @@ function showQuestion() {
                 handleOptionClick(btn, value, question.CorrectAnswer);
             };
             optionsContainer.appendChild(btn);
-            i++;
-        }
+        });
     } else {
         container.classList.remove("multiple-choice-mode");
         document.getElementById("back-word").textContent = question.CorrectAnswer;

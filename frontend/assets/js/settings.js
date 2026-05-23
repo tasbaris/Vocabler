@@ -38,8 +38,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         // LocalStorage yerine doğrudan veritabanından güncel bilgileri talep et
         const profileRes = await fetch(`${API_BASE_URL}/user/get_user_data.php`, {
             method: "GET",
+            cache: "no-store",
             headers: {
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${token}`,
+                "X-Vocabler-Token": token
             }
         });
         const profileData = await profileRes.json();
