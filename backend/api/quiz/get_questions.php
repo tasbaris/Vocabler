@@ -6,21 +6,24 @@ header('Content-Type: application/json; charset=utf-8');
 
 $userData = authenticate();
 $userId = $userData['userId'];
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 
 try {
-    // 1. Get user languages
-    $stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId FROM Users WHERE Id = ?");
+    // 1. Get user languages and daily limit
+    $stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId, DailyWord FROM Users WHERE Id = ?");
     $stmtUser->execute([$userId]);
     $user = $stmtUser->fetch();
-    
+
     if (!$user) {
         echo json_encode(['status' => 'error', 'message' => 'User not found.']);
         exit;
     }
-    
+
     $nativeLangId = $user['NativeLangId'];
     $targetLangId = $user['CurrentTargetLangId'];
+    $dailyLimit = (int)$user['DailyWord'];
+
+    // Use provided limit or fallback to user's daily word setting
+    $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : $dailyLimit;
 
     // 2. Fetch words that need review according to SRS
     // sp_GetDailyWords returns words where NextReviewDate <= NOW or Status = 0
@@ -41,17 +44,22 @@ try {
     $questions = [];
     foreach ($srsWords as $row) {
         $wordId = $row['WordId'];
+        $learnRank = (int)$row['LearnRank'];
 
         // Fetch full details for the word
         $stmtDetails = $pdo->prepare("
-            SELECT w.Picture, wt_target.Translation as TargetWord, wt_native.Translation as NativeWord, wt_target.Level, wt_target.WordType
+            SELECT w.Picture, wt_target.Translation as TargetWord, wt_native.Translation as NativeWord, wt_target.Level, wt_target.WordType,
+                   (SELECT SampleText FROM WordSamples WHERE WordId = w.Id AND LangId = :tLang1 LIMIT 1) as SampleText,
+                   (SELECT TranslatedText FROM WordSamples WHERE WordId = w.Id AND LangId = :tLang2 LIMIT 1) as TranslatedText
             FROM Words w
-            INNER JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = :tLang
+            INNER JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = :tLang3
             INNER JOIN WordTranslations wt_native ON w.Id = wt_native.WordId AND wt_native.LangId = :nLang
             WHERE w.Id = :wordId
         ");
         $stmtDetails->execute([
-            'tLang' => $targetLangId,
+            'tLang1' => $targetLangId,
+            'tLang2' => $targetLangId,
+            'tLang3' => $targetLangId,
             'nLang' => $nativeLangId,
             'wordId' => $wordId
         ]);
@@ -59,19 +67,49 @@ try {
         
         if (!$word) continue;
 
-        // Create a question
-        $type = (rand(0, 1) && !empty($word['Picture'])) ? 'Image' : 'Word';
+        // LearnRank 0 veya 1 ise Flashcard, değilse Multiple Choice
+        $isFlashcard = ($learnRank <= 1);
+        $type = $isFlashcard ? 'Flashcard' : 'Multiple Choice';
 
         $questionText = "";
         $imageUrl = null;
         $correctAnswer = "";
+        $options = [];
 
-        if ($type === 'Image') {
-            $questionText = "Bu görseldeki kelime nedir?";
-            $imageUrl = $word['Picture'];
-            $correctAnswer = $word['TargetWord'];
+        if (!$isFlashcard) {
+            // Multiple Choice logic
+            $qType = (rand(0, 1) && !empty($word['Picture'])) ? 'Image' : 'Word';
+
+            if ($qType === 'Image') {
+                $questionText = "Bu görseldeki kelime nedir?";
+                $imageUrl = $word['Picture'];
+                $correctAnswer = $word['TargetWord'];
+            } else {
+                if (rand(0, 1)) {
+                    $questionText = $word['NativeWord'];
+                    $correctAnswer = $word['TargetWord'];
+                } else {
+                    $questionText = $word['TargetWord'];
+                    $correctAnswer = $word['NativeWord'];
+                }
+            }
+
+            // Get distractors
+            $stmtDist = $pdo->prepare("
+                SELECT Translation 
+                FROM WordTranslations 
+                WHERE LangId = :langId AND Translation != :correct 
+                ORDER BY RAND() 
+                LIMIT 3
+            ");
+            $distLangId = ($correctAnswer === $word['NativeWord']) ? $nativeLangId : $targetLangId;
+            $stmtDist->execute(['langId' => $distLangId, 'correct' => $correctAnswer]);
+            $distractors = $stmtDist->fetchAll(PDO::FETCH_COLUMN);
+
+            $options = array_merge([$correctAnswer], $distractors);
+            shuffle($options);
         } else {
-            // Randomly ask native -> target or target -> native
+            // Flashcard logic
             if (rand(0, 1)) {
                 $questionText = $word['NativeWord'];
                 $correctAnswer = $word['TargetWord'];
@@ -79,33 +117,21 @@ try {
                 $questionText = $word['TargetWord'];
                 $correctAnswer = $word['NativeWord'];
             }
+            $imageUrl = $word['Picture'];
         }
-
-        // Get distractors
-        $stmtDist = $pdo->prepare("
-            SELECT Translation 
-            FROM WordTranslations 
-            WHERE LangId = :langId AND Translation != :correct 
-            ORDER BY RAND() 
-            LIMIT 3
-        ");
-        $distLangId = ($correctAnswer === $word['NativeWord']) ? $nativeLangId : $targetLangId;
-        $stmtDist->execute(['langId' => $distLangId, 'correct' => $correctAnswer]);
-        $distractors = $stmtDist->fetchAll(PDO::FETCH_COLUMN);
-
-        $options = array_merge([$correctAnswer], $distractors);
-        shuffle($options);
 
         $questions[] = [
             'Id' => $wordId,
             'WordId' => $wordId,
-            'QuestionType' => 'Multiple Choice',
+            'QuestionType' => $type,
             'QuestionText' => $questionText,
             'ImageUrl' => $imageUrl,
             'Options' => $options,
             'CorrectAnswer' => $correctAnswer,
             'Level' => $word['Level'],
-            'Pronunciation' => '' // We can add this if available
+            'Explanation' => $word['SampleText'] ?: "",
+            'SampleTranslation' => $word['TranslatedText'] ?: "",
+            'Pronunciation' => '' 
         ];
 
         if (count($questions) >= $limit) break;
