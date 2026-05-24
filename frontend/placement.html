@@ -16,9 +16,9 @@
 <body>
     <div class="placement-card text-center" id="intro-screen">
         <h2 class="fw-bold mb-3" style="color: var(--accent);">Seviyeni Belirleyelim</h2>
-        <p class="mb-4 text-muted">Sana en uygun kelimeleri ve soruları sunabilmemiz için kısa bir seviye tespit sınavı hazırladık.</p>
+        <p class="mb-4 opacity-50">Sana en uygun kelimeleri ve soruları sunabilmemiz için kısa bir seviye tespit sınavı hazırladık.</p>
         <button class="btn btn-primary px-5 py-2 rounded-pill fw-bold" onclick="startTest()">Sınava Başla</button>
-        <button class="btn btn-link text-muted mt-3 d-block w-100" onclick="skipTest()">Atla (A1 Seviyesinden Başla)</button>
+        <button class="btn btn-link opacity-50 mt-3 d-block w-100" onclick="skipTest()">Atla (A1 Seviyesinden Başla)</button>
     </div>
 
     <div class="placement-card d-none" id="quiz-screen">
@@ -34,7 +34,7 @@
     <div class="placement-card d-none text-center" id="result-screen">
         <i class="fas fa-graduation-cap fa-4x mb-3" style="color: var(--accent);"></i>
         <h2 class="fw-bold mb-2">Harika!</h2>
-        <p class="mb-4 text-muted">Seviye tespit sınavını tamamladın.</p>
+        <p class="mb-4 opacity-50">Seviye tespit sınavını tamamladın.</p>
         <div class="display-1 fw-bold mb-4" style="color: var(--accent);" id="level-result">B1</div>
         <p class="mb-4">İçeriklerin bu seviyeye göre uyarlandı.</p>
         <button class="btn btn-primary px-5 py-2 rounded-pill fw-bold" onclick="goToDashboard()">Dashboard'a Git</button>

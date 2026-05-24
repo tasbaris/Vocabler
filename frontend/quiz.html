@@ -208,10 +208,10 @@
             <!-- Quiz Area (Hidden by default) -->
             <div id="quiz-area" class="quiz-card d-none">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="badge bg-dark px-3 py-2 border border-secondary text-white-50">
+                    <div class="badge bg-dark px-3 py-2 border border-secondary opacity-50">
                         <span data-i18n="quiz_question">Soru</span> <span id="current-question-num">0</span> / <span id="total-questions-num">0</span>
                     </div>
-                    <div class="badge bg-dark px-3 py-2 border border-secondary text-white-50">
+                    <div class="badge bg-dark px-3 py-2 border border-secondary opacity-50">
                         <span data-i18n="total_words">Toplam Kelime:</span> <span id="total-words-count">0</span>
                     </div>
                 </div>
@@ -226,13 +226,19 @@
                             </div>
                             <h3 id="currentWord" class="fw-bold mb-2">Word</h3>
                             <p id="front-pronunciation" class="text-accent mb-2 small">/pronunciation/</p>
-                            <span id="front-type-level" class="badge bg-white bg-opacity-10 text-white-50 border border-white border-opacity-10">Type / Level</span>
+                            <span id="front-type-level" class="badge bg-secondary bg-opacity-10 opacity-75 border border-secondary border-opacity-10">Type / Level</span>
+                            
+                            <!-- Multiple Choice için İpucu Alanı -->
+                            <div id="mc-hint-area" class="mt-4 p-3 rounded bg-secondary bg-opacity-10 w-100 text-start d-none">
+                                <p class="small text-accent fw-bold mb-1" data-i18n="quiz_sample_sentence">Örnek Cümle:</p>
+                                <p id="hint-sentence" class="mb-0 italic small">...</p>
+                            </div>
                         </div>
                         <!-- Arka Yüz -->
                         <div class="flashcard-back">
                             <p class="small text-accent fw-bold mb-1" data-i18n="quiz_meaning">Anlam</p>
                             <h2 id="back-word" class="fw-bold mb-4">...</h2>
-                            <div class="p-3 rounded bg-opacity-5 w-100 text-start" style="background-color: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);">
+                            <div class="p-3 rounded bg-secondary bg-opacity-10 w-100 text-start border border-secondary border-opacity-10">
                                 <p class="small text-accent fw-bold mb-1" data-i18n="quiz_sample_sentence">Örnek Cümle:</p>
                                 <p id="back-sentence" class="mb-2 italic">...</p>
                                 <p id="back-translation" class="small opacity-50">...</p>
@@ -243,13 +249,13 @@
 
                 <!-- Kontrol Butonları -->
                 <div class="d-flex gap-3 d-none" id="flashcard-controls">
-                    <button id="btnUnknown" class="btn btn-wrong flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                    <button id="btnUnknown" class="btn btn-wrong flex-fill py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center">
                         <i class="fas fa-times-circle me-2"></i> <span data-i18n="quiz_wrong_btn">Bilemedim</span>
                     </button>
-                    <button id="flip-card-btn" class="btn btn-outline-light border-opacity-25 flex-fill py-3 rounded-pill fw-bold">
+                    <button id="flip-card-btn" class="btn btn-outline-light border-opacity-25 flex-fill py-3 rounded-pill fw-bold d-flex align-items-center justify-content-center">
                         <i class="fas fa-sync-alt me-2"></i> <span data-i18n="quiz_flip_btn">Kartı Çevir</span>
                     </button>
-                    <button id="btnKnown" class="btn btn-correct flex-fill py-3 rounded-pill fw-bold shadow-sm">
+                    <button id="btnKnown" class="btn btn-correct flex-fill py-3 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center">
                         <i class="fas fa-check-circle me-2"></i> <span data-i18n="quiz_correct_btn">Doğru Bildim</span>
                     </button>
                 </div>
@@ -279,8 +285,8 @@
                 </div>
 
                 <div class="d-grid gap-2 px-5">
-                    <button class="btn btn-primary rounded-pill py-3 fw-bold text-dark" onclick="location.reload()" data-i18n="quiz_try_again">Tekrar Çöz</button>
-                    <a href="dashboard.html" class="btn btn-outline-light border-opacity-25 rounded-pill py-3 fw-bold" data-i18n="quiz_back_home">Dashboard'a Dön</a>
+                    <button class="btn btn-primary rounded-pill py-3 fw-bold d-flex align-items-center justify-content-center" onclick="location.reload()" data-i18n="quiz_try_again">Tekrar Çöz</button>
+                    <a href="dashboard.html" class="btn btn-outline-light border-opacity-25 rounded-pill py-3 fw-bold d-flex align-items-center justify-content-center" data-i18n="quiz_back_home">Dashboard'a Dön</a>
                 </div>
             </div>
         </div>

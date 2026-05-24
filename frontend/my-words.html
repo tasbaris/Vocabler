@@ -158,9 +158,13 @@
 
                             <div class="mb-3">
                                 <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPicture" data-i18n="label_picture">Kelime Görseli</label>
-                                <div class="file-input-wrapper position-relative">
+                                <div class="file-input-wrapper position-relative mb-2">
                                     <input type="file" id="wordPicture" name="wordPicture" class="form-control" accept="image/*" style="opacity: 0; position: absolute; z-index: 1;">
-                                    <button type="button" class="btn btn-outline-secondary w-100" style="pointer-events: none;" data-i18n="btn_select_picture">Görsel Seç</button>
+                                    <button type="button" id="selectPictureBtn" class="btn btn-outline-secondary w-100" style="pointer-events: none;" data-i18n="btn_select_picture">Görsel Seç</button>
+                                </div>
+                                <div id="picturePreviewContainer" class="d-none mb-2 text-center">
+                                    <img id="picturePreview" src="" class="img-thumbnail" style="max-height: 150px;">
+                                    <button type="button" id="removePictureBtn" class="btn btn-sm btn-link text-danger d-block mx-auto mt-1"><i class="fas fa-times me-1"></i>Kaldır</button>
                                 </div>
                                 <div class="form-text small opacity-50 ms-1" data-i18n="label_picture_desc">Kelimeyi hatırlatacak bir görsel seçebilirsiniz.</div>
                             </div>
@@ -276,7 +280,7 @@
                                 <tbody id="wordTableBody">
                                     <!-- Veriler JavaScript ile buraya eklenecek -->
                                     <tr id="noWordsRow">
-                                        <td colspan="8" class="text-center py-5 text-white opacity-50" data-i18n="msg_no_words_found">
+                                        <td colspan="8" class="text-center py-5 opacity-50" data-i18n="msg_no_words_found">
                                             <i class="fas fa-book-open d-block mb-3 fs-1"></i>
                                             Henüz kelime eklenmemiş veya arama sonucu bulunamadı.
                                         </td>

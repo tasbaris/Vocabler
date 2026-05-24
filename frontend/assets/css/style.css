@@ -195,6 +195,45 @@
     color: var(--accent);
 }
 
+/* Quiz Page Light Mode Fixes */
+#front-type-level {
+    transition: all 0.3s ease;
+}
+
+.light-theme #front-type-level {
+    background-color: #E0F2F1 !important;
+    color: #00796B !important;
+    border-color: #B2DFDB !important;
+    opacity: 1 !important;
+    font-weight: 600;
+}
+
+.light-theme #mc-hint-area,
+.light-theme .flashcard-back .bg-secondary.bg-opacity-10 {
+    background-color: #F8F9FA !important;
+    border: 1px solid #E2E8F0 !important;
+}
+
+.light-theme #hint-sentence,
+.light-theme #back-sentence {
+    color: #1E2128 !important;
+    opacity: 1 !important;
+}
+
+.light-theme #back-translation {
+    color: #64748B !important;
+    opacity: 0.8 !important;
+}
+
+/* Quiz Dark Mode Contrast Fixes */
+#hint-sentence, #back-sentence {
+    color: var(--text) !important;
+    opacity: 1 !important;
+}
+
+#back-translation {
+    opacity: 0.5 !important;
+}
 
 /* Checkbox Styling */
 .form-check-input {
@@ -237,6 +276,10 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+}
+
 .toolbar-container {
     background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
@@ -258,7 +301,8 @@ body {
 }
 
 .light-theme .menu-item {
-    color: #64748B;
+    color: var(--text);
+    opacity: 0.6;
 }
 
 .light-theme .custom-card {
@@ -458,6 +502,35 @@ body {
     opacity: 1; /* Firefox fix */
 }
 
+/* Dark Mode Readability Fixes */
+.form-text.opacity-50 {
+    opacity: 0.5 !important;
+}
+
+.sentence-item {
+    transition: all 0.2s ease;
+}
+
+.light-theme .sentence-item {
+    background-color: #F8F9FA !important;
+    border-color: #E2E8F0 !important;
+}
+
+#sentenceList .italic {
+    color: var(--text) !important;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+#noSentencesMsg.opacity-50 {
+    opacity: 0.7 !important;
+}
+
+/* Custom SweetAlert2 Toast Z-Index */
+.swal2-container {
+    z-index: 9999 !important;
+}
+
 /* File Input Styling */
 .form-control[type="file"] {
     color: transparent;
@@ -606,7 +679,7 @@ body {
     flex-direction: column;
     position: fixed;
     height: 100vh;
-    z-index: 1000;
+    z-index: 1200;
 }
 
 .sidebar-header {
@@ -624,7 +697,8 @@ body {
     display: flex;
     align-items: center;
     padding: 14px 18px;
-    color: var(--text-muted);
+    color: var(--text);
+    opacity: 0.6;
     text-decoration: none;
     border-radius: 16px;
     margin-bottom: 8px;
@@ -665,7 +739,7 @@ body {
     padding: 0 40px;
     position: sticky;
     top: 0;
-    z-index: 999;
+    z-index: 1100;
 }
 
 @media (max-width: 992px) {

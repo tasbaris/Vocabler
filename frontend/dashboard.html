@@ -104,45 +104,53 @@
             </div>
 
             <!-- Stats Row -->
-            <div class="row g-4 mb-4">
+            <div class="row g-3 mb-4">
+                <!-- Toplam Öğrenilen -->
                 <div class="col-md-4">
-                    <div class="custom-card">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="custom-card h-100 p-3 d-flex flex-column justify-content-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class=" small mb-1" data-i18n="dashboard_words_learned">Toplam Öğrenilen</p>
-                                <h2 class="fw-bold mb-0" id="totalLearnedCount">0</h2>
+                                <p class="small mb-0 opacity-50 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;" data-i18n="dashboard_words_learned">Toplam Öğrenilen</p>
+                                <h3 class="fw-bold mb-0" id="totalLearnedCount">0</h3>
                             </div>
-                            <div class="p-3 rounded-3" style="background: rgba(0, 173, 181, 0.1); color: var(--accent);">
-                                <i class="fas fa-book fs-4"></i>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: rgba(0, 173, 181, 0.1); color: var(--accent);">
+                                <i class="fas fa-book small" style="font-size: 0.8rem;"></i>
                             </div>
                         </div>
+                    </div>
+                </div>
 
+                <!-- Günün Görevi -->
+                <div class="col-md-4">
+                    <div class="custom-card h-100 p-3 d-flex flex-column justify-content-center">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <p class="small mb-0 opacity-50 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;" data-i18n="dashboard_daily_mission">Günün Görevi</p>
+                                <h3 class="fw-bold mb-0" id="dailyGoalCount">0%</h3>
+                            </div>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: rgba(108, 92, 231, 0.1); color: #6c5ce7;">
+                                <i class="fas fa-bullseye small" style="font-size: 0.8rem;"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <div id="dailyGoalDetails" class="opacity-50 mb-1" style="font-size: 0.6rem;">&nbsp;</div>
+                            <div class="progress" style="height: 3px; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                                <div id="dailyGoalProgress" class="progress-bar" style="width: 0%; background: #6c5ce7; border-radius: 10px;"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
+                <!-- Öğrenme Serisi -->
                 <div class="col-md-4">
-                    <div class="custom-card">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="custom-card h-100 p-3 d-flex flex-column justify-content-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class=" small mb-1" data-i18n="dashboard_streak">Öğrenme Serisi</p>
-                                <h2 class="fw-bold mb-0" id="streakCount">0 Gün</h2>
+                                <p class="small mb-0 opacity-50 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;" data-i18n="dashboard_streak">Öğrenme Serisi</p>
+                                <h3 class="fw-bold mb-0" id="streakCount">0 Gün</h3>
                             </div>
-                            <div class="p-3 rounded-3" style="background: rgba(255, 165, 2, 0.1); color: #ffa502;">
-                                <i class="fas fa-fire fs-4"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="custom-card">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <p class=" small mb-1" data-i18n="dashboard_pending_review">Tekrar Bekleyen</p>
-                                <h2 class="fw-bold mb-0" id="pendingWordsCount">0</h2>
-                            </div>
-                            <div class="p-3 rounded-3" style="background: rgba(255, 211, 105, 0.1); color: #FFD369;">
-                                <i class="fas fa-clock fs-4"></i>
+                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: rgba(255, 165, 2, 0.1); color: #ffa502;">
+                                <i class="fas fa-fire small" style="font-size: 0.8rem;"></i>
                             </div>
                         </div>
                     </div>
@@ -171,7 +179,7 @@
                                 </thead>
                                 <tbody id="recentWordsTableBody">
                                     <tr>
-                                        <td colspan="4" class="text-center py-4 text-white opacity-50">
+                                        <td colspan="4" class="text-center py-4 opacity-50">
                                             <i class="fas fa-spinner fa-spin me-2"></i><span data-i18n="topics_loading">Kelimeler yükleniyor...</span>
                                         </td>
                                     </tr>
