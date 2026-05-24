@@ -26,9 +26,11 @@ CREATE TABLE IF NOT EXISTS Users (
     UserName VARCHAR(50) NOT NULL UNIQUE,
     PasswordHash VARCHAR(255) NOT NULL,
     DailyWord INT NOT NULL DEFAULT 10,
+    Level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2') DEFAULT 'A1',
     NativeLangId INT,
     CurrentTargetLangId INT,
     StreakDays INT DEFAULT 0,
+    LastActivityDate DATE DEFAULT NULL,
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     Active TINYINT DEFAULT 1,
     FOREIGN KEY (NativeLangId) REFERENCES Languages(Id) ON DELETE SET NULL,
@@ -161,11 +163,15 @@ BEGIN
     DECLARE v_CurrentRank TINYINT;
     DECLARE v_Interval INT;
     DECLARE v_Status TINYINT;
+    DECLARE v_LastActivity DATE;
+    DECLARE v_CurrentStreak INT;
 
+    -- 1. Get current word status
     SELECT LearnRank, Status INTO v_CurrentRank, v_Status
     FROM UserWords 
     WHERE UserId = p_UserId AND WordId = p_WordId;
 
+    -- 2. Handle Correct/Incorrect Answer Logic
     IF p_IsCorrect = 1 THEN
         SET v_CurrentRank = v_CurrentRank + 1;
         SET v_Status = 1;
@@ -181,12 +187,26 @@ BEGIN
                 SET v_Interval = 0;
                 SET v_Status = 2;
         END CASE;
+
+        -- 3. Streak Logic: Only increment on first correct answer of the day
+        SELECT StreakDays, LastActivityDate INTO v_CurrentStreak, v_LastActivity FROM Users WHERE Id = p_UserId;
+        
+        IF v_LastActivity IS NULL OR v_LastActivity < CURDATE() THEN
+            IF v_LastActivity = DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN
+                -- Continued streak
+                UPDATE Users SET StreakDays = StreakDays + 1, LastActivityDate = CURDATE() WHERE Id = p_UserId;
+            ELSE
+                -- New streak or broken streak
+                UPDATE Users SET StreakDays = 1, LastActivityDate = CURDATE() WHERE Id = p_UserId;
+            END IF;
+        END IF;
     ELSE
         SET v_CurrentRank = 0;
         SET v_Interval = 0;
         SET v_Status = 1;
     END IF;
 
+    -- 4. Update Word Status
     UPDATE UserWords 
     SET LearnRank = v_CurrentRank,
         Status = v_Status,

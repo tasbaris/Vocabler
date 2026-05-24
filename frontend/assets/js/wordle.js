@@ -29,18 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateTitleWithHint();
                 initGrid();
             } else {
-                showMessage("Kelime yüklenemedi: " + data.message, "danger");
+                showMessage(t('wordle_load_error') + ": " + data.message, "danger");
             }
         } catch (error) {
             console.error("Fetch error:", error);
-            showMessage("Sunucu hatası!", "danger");
+            showMessage(t('msg_connection_error'), "danger");
         }
     }
 
     function updateTitleWithHint() {
         const titleElem = document.querySelector('[data-i18n="feature_wordle_desc"]');
         if (titleElem) {
-            titleElem.textContent = `İpucu: ${wordHint}`;
+            titleElem.textContent = `${t('wordle_hint')}: ${wordHint}`;
         }
     }
 
@@ -122,10 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (currentGuess === targetWord) {
             gameOver = true;
-            setTimeout(() => showMessage("Tebrikler! Bildiniz. 🎉", "success"), wordLength * 100);
+            setTimeout(() => showMessage(t('wordle_success'), "success"), wordLength * 100);
         } else if (guesses.length === maxGuesses) {
             gameOver = true;
-            setTimeout(() => showMessage(`Kaybettiniz! Kelime: ${targetWord}`, "danger"), wordLength * 100);
+            setTimeout(() => showMessage(`${t('wordle_fail')}: ${targetWord}`, "danger"), wordLength * 100);
         }
 
         currentGuess = "";
