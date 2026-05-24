@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS PasswordResets (
     FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- BAŞLANGIÇ VERİLERİ (Opsiyonel)
+-- BAŞLANGIÇ VERİLERİ
 INSERT IGNORE INTO Languages (Id, LangCode, LangName,Active) VALUES 
 (1, 'tr', 'Turkish', 1),
 (2, 'en', 'English', 1),
@@ -143,19 +143,15 @@ INSERT IGNORE INTO Categories (Id, CategoryName) VALUES
 (9, 'Entertainment'),
 (10, 'Nature');
 
--- HERKES ICIN TEST KULLANICISI (Sifre: password123)
+-- TEST KULLANICISI (Sifre: password123)
 INSERT IGNORE INTO Users (Id, Name, Surname, Email, UserName, PasswordHash, DailyWord, NativeLangId, CurrentTargetLangId, Active) VALUES 
 (1, 'Test', 'Kullanıcısı', 'test@vocabler.com', 'testuser', '$2y$10$n4qGfJ4E3y.i0/bF30Z/hOcYvOOMHhQ8RInJz/q3bQWzK7QyqFw8q', 10, 1, 2, 1);
 
 CREATE INDEX idx_user_review ON UserWords (UserId, Status, NextReviewDate);
 
--- ==========================================================
--- SRS (Spaced Repetition System) MANTIĞI VE STORED PROCEDURES
--- ==========================================================
-
 DELIMITER //
 
--- 1. Kelime İlerleme Güncelleme (Hocanın Story 3 Algoritması)
+-- 1. Kelime İlerleme Güncelleme
 CREATE PROCEDURE sp_UpdateWordProgress(
     IN p_UserId INT,
     IN p_WordId INT,
@@ -171,26 +167,23 @@ BEGIN
     WHERE UserId = p_UserId AND WordId = p_WordId;
 
     IF p_IsCorrect = 1 THEN
-        -- DOĞRU CEVAP: Rank artır
         SET v_CurrentRank = v_CurrentRank + 1;
-        SET v_Status = 1; -- Öğreniliyor
+        SET v_Status = 1;
         
-        -- Hocanın İstediği Aralıklar: 1 gün, 1 hafta, 1 ay, 3 ay, 6 ay, 1 yıl
         CASE v_CurrentRank
-            WHEN 1 THEN SET v_Interval = 1;   -- 1 Gün
-            WHEN 2 THEN SET v_Interval = 7;   -- 1 Hafta
-            WHEN 3 THEN SET v_Interval = 30;  -- 1 Ay
-            WHEN 4 THEN SET v_Interval = 90;  -- 3 Ay
-            WHEN 5 THEN SET v_Interval = 180; -- 6 Ay
-            WHEN 6 THEN SET v_Interval = 365; -- 1 Yıl
+            WHEN 1 THEN SET v_Interval = 1;
+            WHEN 2 THEN SET v_Interval = 7;
+            WHEN 3 THEN SET v_Interval = 30;
+            WHEN 4 THEN SET v_Interval = 90;
+            WHEN 5 THEN SET v_Interval = 180;
+            WHEN 6 THEN SET v_Interval = 365;
             ELSE 
                 SET v_Interval = 0;
-                SET v_Status = 2; -- 6 Sefer bilindi: BİLİNEN HAVUZUNA TAŞI (Story 3 son cümle)
+                SET v_Status = 2;
         END CASE;
     ELSE
-        -- YANLIŞ CEVAP: Süreç başa döner (Story 3: "Süreç o soru için başa döner")
         SET v_CurrentRank = 0;
-        SET v_Interval = 0; -- Hemen tekrar sorulabilir veya yarın
+        SET v_Interval = 0;
         SET v_Status = 1;
     END IF;
 
@@ -202,41 +195,30 @@ BEGIN
     WHERE UserId = p_UserId AND WordId = p_WordId;
 END //
 
--- 2. Günlük Kelime Listesi Getirme
--- Kullanıcının DailyWord limitine göre; hem tekrar etmesi gerekenleri hem de yeni kelimeleri getirir.
+-- 2. Günlük Kelime Listesi Getirme (LearnRank Dahil)
 CREATE PROCEDURE sp_GetDailyWords(
     IN p_UserId INT
 )
 BEGIN
     DECLARE v_DailyLimit INT;
-    
-    -- Kullanıcının günlük limitini al
     SELECT DailyWord INTO v_DailyLimit FROM Users WHERE Id = p_UserId;
 
-    -- Önce tekrar zamanı gelmiş (Status = 1 ve NextReviewDate <= NOW) olanları, 
-    -- sonra hiç başlanmamış (Status = 0) olanları getir.
     SELECT WordId, TargetLangId, SourceLangId, LearnRank FROM (
         (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 1 as Priority, uw.NextReviewDate
          FROM UserWords uw
-         WHERE uw.UserId = p_UserId 
-           AND uw.Status = 1 
-           AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL)
+         WHERE uw.UserId = p_UserId AND uw.Status = 1 AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL)
          LIMIT v_DailyLimit)
-        
         UNION ALL
-        
         (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 2 as Priority, uw.NextReviewDate
          FROM UserWords uw
-         WHERE uw.UserId = p_UserId 
-           AND uw.Status = 0
+         WHERE uw.UserId = p_UserId AND uw.Status = 0
          LIMIT v_DailyLimit)
     ) as Combined
     ORDER BY Priority ASC, NextReviewDate ASC
     LIMIT v_DailyLimit;
 END //
 
--- 3. Kullanıcıya Kelime Atama (Otomatik veya Kategori Bazlı)
--- Yeni bir kategoriye başlamak veya genel kelime havuzunu genişletmek için kullanılır.
+-- 3. Kullanıcıya Kelime Atama
 CREATE PROCEDURE sp_AssignWordsToUser(
     IN p_UserId INT,
     IN p_CategoryId INT,
@@ -245,7 +227,6 @@ CREATE PROCEDURE sp_AssignWordsToUser(
 )
 BEGIN
     DECLARE v_NativeLangId INT;
-    
     SELECT NativeLangId INTO v_NativeLangId FROM Users WHERE Id = p_UserId;
 
     INSERT IGNORE INTO UserWords (UserId, SourceLangId, TargetLangId, WordId, Status)
@@ -257,12 +238,11 @@ BEGIN
     LIMIT p_Limit;
 END //
 
--- 4. Kategori Bazlı Analiz Raporu (Hocanın Story 5 İsteği)
+-- 4. Kategori Bazlı Analiz Raporu
 CREATE PROCEDURE sp_GetUserStats(
     IN p_UserId INT
 )
 BEGIN
-    -- Hem genel aşama sayılarını hem de kategori bazlı başarıyı döner
     SELECT 
         c.CategoryName,
         COUNT(uw.Id) as TotalWords,
@@ -289,11 +269,10 @@ BEGIN
 END //
 
 -- 5. Kullanıcının Kendi Kelimesini Eklemesi
--- Bu procedure; Words, WordTranslations (Native & Target) ve UserWords tablolarını günceller.
 CREATE PROCEDURE sp_AddUserWord(
     IN p_UserId INT,
-    IN p_TargetTranslation VARCHAR(255), -- Hedef dildeki kelime (örn: Apple)
-    IN p_NativeTranslation VARCHAR(255), -- Ana dildeki karşılığı (örn: Elma)
+    IN p_TargetTranslation VARCHAR(255),
+    IN p_NativeTranslation VARCHAR(255),
     IN p_Level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'),
     IN p_CategoryId INT,
     IN p_WordType VARCHAR(20)
@@ -303,31 +282,26 @@ BEGIN
     DECLARE v_TargetLangId INT;
     DECLARE v_WordId INT;
 
-    -- Kullanıcının dillerini al
     SELECT NativeLangId, CurrentTargetLangId INTO v_NativeLangId, v_TargetLangId 
     FROM Users WHERE Id = p_UserId;
 
-    -- 1. Words tablosuna ekle
     INSERT INTO Words (CategoryId, AddedById, Active) 
     VALUES (p_CategoryId, p_UserId, 1);
     SET v_WordId = LAST_INSERT_ID();
 
-    -- 2. Hedef Dil Çevirisi (Target)
     INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
     VALUES (v_WordId, v_TargetLangId, p_Level, p_WordType, p_TargetTranslation);
 
-    -- 3. Ana Dil Çevirisi (Native)
     INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
     VALUES (v_WordId, v_NativeLangId, p_Level, p_WordType, p_NativeTranslation);
 
-    -- 4. Kullanıcının öğrenme listesine (UserWords) ekle (Hemen başlasın)
     INSERT INTO UserWords (UserId, SourceLangId, TargetLangId, WordId, Status, NextReviewDate)
     VALUES (p_UserId, v_NativeLangId, v_TargetLangId, v_WordId, 1, NOW());
 
     SELECT v_WordId as WordId;
 END //
 
--- 5.1 Örnek Cümle Ekleme Procedure'ü
+-- 5.1 Örnek Cümle Ekleme
 CREATE PROCEDURE sp_AddWordSample(
     IN p_WordId INT,
     IN p_LangId INT,
@@ -339,8 +313,46 @@ BEGIN
     VALUES (p_WordId, p_LangId, p_SampleText, p_TranslatedText);
 END //
 
--- 6. Anlık/Direkt Test (Custom Quiz)
--- Kullanıcı SRS beklemeden belirli kategori veya seviyeden test olmak isterse.
+-- 5.2 Sisteme Genel Kelime Ekleme (Admin/Toplu Ekleme İçin)
+CREATE PROCEDURE sp_AddGlobalWord(
+    IN p_TargetTranslation VARCHAR(255),
+    IN p_NativeTranslation VARCHAR(255),
+    IN p_Level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'),
+    IN p_CategoryId INT,
+    IN p_WordType VARCHAR(20),
+    IN p_SampleText VARCHAR(255),
+    IN p_SampleTranslation VARCHAR(255)
+)
+BEGIN
+    DECLARE v_WordId INT;
+    DECLARE v_TR_Id INT DEFAULT 1;
+    DECLARE v_EN_Id INT DEFAULT 2;
+    DECLARE v_Exists INT;
+
+    SELECT w.Id INTO v_Exists
+    FROM Words w
+    JOIN WordTranslations wt ON w.Id = wt.WordId
+    WHERE wt.Translation = p_TargetTranslation AND wt.LangId = v_EN_Id AND w.AddedById IS NULL
+    LIMIT 1;
+
+    IF v_Exists IS NULL THEN
+        INSERT INTO Words (CategoryId, AddedById, Active) VALUES (p_CategoryId, NULL, 1);
+        SET v_WordId = LAST_INSERT_ID();
+        INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
+        VALUES (v_WordId, v_EN_Id, p_Level, p_WordType, p_TargetTranslation);
+        INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
+        VALUES (v_WordId, v_TR_Id, p_Level, p_WordType, p_NativeTranslation);
+        IF p_SampleText IS NOT NULL THEN
+            INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText)
+            VALUES (v_WordId, v_EN_Id, p_SampleText, p_SampleTranslation);
+        END IF;
+    ELSE
+        SET v_WordId = v_Exists;
+    END IF;
+    SELECT v_WordId as WordId;
+END //
+
+-- 6. Custom Quiz (TranslatedText Dahil)
 CREATE PROCEDURE sp_GetCustomQuiz(
     IN p_UserId INT,
     IN p_CategoryId INT,
@@ -350,9 +362,7 @@ CREATE PROCEDURE sp_GetCustomQuiz(
 BEGIN
     DECLARE v_NativeLangId INT;
     DECLARE v_TargetLangId INT;
-    
-    SELECT NativeLangId, CurrentTargetLangId INTO v_NativeLangId, v_TargetLangId 
-    FROM Users WHERE Id = p_UserId;
+    SELECT NativeLangId, CurrentTargetLangId INTO v_NativeLangId, v_TargetLangId FROM Users WHERE Id = p_UserId;
 
     SELECT 
         w.Id as WordId,
@@ -373,67 +383,32 @@ BEGIN
     LIMIT p_Limit;
 END //
 
-DELIMITER ;
-
--- ==========================================================
--- SORU YÖNETİM SİSTEMİ (QUESTIONS MANAGEMENT)
--- ==========================================================
-
-DELIMITER //
-
--- 1. Soru Ekleme Procedure'ü
--- JSON formatındaki seçenekleri ve doğru cevabı kolayca eklemeyi sağlar.
+-- SORU YÖNETİMİ
 CREATE PROCEDURE sp_AddQuestion(
-    IN p_WordId INT,          -- İsteğe bağlı: Belirli bir kelimeye bağlı mı?
-    IN p_SourceLangId INT,    -- Sorunun dili (Genelde kullanıcının ana dili)
-    IN p_LangId INT,          -- Hedef dil (Test edilen dil)
-    IN p_Level VARCHAR(5),    -- A1, B2 vb.
+    IN p_WordId INT,
+    IN p_SourceLangId INT,
+    IN p_LangId INT,
+    IN p_Level VARCHAR(5),
     IN p_Type ENUM('Multiple Choice', 'True/False', 'Short Answer', 'Matching'),
-    IN p_Text TEXT,           -- Soru metni
-    IN p_Options JSON,        -- Seçenekler: {"A": "Apple", "B": "Banana", ...}
+    IN p_Text TEXT,
+    IN p_Options JSON,
     IN p_CorrectAnswer VARCHAR(255),
     IN p_Explanation TEXT
 )
 BEGIN
-    INSERT INTO Questions (
-        WordId, SourceLangId, LangId, Level, QuestionType, 
-        QuestionText, Options, CorrectAnswer, Explanation
-    ) VALUES (
-        p_WordId, p_SourceLangId, p_LangId, p_Level, p_Type, 
-        p_Text, p_Options, p_CorrectAnswer, p_Explanation
-    );
-    
+    INSERT INTO Questions (WordId, SourceLangId, LangId, Level, QuestionType, QuestionText, Options, CorrectAnswer, Explanation)
+    VALUES (p_WordId, p_SourceLangId, p_LangId, p_Level, p_Type, p_Text, p_Options, p_CorrectAnswer, p_Explanation);
     SELECT LAST_INSERT_ID() as QuestionId;
 END //
 
--- 2. Kelime Bazlı Soru Getirme
--- SRS testinde bir kelime sorulacağı zaman o kelimeye özel hazırlanmış soruları getirir.
-CREATE PROCEDURE sp_GetQuestionsForWord(
-    IN p_WordId INT,
-    IN p_SourceLangId INT,
-    IN p_Limit INT
-)
+CREATE PROCEDURE sp_GetQuestionsForWord(IN p_WordId INT, IN p_SourceLangId INT, IN p_Limit INT)
 BEGIN
-    SELECT * FROM Questions 
-    WHERE WordId = p_WordId AND SourceLangId = p_SourceLangId
-    ORDER BY RAND()
-    LIMIT p_Limit;
+    SELECT * FROM Questions WHERE WordId = p_WordId AND SourceLangId = p_SourceLangId ORDER BY RAND() LIMIT p_Limit;
 END //
 
--- 3. Seviye Bazlı Rastgele Soru Getirme (Genel Testler İçin)
-CREATE PROCEDURE sp_GetGeneralQuestions(
-    IN p_SourceLangId INT,
-    IN p_LangId INT,
-    IN p_Level VARCHAR(5),
-    IN p_Limit INT
-)
+CREATE PROCEDURE sp_GetGeneralQuestions(IN p_SourceLangId INT, IN p_LangId INT, IN p_Level VARCHAR(5), IN p_Limit INT)
 BEGIN
-    SELECT * FROM Questions 
-    WHERE SourceLangId = p_SourceLangId 
-      AND LangId = p_LangId 
-      AND (p_Level IS NULL OR Level = p_Level)
-    ORDER BY RAND()
-    LIMIT p_Limit;
+    SELECT * FROM Questions WHERE SourceLangId = p_SourceLangId AND LangId = p_LangId AND (p_Level IS NULL OR Level = p_Level) ORDER BY RAND() LIMIT p_Limit;
 END //
 
 DELIMITER ;
