@@ -64,6 +64,8 @@ try {
             $updateWords[] = "Picture = ?";
             $paramsWords[] = 'uploads/' . $filename;
         }
+    } else if (isset($input['removePicture']) && $input['removePicture'] == '1') {
+        $updateWords[] = "Picture = NULL";
     } else if (isset($input['wordPicture']) && is_string($input['wordPicture'])) {
         $updateWords[] = "Picture = ?";
         $paramsWords[] = $input['wordPicture'];
@@ -104,19 +106,28 @@ try {
     }
 
     // 4. WordSamples
-    if (isset($input['wordSentence']) || isset($input['wordSentenceTurkish'])) {
-        $stmtCheckSample = $pdo->prepare("SELECT Id FROM WordSamples WHERE WordId = ? AND LangId = ?");
-        $stmtCheckSample->execute([$input['wordId'], $targetLangId]);
-        if ($stmtCheckSample->fetch()) {
-            $upSamp = []; $pSamp = [];
-            if (isset($input['wordSentence'])) { $upSamp[] = "SampleText = ?"; $pSamp[] = trim($input['wordSentence']); }
-            if (isset($input['wordSentenceTurkish'])) { $upSamp[] = "TranslatedText = ?"; $pSamp[] = trim($input['wordSentenceTurkish']); }
-            $pSamp[] = $input['wordId'];
-            $pSamp[] = $targetLangId;
-            $pdo->prepare("UPDATE WordSamples SET " . implode(", ", $upSamp) . " WHERE WordId = ? AND LangId = ?")->execute($pSamp);
-        } else {
-            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?)");
-            $stmtSample->execute([$input['wordId'], $targetLangId, trim($input['wordSentence'] ?? ''), $input['wordSentenceTurkish'] ?? null]);
+    // Frontend'den 'sentences' (JSON string) gelebilir
+    if (isset($input['sentences']) || isset($input['wordSentence'])) {
+        $sentences = [];
+        if (!empty($input['sentences'])) {
+            $sentences = is_string($input['sentences']) ? json_decode($input['sentences'], true) : $input['sentences'];
+        } else if (!empty($input['wordSentence'])) {
+            $sentences[] = [
+                'target' => $input['wordSentence'],
+                'native' => $input['wordSentenceTurkish'] ?? ''
+            ];
+        }
+
+        // Eski cümleleri sil (Basitlik için temizleyip yeniden ekliyoruz)
+        $pdo->prepare("DELETE FROM WordSamples WHERE WordId = ? AND TargetLangId = ?")->execute([$input['wordId'], $targetLangId]);
+
+        if (!empty($sentences)) {
+            $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, TargetLangId, NativeLangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?, ?)");
+            foreach ($sentences as $s) {
+                if (!empty($s['target'])) {
+                    $stmtSample->execute([$input['wordId'], $targetLangId, $nativeLangId, trim($s['target']), $s['native'] ?? null]);
+                }
+            }
         }
     }
 
