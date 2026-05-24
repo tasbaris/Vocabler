@@ -25,7 +25,7 @@ try {
         INNER JOIN Words w ON uw.WordId = w.Id
         INNER JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = :targetLangId
         LEFT JOIN Categories c ON w.CategoryId = c.Id
-        LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.LangId = :targetLangId2
+        LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2
         WHERE uw.UserId = :userId 
           AND CHAR_LENGTH(wt_target.Translation) = :length 
           AND w.Active = 1
@@ -53,7 +53,7 @@ try {
             FROM WordTranslations wt_target
             INNER JOIN Words w ON wt_target.WordId = w.Id
             LEFT JOIN Categories c ON w.CategoryId = c.Id
-            LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.LangId = :targetLangId2
+            LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2
             WHERE wt_target.LangId = :targetLangId 
               AND CHAR_LENGTH(wt_target.Translation) = :length 
               AND w.Active = 1

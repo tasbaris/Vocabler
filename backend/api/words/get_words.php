@@ -27,14 +27,19 @@ try {
                 w.Id, w.CategoryId, w.Picture, w.AddedById,
                 wt_target.Translation as EnglishTranslation, wt_target.Pronunciation, wt_target.WordType, wt_target.Level,
                 wt_native.Translation as TurkishTranslation,
-                ws.SampleText as SampleSentence, ws.TranslatedText as SampleTranslation,
+                (
+                    SELECT JSON_ARRAYAGG(
+                        JSON_OBJECT('target', SampleText, 'native', TranslatedText)
+                    ) 
+                    FROM WordSamples 
+                    WHERE WordId = w.Id AND TargetLangId = :t2
+                ) as Sentences,
                 uw.LearnRank, uw.Status as SRSStatus,
                 c.CategoryName
             FROM Words w
             INNER JOIN UserWords uw ON w.Id = uw.WordId AND uw.UserId = :userId
             LEFT JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = :t1
             LEFT JOIN WordTranslations wt_native ON w.Id = wt_native.WordId AND wt_native.LangId = :n1
-            LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.LangId = :t2
             LEFT JOIN Categories c ON w.CategoryId = c.Id
             WHERE w.Active = 1
         ";

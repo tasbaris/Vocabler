@@ -65,18 +65,20 @@ CREATE TABLE IF NOT EXISTS WordTranslations (
 CREATE TABLE IF NOT EXISTS WordSamples (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     WordId INT NOT NULL,
-    LangId INT NOT NULL,
+    TargetLangId INT NOT NULL,
+    NativeLangId INT NOT NULL,
     SampleText VARCHAR(255) NOT NULL,
     TranslatedText VARCHAR(255) NULL,
     FOREIGN KEY (WordId) REFERENCES Words(Id) ON DELETE CASCADE,
-    FOREIGN KEY (LangId) REFERENCES Languages(Id) ON DELETE CASCADE
+    FOREIGN KEY (TargetLangId) REFERENCES Languages(Id) ON DELETE CASCADE,
+    FOREIGN KEY (NativeLangId) REFERENCES Languages(Id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 7. Kullanıcı Kelime Takip Tablosu (SRS Algoritması İçin)
 CREATE TABLE IF NOT EXISTS UserWords (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     UserId INT NOT NULL,
-    SourceLangId INT NOT NULL,
+    NativeLangId INT NOT NULL,
     TargetLangId INT NOT NULL,
     WordId INT NOT NULL,
     LearnRank TINYINT NOT NULL DEFAULT 1 COMMENT '1-6 arası seviye',
@@ -85,7 +87,7 @@ CREATE TABLE IF NOT EXISTS UserWords (
     Status TINYINT DEFAULT 0 COMMENT '0:Bekliyor, 1:Öğreniliyor',
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE,
-    FOREIGN KEY (SourceLangId) REFERENCES Languages(Id) ON DELETE CASCADE,
+    FOREIGN KEY (NativeLangId) REFERENCES Languages(Id) ON DELETE CASCADE,
     FOREIGN KEY (TargetLangId) REFERENCES Languages(Id) ON DELETE CASCADE,
     FOREIGN KEY (WordId) REFERENCES Words(Id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -94,8 +96,8 @@ CREATE TABLE IF NOT EXISTS UserWords (
 CREATE TABLE IF NOT EXISTS Questions (
     Id INT AUTO_INCREMENT PRIMARY KEY,
     WordId INT NULL, -- Hangi kelimeyle ilgili olduğu
-    SourceLangId INT NOT NULL, -- Sorunun hangi dilden olduğu
-    LangId INT NOT NULL, -- Kelime dili
+    NativeLangId INT NOT NULL, -- Sorunun hangi dilden olduğu (Genelde Native)
+    TargetLangId INT NOT NULL, -- Kelime dili (Genelde Target)
     Level VARCHAR(5) NOT NULL, -- A1, B2 vb.
     QuestionType ENUM('Multiple Choice', 'True/False', 'Short Answer', 'Matching') NOT NULL,
     QuestionText TEXT NOT NULL,    
@@ -105,8 +107,8 @@ CREATE TABLE IF NOT EXISTS Questions (
     ImageUrl VARCHAR(255) DEFAULT NULL,
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (WordId) REFERENCES Words(Id) ON DELETE SET NULL,
-    FOREIGN KEY (LangId) REFERENCES Languages(Id) ON DELETE CASCADE,
-    FOREIGN KEY (SourceLangId) REFERENCES Languages(Id) ON DELETE CASCADE
+    FOREIGN KEY (TargetLangId) REFERENCES Languages(Id) ON DELETE CASCADE,
+    FOREIGN KEY (NativeLangId) REFERENCES Languages(Id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 9. Şifre Sıfırlama Tablosu
@@ -215,27 +217,44 @@ BEGIN
     WHERE UserId = p_UserId AND WordId = p_WordId;
 END //
 
--- 2. Günlük Kelime Listesi Getirme (LearnRank Dahil)
+-- 2. Günlük Kelime Listesi Getirme (Tekrarlar + Yeni Kelimeler)
 CREATE PROCEDURE sp_GetDailyWords(
     IN p_UserId INT
 )
 BEGIN
     DECLARE v_DailyLimit INT;
+    DECLARE v_NewWordsStartedToday INT;
+    DECLARE v_RemainingNewWords INT;
+
+    -- Kullanıcının günlük yeni kelime limitini al
     SELECT DailyWord INTO v_DailyLimit FROM Users WHERE Id = p_UserId;
 
-    SELECT WordId, TargetLangId, SourceLangId, LearnRank FROM (
-        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 1 as Priority, uw.NextReviewDate
+    -- Bugün kaç tane "yeni" kelimeye başlandığını say (Rank 1 olan ve bugün öğrenilen)
+    SELECT COUNT(*) INTO v_NewWordsStartedToday 
+    FROM UserWords 
+    WHERE UserId = p_UserId 
+      AND (LearnRank >= 1 OR Status = 2)
+      AND DATE(LastLearnDate) = CURDATE()
+      AND WordId NOT IN (SELECT WordId FROM UserWords WHERE UserId = p_UserId AND DATE(LastLearnDate) < CURDATE());
+
+    SET v_RemainingNewWords = v_DailyLimit - v_NewWordsStartedToday;
+    IF v_RemainingNewWords < 0 THEN SET v_RemainingNewWords = 0; END IF;
+
+    -- 1. Tekrarı gelenler (Sınır yok, hepsi bitmeli)
+    -- 2. Kalan kota kadar hiç görülmemiş yeni kelimeler (Status 0)
+    SELECT WordId, TargetLangId, NativeLangId, LearnRank FROM (
+        (SELECT uw.WordId, uw.TargetLangId, uw.NativeLangId, uw.LearnRank, 1 as Priority, uw.NextReviewDate
          FROM UserWords uw
-         WHERE uw.UserId = p_UserId AND uw.Status = 1 AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL)
-         LIMIT v_DailyLimit)
+         WHERE uw.UserId = p_UserId 
+           AND uw.Status = 1 
+           AND (uw.NextReviewDate <= NOW() OR uw.NextReviewDate IS NULL))
         UNION ALL
-        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 2 as Priority, uw.NextReviewDate
+        (SELECT uw.WordId, uw.TargetLangId, uw.NativeLangId, uw.LearnRank, 2 as Priority, uw.NextReviewDate
          FROM UserWords uw
          WHERE uw.UserId = p_UserId AND uw.Status = 0
-         LIMIT v_DailyLimit)
+         LIMIT v_RemainingNewWords)
     ) as Combined
-    ORDER BY Priority ASC, NextReviewDate ASC
-    LIMIT v_DailyLimit;
+    ORDER BY Priority ASC, NextReviewDate ASC;
 END //
 
 -- 3. Kullanıcıya Kelime Atama
@@ -249,7 +268,7 @@ BEGIN
     DECLARE v_NativeLangId INT;
     SELECT NativeLangId INTO v_NativeLangId FROM Users WHERE Id = p_UserId;
 
-    INSERT IGNORE INTO UserWords (UserId, SourceLangId, TargetLangId, WordId, Status)
+    INSERT IGNORE INTO UserWords (UserId, NativeLangId, TargetLangId, WordId, Status)
     SELECT p_UserId, v_NativeLangId, p_TargetLangId, w.Id, 0
     FROM Words w
     WHERE (p_CategoryId IS NULL OR w.CategoryId = p_CategoryId)
@@ -279,15 +298,51 @@ CREATE PROCEDURE sp_GetDashboardSummary(
     IN p_UserId INT
 )
 BEGIN
-    SELECT 
+    DECLARE v_DailyNewGoal INT;
+    DECLARE v_NewDoneToday INT;
+    DECLARE v_ReviewsDoneToday INT;
+    DECLARE v_ReviewsPendingNow INT;
+
+    -- 1. Hedefi Al
+    SELECT DailyWord INTO v_DailyNewGoal FROM Users WHERE Id = p_UserId;
+
+    -- 2. Bugün İlk Kez Öğrenilen Kelimeler (New Words Done)
+    -- Şart: LastLearnDate bugün VE Status > 0 VE (ilk öğrenme tarihi de bugün)
+    SELECT COUNT(*) INTO v_NewDoneToday
+    FROM UserWords
+    WHERE UserId = p_UserId
+      AND DATE(LastLearnDate) = CURDATE()
+      AND (LearnRank = 1 OR Status = 2) -- Flashcard aşamasını geçmiş
+      AND WordId NOT IN (SELECT WordId FROM UserWords WHERE UserId = p_UserId AND DATE(LastLearnDate) < CURDATE());
+
+    -- 3. Bugün Yapılan Tekrarlar (Reviews Done)
+    -- Şart: LastLearnDate bugün VE daha önceden de çalışılmıştı
+    SELECT COUNT(*) INTO v_ReviewsDoneToday
+    FROM UserWords
+    WHERE UserId = p_UserId
+      AND DATE(LastLearnDate) = CURDATE()
+      AND WordId IN (SELECT WordId FROM UserWords WHERE UserId = p_UserId AND DATE(LastLearnDate) < CURDATE());
+
+    -- 4. Şu an Bekleyen Tekrarlar (Reviews Pending)
+    SELECT COUNT(*) INTO v_ReviewsPendingNow
+    FROM UserWords
+    WHERE UserId = p_UserId 
+      AND Status = 1 
+      AND (NextReviewDate <= NOW() OR NextReviewDate IS NULL);
+
+    -- 5. Sonucu Dön
+    SELECT
         SUM(CASE WHEN Status = 2 THEN 1 ELSE 0 END) as MasteredCount,
-        SUM(CASE WHEN Status = 1 AND (NextReviewDate <= NOW() OR NextReviewDate IS NULL) THEN 1 ELSE 0 END) as OverdueCount,
+        v_ReviewsPendingNow as OverdueCount,
         SUM(CASE WHEN Status = 1 THEN 1 ELSE 0 END) as LearningCount,
-        COUNT(*) as TotalWords
-    FROM UserWords 
+        COUNT(*) as TotalWords,
+        v_NewDoneToday as NewWordsDone,
+        v_DailyNewGoal as NewWordsGoal,
+        v_ReviewsDoneToday as ReviewsDone,
+        (v_ReviewsDoneToday + v_ReviewsPendingNow) as TotalReviewsGoal
+    FROM UserWords
     WHERE UserId = p_UserId;
 END //
-
 -- 5. Kullanıcının Kendi Kelimesini Eklemesi
 CREATE PROCEDURE sp_AddUserWord(
     IN p_UserId INT,
@@ -324,13 +379,14 @@ END //
 -- 5.1 Örnek Cümle Ekleme
 CREATE PROCEDURE sp_AddWordSample(
     IN p_WordId INT,
-    IN p_LangId INT,
+    IN p_TargetLangId INT,
+    IN p_NativeLangId INT,
     IN p_SampleText VARCHAR(255),
     IN p_TranslatedText VARCHAR(255)
 )
 BEGIN
-    INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText)
-    VALUES (p_WordId, p_LangId, p_SampleText, p_TranslatedText);
+    INSERT INTO WordSamples (WordId, TargetLangId, NativeLangId, SampleText, TranslatedText)
+    VALUES (p_WordId, p_TargetLangId, p_NativeLangId, p_SampleText, p_TranslatedText);
 END //
 
 -- 5.2 Sisteme Genel Kelime Ekleme (Admin/Toplu Ekleme İçin)
@@ -341,7 +397,8 @@ CREATE PROCEDURE sp_AddGlobalWord(
     IN p_CategoryId INT,
     IN p_WordType VARCHAR(20),
     IN p_SampleText VARCHAR(255),
-    IN p_SampleTranslation VARCHAR(255)
+    IN p_SampleTranslation VARCHAR(255),
+    IN p_Picture VARCHAR(255)
 )
 BEGIN
     DECLARE v_WordId INT;
@@ -356,18 +413,21 @@ BEGIN
     LIMIT 1;
 
     IF v_Exists IS NULL THEN
-        INSERT INTO Words (CategoryId, AddedById, Active) VALUES (p_CategoryId, NULL, 1);
+        INSERT INTO Words (CategoryId, Picture, AddedById, Active) VALUES (p_CategoryId, p_Picture, NULL, 1);
         SET v_WordId = LAST_INSERT_ID();
         INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
         VALUES (v_WordId, v_EN_Id, p_Level, p_WordType, p_TargetTranslation);
         INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
         VALUES (v_WordId, v_TR_Id, p_Level, p_WordType, p_NativeTranslation);
         IF p_SampleText IS NOT NULL THEN
-            INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText)
-            VALUES (v_WordId, v_EN_Id, p_SampleText, p_SampleTranslation);
+            INSERT INTO WordSamples (WordId, TargetLangId, NativeLangId, SampleText, TranslatedText)
+            VALUES (v_WordId, v_EN_Id, v_TR_Id, p_SampleText, p_SampleTranslation);
         END IF;
     ELSE
         SET v_WordId = v_Exists;
+        IF p_Picture IS NOT NULL THEN
+            UPDATE Words SET Picture = p_Picture WHERE Id = v_WordId;
+        END IF;
     END IF;
     SELECT v_WordId as WordId;
 END //
@@ -395,7 +455,7 @@ BEGIN
     FROM Words w
     JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = v_TargetLangId
     JOIN WordTranslations wt_native ON w.Id = wt_native.WordId AND wt_native.LangId = v_NativeLangId
-    LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.LangId = v_TargetLangId
+    LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = v_TargetLangId
     WHERE (p_CategoryId IS NULL OR w.CategoryId = p_CategoryId)
       AND (p_Level IS NULL OR wt_target.Level = p_Level)
       AND w.Active = 1
@@ -406,8 +466,8 @@ END //
 -- SORU YÖNETİMİ
 CREATE PROCEDURE sp_AddQuestion(
     IN p_WordId INT,
-    IN p_SourceLangId INT,
-    IN p_LangId INT,
+    IN p_NativeLangId INT,
+    IN p_TargetLangId INT,
     IN p_Level VARCHAR(5),
     IN p_Type ENUM('Multiple Choice', 'True/False', 'Short Answer', 'Matching'),
     IN p_Text TEXT,
@@ -416,19 +476,19 @@ CREATE PROCEDURE sp_AddQuestion(
     IN p_Explanation TEXT
 )
 BEGIN
-    INSERT INTO Questions (WordId, SourceLangId, LangId, Level, QuestionType, QuestionText, Options, CorrectAnswer, Explanation)
-    VALUES (p_WordId, p_SourceLangId, p_LangId, p_Level, p_Type, p_Text, p_Options, p_CorrectAnswer, p_Explanation);
+    INSERT INTO Questions (WordId, NativeLangId, TargetLangId, Level, QuestionType, QuestionText, Options, CorrectAnswer, Explanation)
+    VALUES (p_WordId, p_NativeLangId, p_TargetLangId, p_Level, p_Type, p_Text, p_Options, p_CorrectAnswer, p_Explanation);
     SELECT LAST_INSERT_ID() as QuestionId;
 END //
 
-CREATE PROCEDURE sp_GetQuestionsForWord(IN p_WordId INT, IN p_SourceLangId INT, IN p_Limit INT)
+CREATE PROCEDURE sp_GetQuestionsForWord(IN p_WordId INT, IN p_NativeLangId INT, IN p_Limit INT)
 BEGIN
-    SELECT * FROM Questions WHERE WordId = p_WordId AND SourceLangId = p_SourceLangId ORDER BY RAND() LIMIT p_Limit;
+    SELECT * FROM Questions WHERE WordId = p_WordId AND NativeLangId = p_NativeLangId ORDER BY RAND() LIMIT p_Limit;
 END //
 
-CREATE PROCEDURE sp_GetGeneralQuestions(IN p_SourceLangId INT, IN p_LangId INT, IN p_Level VARCHAR(5), IN p_Limit INT)
+CREATE PROCEDURE sp_GetGeneralQuestions(IN p_NativeLangId INT, IN p_TargetLangId INT, IN p_Level VARCHAR(5), IN p_Limit INT)
 BEGIN
-    SELECT * FROM Questions WHERE SourceLangId = p_SourceLangId AND LangId = p_LangId AND (p_Level IS NULL OR Level = p_Level) ORDER BY RAND() LIMIT p_Limit;
+    SELECT * FROM Questions WHERE NativeLangId = p_NativeLangId AND TargetLangId = p_TargetLangId AND (p_Level IS NULL OR Level = p_Level) ORDER BY RAND() LIMIT p_Limit;
 END //
 
 DELIMITER ;

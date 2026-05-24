@@ -61,11 +61,30 @@ try {
     $stmtNative = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, ?, ?, ?, ?, ?)");
     $stmtNative->execute([$wordId, $nativeLangId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]); 
 
-    // 4. Örnek cümle varsa WordSamples'a ekle (Hedef Dil örnek)
-    if (!empty($input['wordSentence'])) {
-        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, LangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?)");
-        $stmtSample->execute([$wordId, $targetLangId, trim($input['wordSentence']), $input['wordSentenceTurkish'] ?? null]);
+    // 4. WordSamples tablosuna ekle
+    // Frontend'den 'sentences' (JSON string) veya eski format 'wordSentence' gelebilir
+    $sentences = [];
+    if (!empty($input['sentences'])) {
+        $sentences = is_string($input['sentences']) ? json_decode($input['sentences'], true) : $input['sentences'];
+    } else if (!empty($input['wordSentence'])) {
+        $sentences[] = [
+            'target' => $input['wordSentence'],
+            'native' => $input['wordSentenceTurkish'] ?? ''
+        ];
     }
+
+    if (!empty($sentences)) {
+        $stmtSample = $pdo->prepare("INSERT INTO WordSamples (WordId, TargetLangId, NativeLangId, SampleText, TranslatedText) VALUES (?, ?, ?, ?, ?)");
+        foreach ($sentences as $s) {
+            if (!empty($s['target'])) {
+                $stmtSample->execute([$wordId, $targetLangId, $nativeLangId, trim($s['target']), $s['native'] ?? null]);
+            }
+        }
+    }
+
+    // 5. KRİTİK EKSİK: UserWords tablosuna ekle (Kullanıcının listesinde görünmesi için)
+    $stmtUserWord = $pdo->prepare("INSERT INTO UserWords (UserId, NativeLangId, TargetLangId, WordId, LearnRank, Status, NextReviewDate) VALUES (?, ?, ?, ?, 0, 0, NOW())");
+    $stmtUserWord->execute([$userId, $nativeLangId, $targetLangId, $wordId]);
 
     $pdo->commit();
     echo json_encode(['status' => 'success', 'message' => 'Kelime başarıyla eklendi.', 'wordId' => $wordId]);

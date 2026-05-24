@@ -22,7 +22,7 @@ if (!$words) {
 $count = 0;
 foreach ($words as $item) {
     try {
-        $stmt = $pdo->prepare("CALL sp_AddGlobalWord(?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $pdo->prepare("CALL sp_AddGlobalWord(?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $item['en'],
             $item['tr'],
@@ -30,7 +30,8 @@ foreach ($words as $item) {
             $item['cat'],
             $item['type'],
             $item['sentence'],
-            $item['sentence_tr']
+            $item['sentence_tr'],
+            $item['picture'] ?? null
         ]);
         $result = $stmt->fetch();
         if ($result) {
