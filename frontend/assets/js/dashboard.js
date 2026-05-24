@@ -9,8 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // HTML Elementlerini Yakala
     const totalLearnedCount = document.getElementById("totalLearnedCount");
     const totalLearnedProgress = document.getElementById("totalLearnedProgress");
-    const successRatePercent = document.getElementById("successRatePercent");
-    const successRateProgress = document.getElementById("successRateProgress");
+    const streakCount = document.getElementById("streakCount");
     const pendingWordsCount = document.getElementById("pendingWordsCount");
     const recentWordsTableBody = document.getElementById("recentWordsTableBody");
     const welcomeMessage = document.getElementById("welcomeMessage");
@@ -52,10 +51,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 
                 if (pendingWordsCount) pendingWordsCount.innerText = overdue;
 
-                // Başarı Oranı (Mastered / Total)
-                const successRate = Math.round((mastered / total) * 100);
-                if (successRatePercent) successRatePercent.innerText = `%${successRate}`;
-                if (successRateProgress) successRateProgress.style.width = successRate + "%";
+                // Öğrenme Serisi (Streak)
+                if (streakCount) {
+                    const streak = user.StreakDays || 0;
+                    streakCount.innerText = `${streak} ${lang === 'tr' ? 'Gün' : 'Days'}`;
+                }
                 
                 // Kullanıcı seviyesini göster
                 if (user.Level) {

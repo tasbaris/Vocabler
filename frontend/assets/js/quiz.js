@@ -29,8 +29,18 @@ async function fetchQuizWords() {
     try {
         // Hem soruları hem de toplam kelime sayısını çek
         const [quizRes, wordsRes] = await Promise.all([
-            fetch(`${API_BASE_URL}/quiz/get_questions.php?limit=10`, { headers: { Authorization: `Bearer ${token}` } }),
-            fetch(`${API_BASE_URL}/words/get_words.php`, { headers: { Authorization: `Bearer ${token}` } })
+            fetch(`${API_BASE_URL}/quiz/get_questions.php`, { 
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "X-Vocabler-Token": token 
+                } 
+            }),
+            fetch(`${API_BASE_URL}/words/get_words.php`, { 
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "X-Vocabler-Token": token 
+                } 
+            })
         ]);
 
         const quizResult = await quizRes.json();
@@ -81,7 +91,21 @@ async function fetchQuizWords() {
                 showEmptyState();
             }
         } else {
-            showEmptyState();
+            // Hata durumunda (örn: 401 Unauthorized)
+            console.error("Quiz verisi alınamadı:", quizResult.message);
+            if (quizRes.status === 401) {
+                Swal.fire({
+                    title: "Oturum Hatası",
+                    text: "Oturumunuzun süresi dolmuş veya yetkiniz yok. Lütfen tekrar giriş yapın.",
+                    icon: "error",
+                    confirmButtonText: "Giriş Yap"
+                }).then(() => {
+                    localStorage.removeItem("vocabler_token");
+                    window.location.href = "login.html";
+                });
+            } else {
+                showEmptyState();
+            }
         }
     } catch (error) {
         console.error("Veri yüklenirken hata:", error);
@@ -126,7 +150,8 @@ function showQuestion() {
         'Multiple Choice': t('qtype_multiple'),
         'True/False': t('qtype_tf'),
         'Short Answer': t('qtype_short'),
-        'Matching': t('qtype_matching')
+        'Matching': t('qtype_matching'),
+        'Flashcard': t('qtype_flashcard')
     };
     const qType = qTypes[question.QuestionType] || question.QuestionType;
     document.getElementById("front-type-level").textContent = `${qType} | ${question.Level || 'N/A'}`;
@@ -136,9 +161,11 @@ function showQuestion() {
     optionsContainer.className = "d-grid gap-2 mt-4 w-100 options-container";
     
     const container = document.querySelector(".flashcard-container");
+    const flashcardControls = document.getElementById("flashcard-controls");
 
     if (question.QuestionType === 'Multiple Choice' && question.Options) {
         container.classList.add("multiple-choice-mode");
+        if (flashcardControls) flashcardControls.classList.add("d-none");
         
         // Şıklar: A, B, C, D...
         const labels = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -158,8 +185,11 @@ function showQuestion() {
         });
     } else {
         container.classList.remove("multiple-choice-mode");
+        if (flashcardControls) flashcardControls.classList.remove("d-none");
+        
         document.getElementById("back-word").textContent = question.CorrectAnswer;
         document.getElementById("back-sentence").textContent = question.Explanation || "";
+        document.getElementById("back-translation").textContent = question.SampleTranslation || "";
     }
 
     // Seçenekleri ön yüze ekle
@@ -213,6 +243,7 @@ async function submitResult(isCorrect) {
                 method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
+                    "X-Vocabler-Token": token,
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
@@ -234,7 +265,16 @@ async function submitResult(isCorrect) {
         if (currentIndex >= quizData.length) {
             showResults();
         } else {
-            showQuestion();
+            const flashcard = document.getElementById("main-flashcard");
+            if (flashcard && flashcard.classList.contains("flipped")) {
+                flashcard.classList.remove("flipped");
+                // Animasyonun (0.6s) yarısında veya tamamında içeriği değiştir
+                setTimeout(() => {
+                    showQuestion();
+                }, 300);
+            } else {
+                showQuestion();
+            }
         }
     } catch (err) {
         console.error("Sonuç gönderilemedi:", err);
