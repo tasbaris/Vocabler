@@ -215,8 +215,8 @@ BEGIN
 
     -- Önce tekrar zamanı gelmiş (Status = 1 ve NextReviewDate <= NOW) olanları, 
     -- sonra hiç başlanmamış (Status = 0) olanları getir.
-    SELECT WordId, TargetLangId, SourceLangId FROM (
-        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, 1 as Priority, uw.NextReviewDate
+    SELECT WordId, TargetLangId, SourceLangId, LearnRank FROM (
+        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 1 as Priority, uw.NextReviewDate
          FROM UserWords uw
          WHERE uw.UserId = p_UserId 
            AND uw.Status = 1 
@@ -225,7 +225,7 @@ BEGIN
         
         UNION ALL
         
-        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, 2 as Priority, uw.NextReviewDate
+        (SELECT uw.WordId, uw.TargetLangId, uw.SourceLangId, uw.LearnRank, 2 as Priority, uw.NextReviewDate
          FROM UserWords uw
          WHERE uw.UserId = p_UserId 
            AND uw.Status = 0

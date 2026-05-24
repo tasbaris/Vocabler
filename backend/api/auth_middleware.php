@@ -1,42 +1,56 @@
 <?php
 function authenticate() {
-    // 1. Header'ı almanın en güvenli yollarını dene
     $authHeader = null;
 
+    // 1. En geniş kapsamlı header kontrolü (getallheaders)
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
-        if (isset($headers['Authorization'])) {
-            $authHeader = $headers['Authorization'];
-        } elseif (isset($headers['authorization'])) {
-            $authHeader = $headers['authorization'];
-        } elseif (isset($headers['X-Vocabler-Token'])) {
-            $authHeader = 'Bearer ' . $headers['X-Vocabler-Token'];
-        } elseif (isset($headers['x-vocabler-token'])) {
-            $authHeader = 'Bearer ' . $headers['x-vocabler-token'];
+        // Case-insensitive kontrol için keyleri küçültelim
+        $lowerHeaders = array_change_key_case($headers, CASE_LOWER);
+        
+        if (isset($lowerHeaders['authorization'])) {
+            $authHeader = $lowerHeaders['authorization'];
+        } elseif (isset($lowerHeaders['x-vocabler-token'])) {
+            $authHeader = 'Bearer ' . $lowerHeaders['x-vocabler-token'];
         }
     }
 
+    // 2. $_SERVER kontrolü (Apache/Nginx fallback)
     if (!$authHeader) {
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? $_SERVER['HTTP_X_AUTHORIZATION'] ?? null;
-        if (!$authHeader && isset($_SERVER['HTTP_X_VOCABLER_TOKEN'])) {
-            $authHeader = 'Bearer ' . $_SERVER['HTTP_X_VOCABLER_TOKEN'];
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? 
+                      $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? 
+                      $_SERVER['HTTP_X_VOCABLER_TOKEN'] ?? 
+                      $_SERVER['REDIRECT_HTTP_X_VOCABLER_TOKEN'] ?? null;
+                      
+        // Eğer Bearer prefix'i yoksa ve X-Vocabler-Token'dan gelmişse ekle
+        if ($authHeader && !str_starts_with(strtolower($authHeader), 'bearer ')) {
+            $authHeader = 'Bearer ' . $authHeader;
         }
     }
 
-    // Apache'de bazen header'lar $_SERVER içinde farklı isimlendirilebilir
+    // 3. Apache Request Headers (Specific to Apache)
     if (!$authHeader && function_exists('apache_request_headers')) {
         $headers = apache_request_headers();
-        $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? null;
+        $lowerHeaders = array_change_key_case($headers, CASE_LOWER);
+        if (isset($lowerHeaders['authorization'])) {
+            $authHeader = $lowerHeaders['authorization'];
+        } elseif (isset($lowerHeaders['x-vocabler-token'])) {
+            $authHeader = 'Bearer ' . $lowerHeaders['x-vocabler-token'];
+        }
     }
 
     if (!$authHeader) {
         http_response_code(401);
-        $debugHeaders = function_exists('getallheaders') ? getallheaders() : [];
         echo json_encode([
             'status' => 'error', 
-            'message' => 'Yetkilendirme başlığı (Authorization header) bulunamadı.',
-            'debug_headers' => $debugHeaders,
-            'debug_server' => $_SERVER
+            'message' => 'Yetkilendirme başlığı bulunamadı.',
+            'debug' => [
+                'headers' => function_exists('getallheaders') ? getallheaders() : 'N/A',
+                'server' => [
+                    'HTTP_AUTHORIZATION' => $_SERVER['HTTP_AUTHORIZATION'] ?? 'MISSING',
+                    'HTTP_X_VOCABLER_TOKEN' => $_SERVER['HTTP_X_VOCABLER_TOKEN'] ?? 'MISSING'
+                ]
+            ]
         ]);
         exit;
     }
