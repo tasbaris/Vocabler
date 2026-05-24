@@ -44,7 +44,7 @@ async function fetchCategories() {
                     col.innerHTML = `
                         <div class="custom-card h-100 p-4 text-center position-relative">
                             <div class="topic-actions position-absolute top-0 end-0 p-2">
-                                <button class="btn btn-sm btn-link text-white-50 edit-cat-btn" data-id="${category.Id}" data-name="${category.CategoryName}">
+                                <button class="btn btn-sm btn-link opacity-50 edit-cat-btn" data-id="${category.Id}" data-name="${category.CategoryName}">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button class="btn btn-sm btn-link text-danger delete-cat-btn" data-id="${category.Id}">
@@ -59,7 +59,7 @@ async function fetchCategories() {
                                 <button class="btn ${btnClass} btn-sm rounded-pill subscribe-cat-btn" data-id="${category.Id}" ${btnDisabled}>
                                     <i class="fas ${btnIcon} me-1"></i> ${btnText}
                                 </button>
-                                <a href="my-words.html?category=${category.Id}" class="btn btn-outline-light btn-sm rounded-pill opacity-75" data-i18n="inspect_btn">
+                                <a href="my-words.html?category=${category.Id}" class="btn btn-outline-light btn-sm rounded-pill" data-i18n="inspect_btn">
                                     ${translations[localStorage.getItem("vocabler_lang") || "tr"].inspect_btn}
                                 </a>
                             </div>
@@ -72,7 +72,7 @@ async function fetchCategories() {
                 const dict = translations[lang] || translations['tr'];
                 topicsContainer.innerHTML = `
                     <div class="text-center py-5 w-100" style="grid-column: 1 / -1;">
-                        <p class="text-muted">${dict.msg_no_words_found || 'Henüz konu eklenmemiş.'}</p>
+                        <p class="opacity-50">${dict.msg_no_words_found || 'Henüz konu eklenmemiş.'}</p>
                     </div>
                 `;
             }

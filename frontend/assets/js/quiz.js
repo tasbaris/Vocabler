@@ -46,49 +46,56 @@ async function fetchQuizWords() {
         const quizResult = await quizRes.json();
         const wordsResult = await wordsRes.json();
 
-        if (quizRes.ok && quizResult.status === "success") {
-            quizData = quizResult.data;
-            if (quizData && quizData.length > 0) {
-                const totalWords = wordsResult.words ? wordsResult.words.length : 0;
-                document.getElementById("total-questions-num").textContent = quizData.length;
-                document.getElementById("total-words-count").textContent = totalWords;
-                
-                // Başlangıç ekranını güncelle
-                document.getElementById("quiz-info-text").innerHTML = `
-                    <div class="d-flex justify-content-center gap-4">
-                        <span><strong>Quiz Sorusu:</strong> ${quizData.length}</span>
-                        <span><strong>Toplam Kelime:</strong> ${totalWords}</span>
-                    </div>
-                `;
+        if (quizRes.ok) {
+            if (quizResult.status === "quota_reached") {
+                showQuotaReachedState(quizResult);
+                return;
+            }
 
-                // Zorluk Göstergesi Mantığı: 1=Yeşil, 2=Sarı, 3=Kırmızı
-                const indicator = document.getElementById("difficulty-indicator");
-                const lines = indicator.querySelectorAll(".line");
-                const difficulty = 2; // Örnek zorluk seviyesi
+            if (quizResult.status === "success") {
+                quizData = quizResult.data;
+                if (quizData && quizData.length > 0) {
+                    const totalWords = wordsResult.words ? wordsResult.words.length : 0;
+                    document.getElementById("total-questions-num").textContent = quizData.length;
+                    document.getElementById("total-words-count").textContent = totalWords;
+                    
+                    // Başlangıç ekranını güncelle
+                    document.getElementById("quiz-info-text").innerHTML = `
+                        <div class="d-flex justify-content-center gap-4">
+                            <span><strong>Quiz Sorusu:</strong> ${quizData.length}</span>
+                            <span><strong>Toplam Kelime:</strong> ${totalWords}</span>
+                        </div>
+                    `;
 
-                // Renk tanımları
-                const colors = {
-                    1: ['#2ed573', '#ccc', '#ccc'],
-                    2: ['#ffa502', '#ffa502', '#ccc'],
-                    3: ['#ff4757', '#ff4757', '#ff4757']
-                };
+                    // Zorluk Göstergesi Mantığı: 1=Yeşil, 2=Sarı, 3=Kırmızı
+                    const indicator = document.getElementById("difficulty-indicator");
+                    const lines = indicator.querySelectorAll(".line");
+                    const difficulty = 2; // Örnek zorluk seviyesi
 
-                // Görünürlük ve renk yönetimi
-                lines.forEach((line, index) => {
-                    if (difficulty === 1) {
-                        line.style.background = index === 0 ? colors[1][0] : '#ccc';
-                    } else if (difficulty === 2) {
-                        line.style.background = index < 2 ? colors[2][0] : '#ccc';
-                    } else if (difficulty === 3) {
-                        line.style.background = colors[3][0];
-                    }
-                });
+                    // Renk tanımları
+                    const colors = {
+                        1: ['#2ed573', '#ccc', '#ccc'],
+                        2: ['#ffa502', '#ffa502', '#ccc'],
+                        3: ['#ff4757', '#ff4757', '#ff4757']
+                    };
 
-                const btn = document.getElementById("start-quiz-btn");
-                btn.disabled = false;
-                btn.addEventListener("click", initQuiz);
-            } else {
-                showEmptyState();
+                    // Görünürlük ve renk yönetimi
+                    lines.forEach((line, index) => {
+                        if (difficulty === 1) {
+                            line.style.background = index === 0 ? colors[1][0] : '#ccc';
+                        } else if (difficulty === 2) {
+                            line.style.background = index < 2 ? colors[2][0] : '#ccc';
+                        } else if (difficulty === 3) {
+                            line.style.background = colors[3][0];
+                        }
+                    });
+
+                    const btn = document.getElementById("start-quiz-btn");
+                    btn.disabled = false;
+                    btn.addEventListener("click", initQuiz);
+                } else {
+                    showEmptyState();
+                }
             }
         } else {
             // Hata durumunda (örn: 401 Unauthorized)
@@ -162,10 +169,37 @@ function showQuestion() {
     
     const container = document.querySelector(".flashcard-container");
     const flashcardControls = document.getElementById("flashcard-controls");
+    const mcHintArea = document.getElementById("mc-hint-area");
 
     if (question.QuestionType === 'Multiple Choice' && question.Options) {
         container.classList.add("multiple-choice-mode");
         if (flashcardControls) flashcardControls.classList.add("d-none");
+        
+        // Örnek cümle varsa ipucu olarak göster (kelimeyi maskele)
+        if (question.Explanation && mcHintArea) {
+            mcHintArea.classList.remove("d-none");
+            const hintSentence = document.getElementById("hint-sentence");
+            
+            // Kelimeyi cümlede bulup maskele (____)
+            // Backend'den gelen veriye göre: 
+            // Eğer QuestionText'te boşluk varsa o bir cümledir/anlamdır, CorrectAnswer kelimedir.
+            // Eğer yoksa QuestionText kelimedir.
+            // Ama biz her zaman TargetWord'ü maskelemek istiyoruz.
+            // get_questions.php'de CorrectAnswer her zaman TargetWord veya NativeWord.
+            // Kelimeyi bulmak için hem QuestionText hem CorrectAnswer'ı deneyebiliriz.
+            
+            let maskedSentence = question.Explanation;
+            [question.QuestionText, question.CorrectAnswer].forEach(term => {
+                if (term && !term.includes(' ')) {
+                    const pattern = new RegExp("\\b" + term + "\\b", "gi");
+                    maskedSentence = maskedSentence.replace(pattern, "____");
+                }
+            });
+            
+            hintSentence.textContent = maskedSentence;
+        } else if (mcHintArea) {
+            mcHintArea.classList.add("d-none");
+        }
         
         // Şıklar: A, B, C, D...
         const labels = ['a', 'b', 'c', 'd', 'e', 'f'];
@@ -175,8 +209,8 @@ function showQuestion() {
 
         options.forEach((value, i) => {
             const btn = document.createElement("button");
-            btn.className = "btn btn-outline-light text-start p-3 rounded-3 option-btn";
-            btn.innerHTML = `<span class="fw-bold me-3 border border-secondary rounded px-2">${labels[i].toUpperCase()}</span> ${value}`;
+            btn.className = "btn btn-outline-light text-start p-3 rounded-3 option-btn d-flex align-items-center";
+            btn.innerHTML = `<span class="fw-bold me-3 border border-secondary rounded px-2">${labels[i].toUpperCase()}</span> <span>${value}</span>`;
             btn.onclick = (e) => {
                 e.stopPropagation();
                 handleOptionClick(btn, value, question.CorrectAnswer);
@@ -186,6 +220,7 @@ function showQuestion() {
     } else {
         container.classList.remove("multiple-choice-mode");
         if (flashcardControls) flashcardControls.classList.remove("d-none");
+        if (mcHintArea) mcHintArea.classList.add("d-none");
         
         document.getElementById("back-word").textContent = question.CorrectAnswer;
         document.getElementById("back-sentence").textContent = question.Explanation || "";
@@ -292,10 +327,66 @@ function showEmptyState() {
         <div class="text-center py-5">
             <i class="fas fa-check-circle fa-5x text-success mb-4 opacity-50"></i>
             <h2 class="fw-bold mb-3">${dict.quiz_empty_title || 'Harika İş!'}</h2>
-            <p class="text-muted mb-4">${dict.quiz_empty_text || 'Şu an gözden geçirilecek kelimen kalmadı.'}</p>
-            <a href="topics.html" class="btn btn-primary px-5 rounded-pill">${dict.feature_topics_title || 'Konular'}</a>
+            <p class="opacity-50 mb-4">${dict.quiz_empty_text || 'Şu an gözden geçirilecek kelimen kalmadı.'}</p>
+            <a href="topics.html" class="btn btn-primary px-5 rounded-pill d-flex align-items-center justify-content-center mx-auto" style="max-width: fit-content;">${dict.feature_topics_title || 'Konular'}</a>
         </div>
     `;
+}
+
+/**
+ * Günlük kota dolduğunda gösterilecek ekran
+ */
+function showQuotaReachedState(data) {
+    const lang = localStorage.getItem("vocabler_lang") || "tr";
+    const dict = translations[lang] || translations['tr'];
+    
+    document.getElementById("quiz-area").parentElement.innerHTML = `
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-trophy fa-5x text-warning mb-3"></i>
+                <h2 class="fw-bold">${dict.quiz_quota_reached_title}</h2>
+                <p class="opacity-50">${dict.quiz_quota_reached_text}</p>
+            </div>
+            
+            <div class="card bg-dark bg-opacity-25 border border-secondary border-opacity-25 rounded-4 p-4 mx-auto mb-4" style="max-width: 400px;">
+                <div class="small text-uppercase fw-bold opacity-50 mb-3">${dict.label_next_quiz}</div>
+                <div id="countdown-timer" class="display-5 fw-bold font-monospace text-primary">
+                    00:00:00
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3">
+                <a href="dashboard.html" class="btn btn-outline-light px-4 rounded-pill d-flex align-items-center justify-content-center">${dict.quiz_back_home}</a>
+                <a href="topics.html" class="btn btn-primary px-4 rounded-pill d-flex align-items-center justify-content-center">${dict.feature_topics_title}</a>
+            </div>
+        </div>
+    `;
+
+    // Geri sayım başlat
+    let h = data.countdown.hours;
+    let m = data.countdown.minutes;
+    let s = data.countdown.seconds;
+
+    const timerEl = document.getElementById("countdown-timer");
+    
+    const updateTimer = () => {
+        if (s > 0) s--;
+        else {
+            if (m > 0) { m--; s = 59; }
+            else {
+                if (h > 0) { h--; m = 59; s = 59; }
+                else {
+                    clearInterval(timerInterval);
+                    location.reload();
+                    return;
+                }
+            }
+        }
+        timerEl.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
+
+    const timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
 }
 
 /**
@@ -317,6 +408,8 @@ function showResults() {
         icon: "success",
         confirmButtonText: "Tamam",
         confirmButtonColor: "#00ADB5"
+    }).then(() => {
+        location.reload(); // Re-fetch to show quota reached screen
     });
 }
 

@@ -53,11 +53,11 @@ function renderSentences() {
 
   exampleSentences.forEach((s, index) => {
     const div = document.createElement("div");
-    div.className = "sentence-item d-flex justify-content-between align-items-start mb-2 p-2 rounded bg-white bg-opacity-5 border border-white border-opacity-10";
+    div.className = "sentence-item d-flex justify-content-between align-items-start mb-2 p-2 rounded bg-secondary bg-opacity-10 border border-white border-opacity-10";
     div.innerHTML = `
       <div class="flex-grow-1 me-2">
         <div class="small fw-bold text-accent">${s.target}</div>
-        <div class="small opacity-75 italic">${s.native}</div>
+        <div class="small italic" style="color: var(--text); opacity: 0.8;">${s.native}</div>
       </div>
       <button type="button" class="btn btn-link text-danger p-0 ms-2 remove-sentence-btn" data-index="${index}">
         <i class="fas fa-times-circle"></i>
@@ -225,6 +225,7 @@ function renderWordsTable() {
       const level = word.Level || "";
       const categoryName = word.CategoryName || "Genel";
       const rank = parseInt(word.LearnRank) || 0;
+      const picture = word.Picture ? (word.Picture.startsWith('http') ? word.Picture : `${API_BASE_URL}/../${word.Picture}`) : null;
 
       const typeKey = `word_type_${(word.WordType || "").toLowerCase()}`;
       const translatedType = dict[typeKey] || word.WordType || "";
@@ -240,7 +241,7 @@ function renderWordsTable() {
           const stepLabel = lang === 'en' ? 'Step' : 'Adım';
           rankHtml = `
             <div class="d-flex flex-column align-items-center" style="min-width: 80px;">
-                <div class="progress w-100 mb-1" style="height: 4px; background: rgba(255,255,255,0.05);">
+                <div class="progress w-100 mb-1" style="height: 4px;">
                     <div class="progress-bar ${rankColor}" style="width: ${progressPercent}%"></div>
                 </div>
                 <span class="small opacity-75" style="font-size: 0.7rem;">${stepLabel} ${rank}/6</span>
@@ -248,25 +249,32 @@ function renderWordsTable() {
           `;
       }
 
+      const imgHtml = picture ? `<img src="${picture}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">` : `<div class="rounded me-2 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-image opacity-25"></i></div>`;
+
       tr.innerHTML = `
         <td class="text-center">
             <input class="form-check-input word-checkbox" type="checkbox" value="${word.Id}">
         </td>
         <td>
-          <div class="fw-bold text-white word-en">${en}</div>
-          <div class="small opacity-50">${pronunciation}</div>
+          <div class="d-flex align-items-center">
+            ${imgHtml}
+            <div>
+              <div class="fw-bold word-en">${en}</div>
+              <div class="small opacity-50">${pronunciation}</div>
+            </div>
+          </div>
         </td>
         <td>
-          <div class="text-white opacity-75 word-tr">${trWord}</div>
+          <div class="opacity-75 word-tr">${trWord}</div>
         </td>
         <td class="text-center">
-            <span class="small text-white-50">${translatedType}</span>
+            <span class="small opacity-50">${translatedType}</span>
         </td>
         <td class="text-center">
             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">${level}</span>
         </td>
         <td class="text-center">
-            <span class="small text-white-50">${categoryName}</span>
+            <span class="small opacity-50">${categoryName}</span>
         </td>
         <td class="text-center">
             ${rankHtml}
@@ -518,6 +526,16 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("wordPronunciation").value = wordData.Pronunciation || "";
         document.getElementById("wordPicture").value = "";
         
+        // Düzenleme modunda varsa mevcut resmi göster
+        if (wordData.Picture) {
+            const fullPicUrl = wordData.Picture.startsWith('http') ? wordData.Picture : `${API_BASE_URL}/../${wordData.Picture}`;
+            if (picturePreview) picturePreview.src = fullPicUrl;
+            if (picturePreviewContainer) picturePreviewContainer.classList.remove("d-none");
+            if (selectPictureBtn) selectPictureBtn.textContent = t('btn_select_picture'); // Dosya seçilmediği için butonu sıfırla
+        } else {
+            if (picturePreviewContainer) picturePreviewContainer.classList.add("d-none");
+        }
+        
         if (wordData.Sentences) {
            exampleSentences = Array.isArray(wordData.Sentences) ? wordData.Sentences : JSON.parse(wordData.Sentences);
            renderSentences();
@@ -621,11 +639,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  let removePicture = false;
+
   function resetAddForm() {
     addWordForm.reset();
     document.getElementById("wordId").value = "";
     exampleSentences = [];
     renderSentences();
+    removePicture = false;
+    
+    // Resim önizlemesini temizle
+    const previewContainer = document.getElementById("picturePreviewContainer");
+    const previewImg = document.getElementById("picturePreview");
+    const selectBtn = document.getElementById("selectPictureBtn");
+    if (previewContainer) previewContainer.classList.add("d-none");
+    if (previewImg) previewImg.src = "";
+    if (selectBtn) selectBtn.textContent = t('btn_select_picture');
     
     if (formTitle) formTitle.textContent = t('label_new_word');
     const submitBtn = document.getElementById("submitWordBtn");
@@ -633,6 +662,54 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.classList.replace("btn-warning", "btn-primary");
     const cancelBtn = document.getElementById("cancelEditBtn");
     if (cancelBtn) cancelBtn.remove();
+  }
+
+  // Resim Seçimi ve Önizleme Mantığı
+  const wordPictureInput = document.getElementById("wordPicture");
+  const picturePreviewContainer = document.getElementById("picturePreviewContainer");
+  const picturePreview = document.getElementById("picturePreview");
+  const selectPictureBtn = document.getElementById("selectPictureBtn");
+  const removePictureBtn = document.getElementById("removePictureBtn");
+
+  if (wordPictureInput) {
+    wordPictureInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        removePicture = false;
+        // Dosya boyutu kontrolü (2MB)
+        const maxSize = 2 * 1024 * 1024;
+        if (file.size > maxSize) {
+          showToast("Dosya boyutu çok büyük! Maksimum 2MB yükleyebilirsiniz.", "warning");
+          wordPictureInput.value = "";
+          return;
+        }
+
+        // Dosya tipi kontrolü
+        if (!file.type.startsWith('image/')) {
+          showToast("Lütfen sadece resim dosyası seçin!", "warning");
+          wordPictureInput.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (picturePreview) picturePreview.src = e.target.result;
+          if (picturePreviewContainer) picturePreviewContainer.classList.remove("d-none");
+          if (selectPictureBtn) selectPictureBtn.textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (removePictureBtn) {
+    removePictureBtn.addEventListener("click", () => {
+      removePicture = true;
+      if (wordPictureInput) wordPictureInput.value = "";
+      if (picturePreviewContainer) picturePreviewContainer.classList.add("d-none");
+      if (picturePreview) picturePreview.src = "";
+      if (selectPictureBtn) selectPictureBtn.textContent = t('btn_select_picture');
+    });
   }
 
   if (addWordForm) {
@@ -676,7 +753,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const pictureFile = document.getElementById("wordPicture").files[0];
-      if (pictureFile) payload.append("wordPicture", pictureFile);
+      if (pictureFile) {
+        payload.append("wordPicture", pictureFile);
+      } else if (removePicture) {
+        payload.append("removePicture", "1");
+      }
 
       let apiUrl = `${API_BASE_URL}/words/add_word.php`;
       if (wordId) {

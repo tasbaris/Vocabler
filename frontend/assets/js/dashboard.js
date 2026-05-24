@@ -42,6 +42,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const mastered = parseInt(summary.MasteredCount) || 0;
                 const overdue = parseInt(summary.OverdueCount) || 0;
                 const total = parseInt(summary.TotalWords) || 1; // 0'a bölmeyi önle
+                const completedToday = parseInt(summary.CompletedToday) || 0;
+                const dailyGoal = parseInt(summary.TotalDailyGoal) || parseInt(user.DailyWord) || 10;
 
                 if (totalLearnedCount) totalLearnedCount.innerText = mastered;
                 if (totalLearnedProgress) {
@@ -50,6 +52,33 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 
                 if (pendingWordsCount) pendingWordsCount.innerText = overdue;
+
+                // Günlük Hedef (Daily Goal) Progress
+                const dailyGoalProgress = document.getElementById("dailyGoalProgress");
+                const dailyGoalCount = document.getElementById("dailyGoalCount");
+                const dailyGoalDetails = document.getElementById("dailyGoalDetails");
+                
+                const newDone = parseInt(summary.NewWordsDone) || 0;
+                const newGoal = parseInt(summary.NewWordsGoal) || 10;
+                const revDone = parseInt(summary.ReviewsDone) || 0;
+                const revGoal = parseInt(summary.TotalReviewsGoal) || 0;
+
+                const totalDone = newDone + revDone;
+                const totalGoal = newGoal + revGoal;
+                const totalPercent = totalGoal > 0 ? Math.round((totalDone / totalGoal) * 100) : 100;
+
+                if (dailyGoalCount) dailyGoalCount.innerText = `${totalPercent}%`;
+                
+                if (dailyGoalDetails) {
+                    dailyGoalDetails.innerHTML = `
+                        <span>🆕 ${newDone}/${newGoal}</span>
+                        <span class="ms-2">🔄 ${revDone}/${revGoal}</span>
+                    `;
+                }
+
+                if (dailyGoalProgress) {
+                    dailyGoalProgress.style.width = totalPercent + "%";
+                }
 
                 // Öğrenme Serisi (Streak)
                 if (streakCount) {
@@ -95,9 +124,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                                 ? `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">${dict.quiz_completed_title.split(' ')[0]}</span>`
                                 : `<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1">Step ${rank}/6</span>`;
 
+                            const picture = word.Picture ? (word.Picture.startsWith('http') ? word.Picture : `${API_BASE_URL}/../${word.Picture}`) : null;
+                            const imgHtml = picture ? `<img src="${picture}" class="rounded me-2" style="width: 32px; height: 32px; object-fit: cover;">` : `<div class="rounded me-2 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="fas fa-image opacity-25 fa-xs"></i></div>`;
+
                             tr.innerHTML = `
-                                <td><div class="fw-bold text-white">${word.EnglishTranslation}</div></td>
-                                <td><div class="text-white opacity-75">${word.TurkishTranslation}</div></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        ${imgHtml}
+                                        <div class="fw-bold">${word.EnglishTranslation}</div>
+                                    </div>
+                                </td>
+                                <td><div class="opacity-75">${word.TurkishTranslation}</div></td>
                                 <td><span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">${word.Level}</span></td>
                                 <td class="text-center">${statusHtml}</td>
                             `;
