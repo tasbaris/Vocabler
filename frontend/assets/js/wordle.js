@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     const wordleGrid = document.querySelector('.wordle-grid');
     const keyboardButtons = document.querySelectorAll('.key-btn');
+    const newGameContainer = document.getElementById('newGameContainer');
+    const newGameBtn = document.getElementById('newGameBtn');
     const messageContainer = document.createElement('div');
     messageContainer.id = 'wordle-message';
     messageContainer.className = 'mt-3 fw-bold';
@@ -11,13 +13,28 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentGuess = "";
     let guesses = [];
     const maxGuesses = 6;
-    const wordLength = 5;
+    let wordLength = 0; 
     let gameOver = false;
+
+    // Reset game state
+    function resetGame() {
+        targetWord = "";
+        wordHint = "";
+        currentGuess = "";
+        guesses = [];
+        gameOver = false;
+        newGameContainer.style.display = 'none';
+        messageContainer.textContent = '';
+        keyboardButtons.forEach(btn => btn.className = 'key-btn');
+        fetchWord();
+    }
+
+    newGameBtn.addEventListener('click', resetGame);
 
     // Fetch a random word from the backend
     async function fetchWord() {
         try {
-            const response = await fetch(`${API_BASE_URL}/words/get_wordle_word.php?length=${wordLength}`, {
+            const response = await fetch(`${API_BASE_URL}/words/get_wordle_word.php`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('vocabler_token')}`
                 }
@@ -25,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             if (data.status === 'success') {
                 targetWord = data.word.toUpperCase();
+                wordLength = targetWord.length;
                 wordHint = data.hint;
                 updateTitleWithHint();
                 initGrid();
@@ -72,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Auto submit if length reached
         if (currentGuess.length === wordLength) {
             setTimeout(() => submitGuess(), 200);
         }
@@ -89,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetArray = targetWord.split('');
         const result = new Array(wordLength).fill('absent');
         
-        // First pass: find correct letters
         const targetLetterCounts = {};
         targetArray.forEach(char => {
             targetLetterCounts[char] = (targetLetterCounts[char] || 0) + 1;
@@ -102,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Second pass: find present letters
         guessArray.forEach((char, i) => {
             if (result[i] !== 'correct' && targetLetterCounts[char] > 0) {
                 result[i] = 'present';
@@ -110,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Update UI
         cells.forEach((cell, i) => {
             setTimeout(() => {
                 cell.classList.add(result[i]);
@@ -122,9 +136,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (currentGuess === targetWord) {
             gameOver = true;
+            newGameContainer.style.display = 'block';
             setTimeout(() => showMessage(t('wordle_success'), "success"), wordLength * 100);
         } else if (guesses.length === maxGuesses) {
             gameOver = true;
+            newGameContainer.style.display = 'block';
             setTimeout(() => showMessage(`${t('wordle_fail')}: ${targetWord}`, "danger"), wordLength * 100);
         }
 
@@ -153,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (key === 'BACKSPACE' || key === 'DELETE') {
             currentGuess = currentGuess.slice(0, -1);
             updateGrid();
-        } else if (/^[A-Z]$/.test(key) && currentGuess.length < wordLength) {
+        } else if (/^[A-ZİĞÜŞÖÇ]$/.test(key) && currentGuess.length < wordLength) {
             currentGuess += key;
             updateGrid();
         }
@@ -164,15 +180,13 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContainer.className = `mt-3 fw-bold text-${type}`;
     }
 
-    // Keyboard events
     window.addEventListener('keydown', (e) => {
         const key = e.key.toUpperCase();
-        if (key === 'BACKSPACE' || /^[A-Z]$/.test(key)) {
+        if (key === 'BACKSPACE' || /^[A-ZİĞÜŞÖÇ]$/.test(key)) {
             handleInput(key);
         }
     });
 
-    // On-screen keyboard events
     keyboardButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             let key = btn.textContent.trim().toUpperCase();

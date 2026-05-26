@@ -41,6 +41,9 @@ async function fetchCategories() {
                     const btnDisabled = isSubscribed ? "disabled" : "";
                     const btnIcon = isSubscribed ? "fa-check-circle" : "fa-plus-circle";
 
+                    const categoryKey = `category_${category.CategoryName.toLowerCase()}`;
+                    const displayName = t(categoryKey) !== categoryKey ? t(categoryKey) : category.CategoryName;
+
                     col.innerHTML = `
                         <div class="custom-card h-100 p-4 text-center position-relative">
                             <div class="topic-actions position-absolute top-0 end-0 p-2">
@@ -54,13 +57,13 @@ async function fetchCategories() {
                             <div class="mb-3 fs-1" style="color: var(--accent);">
                                 <i class="fas ${randomIcon}"></i>
                             </div>
-                            <h4 class="fw-bold mb-2">${category.CategoryName}</h4>
+                            <h4 class="fw-bold mb-2">${displayName}</h4>
                             <div class="d-grid gap-2 mt-3">
                                 <button class="btn ${btnClass} btn-sm rounded-pill subscribe-cat-btn" data-id="${category.Id}" ${btnDisabled}>
                                     <i class="fas ${btnIcon} me-1"></i> ${btnText}
                                 </button>
                                 <a href="my-words.html?category=${category.Id}" class="btn btn-outline-light btn-sm rounded-pill" data-i18n="inspect_btn">
-                                    ${translations[localStorage.getItem("vocabler_lang") || "tr"].inspect_btn}
+                                    ${t('inspect_btn')}
                                 </a>
                             </div>
                         </div>

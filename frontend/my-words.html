@@ -118,16 +118,17 @@
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordType" data-i18n="label_word_type">Kelime Tipi</label>
                                     <select id="wordType" name="wordType" class="form-select" required>
                                         <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
-                                        <option value="Noun" data-i18n="word_type_noun">İsim (Noun)</option>
-                                        <option value="Verb" data-i18n="word_type_verb">Fiil (Verb)</option>
-                                        <option value="Adjective" data-i18n="word_type_adjective">Sıfat (Adj)</option>
-                                        <option value="Adverb" data-i18n="word_type_adverb">Zarf (Adv)</option>
-                                        <option value="Conjunction">Bağlaç (Conj)</option>
+                                        <option value="Noun" data-i18n="word_type_noun">İsim</option>
+                                        <option value="Verb" data-i18n="word_type_verb">Fiil</option>
+                                        <option value="Adjective" data-i18n="word_type_adjective">Sıfat</option>
+                                        <option value="Adverb" data-i18n="word_type_adverb">Zarf</option>
+                                        <option value="Conjunction" data-i18n="word_type_conjunction">Bağlaç</option>
+                                        <option value="Phrase" data-i18n="word_type_phrase">Kalıp</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordPronunciation" data-i18n="label_pronunciation">Okunuşu</label>
-                                    <input type="text" id="wordPronunciation" name="wordPronunciation" class="form-control" placeholder="Örn: /ˌserənˈdipədē/" data-i18n="label_pronunciation">
+                                    <input type="text" id="wordPronunciation" name="wordPronunciation" class="form-control" placeholder="Örn: /ˌserənˈdipədē/" data-i18n-placeholder="placeholder_pronunciation">
                                 </div>
                             </div>
 
@@ -136,22 +137,19 @@
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordLevel" data-i18n="label_level">Zorluk Seviyesi</label>
                                     <select id="wordLevel" name="wordLevel" class="form-select" required>
                                         <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
-                                        <option value="A1">A1 - Başlangıç</option>
-                                        <option value="A2">A2 - Temel</option>
-                                        <option value="B1">B1 - Orta</option>
-                                        <option value="B2">B2 - Üst Orta</option>
-                                        <option value="C1">C1 - İleri</option>
-                                        <option value="C2">C2 - Yetkin</option>
+                                        <option value="A1" data-i18n="level_a1">A1 - Başlangıç</option>
+                                        <option value="A2" data-i18n="level_a2">A2 - Temel</option>
+                                        <option value="B1" data-i18n="level_b1">B1 - Orta</option>
+                                        <option value="B2" data-i18n="level_b2">B2 - Üst Orta</option>
+                                        <option value="C1" data-i18n="level_c1">C1 - İleri</option>
+                                        <option value="C2" data-i18n="level_c2">C2 - Yetkin</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label small fw-bold text-uppercase opacity-75 ms-1" for="wordCategory" data-i18n="label_category">Kategori</label>
                                     <select id="wordCategory" name="wordCategory" class="form-select" required>
                                         <option value="" selected disabled data-i18n="placeholder_select">Seçiniz</option>
-                                        <option value="1">Genel</option>
-                                        <option value="2">Mutfak</option>
-                                        <option value="3">Seyahat</option>
-                                        <option value="7">Teknoloji</option>
+                                        <!-- Kategoriler JS ile dolacak -->
                                     </select>
                                 </div>
                             </div>

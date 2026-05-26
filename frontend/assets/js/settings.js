@@ -49,6 +49,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (profileData.status === "success") {
             const user = profileData.user;
             
+            // Veritabanından gelen güncel bilgiyi yerel hafızaya da yaz (Dil senkronizasyonu için kritik)
+            localStorage.setItem("vocabler_user", JSON.stringify(user));
+            if (user.NativeLangCode && typeof applyLanguage === "function") {
+                localStorage.setItem("vocabler_lang", user.NativeLangCode);
+                applyLanguage(user.NativeLangCode);
+            }
+
             // Veritabanından gelen Ad ve Soyadı birleştirerek tam isim oluştur
             const firstName = user.Name || "";
             const lastName = user.Surname || "";
@@ -102,19 +109,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             const result = await res.json();
             if (result.status === "success") {
                 showToast(t('msg_update_success'), "success");
-                // LocalStorage'daki user verisini de güncelle
-                const localUser = JSON.parse(localStorage.getItem("vocabler_user") || "{}");
                 
-                // Gelen verideki küçük harfli anahtarları veritabanı formatına (Büyük harf) çevirerek sakla
-                const updatedData = {
-                    Name: data.name || localUser.Name,
-                    Surname: data.surname || localUser.Surname,
-                    NativeLangId: data.nativeLangId || localUser.NativeLangId,
-                    CurrentTargetLangId: data.targetLangId || localUser.CurrentTargetLangId,
-                    DailyWord: data.dailyWord || localUser.DailyWord
-                };
+                // Sunucudan gelen tam ve güncel kullanıcı objesini sakla
+                if (result.user) {
+                    localStorage.setItem("vocabler_user", JSON.stringify(result.user));
+                }
                 
-                localStorage.setItem("vocabler_user", JSON.stringify({...localUser, ...updatedData}));
                 setTimeout(() => location.reload(), 1500); 
             } else {
                 showToast(t('msg_update_error') + ": " + result.message, "error");

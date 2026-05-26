@@ -244,7 +244,7 @@ try {
         ob_clean();
     }
     header(CONTENT_TYPE_JSON);
-    echo json_encode(['status' => 'success', 'data' => ['storyId' => $storyId, 'story' => $storyText, 'imageUrl' => $imageUrl]], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'success', 'data' => ['storyId' => $storyId, 'story' => $storyText, 'imageUrl' => $imageUrl, 'words' => $words, 'mappings' => $wordMappings]], JSON_UNESCAPED_UNICODE);
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();

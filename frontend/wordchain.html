@@ -18,26 +18,99 @@
         })();
     </script>
     <style>
-        .word-display {
+        .story-container {
             background: var(--card);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 25px 40px;
-            margin-bottom: 30px;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--accent);
-            text-transform: uppercase;
+            padding: 25px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .story-image {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+            max-height: 400px;
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text);
+            margin-top: 20px;
+            white-space: pre-line;
+        }
+        .story-text span {
+            font-weight: bold;
+            color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .word-chain-badge {
+            background: var(--bg);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
             display: inline-block;
+            margin: 5px;
+            font-size: 0.9rem;
         }
-        .input-area {
-            max-width: 450px;
-            margin: 0 auto;
+        .word-chain-arrow {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            vertical-align: middle;
+            margin: 0 5px;
         }
-        @media (max-width: 576px) {
-            .word-display { font-size: 1.4rem; padding: 15px 25px; }
+        .history-card {
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .history-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .history-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .history-words {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .history-text-snippet {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-grow: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        .loader-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            z-index: 10;
+        }
+        .light-theme .loader-overlay {
+            background: rgba(255,255,255,0.7);
         }
     </style>
 </head>
@@ -78,25 +151,103 @@
                 <h5 class="mb-0 fw-bold" data-i18n="nav_chain">Kelime Zinciri</h5>
             </div>
             <a href="settings.html" class="profile-pill">
-                <img alt="Avatar">
+                <img alt="Avatar" id="userAvatar">
                 <span class="fw-medium small d-none d-sm-inline userNameDisplay"></span>
             </a>
         </header>
 
-        <div class="container-fluid p-4 text-center">
-            <div class="custom-card py-5">
-                <h2 class="fw-bold mb-5" data-i18n="nav_chain">Kelime Zinciri</h2>
-                <p class=" mb-3" data-i18n="feature_chain_desc">Yeni kelime, önceki kelimenin son harfiyle başlamalıdır.</p>
-                <div class="word-display">BAŞLANGIÇ</div>
-                <div class="input-area mt-4">
-                    <div class="input-group input-group-lg">
-                        <input type="text" class="form-control" placeholder="Yeni kelimeyi girin..." data-i18n="placeholder_search_word">
-                        <button class="btn btn-primary px-4" data-i18n="btn_save">Gönder</button>
+        <div class="container-fluid p-4">
+            
+            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+                <div>
+                    <h2 class="fw-bold mb-1" data-i18n="nav_chain">Kelime Zinciri</h2>
+                    <p class="text-muted mb-0" data-i18n="feature_chain_desc">Listenizdeki kelimelerden otomatik zincir ve hikaye oluşturun.</p>
+                </div>
+                <div>
+                    <button id="autoFillBtn" class="btn btn-outline-primary btn-lg px-4 shadow-sm me-2 mb-2 mb-sm-0">
+                        <i class="fas fa-magic me-2"></i> <span data-i18n="btn_auto_fill">Otomatik Doldur</span>
+                    </button>
+                    <button id="generateBtn" class="btn btn-primary btn-lg px-4 shadow-sm mb-2 mb-sm-0">
+                        <i class="fas fa-book-open me-2"></i> <span data-i18n="btn_generate_story">Hikaye Oluştur</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="story-container mb-4">
+                <div class="row gx-2 justify-content-center align-items-center" id="wordInputsContainer">
+                    <div class="col-12 col-sm-auto mb-2"><input type="text" id="word1" class="form-control form-control-lg text-center fw-bold text-uppercase word-input" style="min-width: 140px;" data-i18n-placeholder="placeholder_word_1" list="wordList"></div>
+                    <div class="col-auto mb-2 d-none d-sm-block"><i class="fas fa-arrow-right word-chain-arrow"></i></div>
+                    <div class="col-12 col-sm-auto mb-2"><input type="text" id="word2" class="form-control form-control-lg text-center fw-bold text-uppercase word-input" style="min-width: 140px;" data-i18n-placeholder="placeholder_word_2" list="wordList"></div>
+                    <div class="col-auto mb-2 d-none d-sm-block"><i class="fas fa-arrow-right word-chain-arrow"></i></div>
+                    <div class="col-12 col-sm-auto mb-2"><input type="text" id="word3" class="form-control form-control-lg text-center fw-bold text-uppercase word-input" style="min-width: 140px;" data-i18n-placeholder="placeholder_word_3" list="wordList"></div>
+                    <div class="col-auto mb-2 d-none d-sm-block"><i class="fas fa-arrow-right word-chain-arrow"></i></div>
+                    <div class="col-12 col-sm-auto mb-2"><input type="text" id="word4" class="form-control form-control-lg text-center fw-bold text-uppercase word-input" style="min-width: 140px;" data-i18n-placeholder="placeholder_word_4" list="wordList"></div>
+                    <div class="col-auto mb-2 d-none d-sm-block"><i class="fas fa-arrow-right word-chain-arrow"></i></div>
+                    <div class="col-12 col-sm-auto mb-2"><input type="text" id="word5" class="form-control form-control-lg text-center fw-bold text-uppercase word-input" style="min-width: 140px;" data-i18n-placeholder="placeholder_word_5" list="wordList"></div>
+                </div>
+                <datalist id="wordList"></datalist>
+                <div id="chainErrorMsg" class="text-danger mt-2 text-center d-none small"></div>
+            </div>
+
+            <!-- Current Story Display -->
+            <div id="currentStorySection" style="display: none; position: relative;">
+                <div class="loader-overlay" id="storyLoader">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Yükleniyor...</span>
+                    </div>
+                </div>
+                <div class="story-container">
+                    <div class="text-center mb-4" id="wordChainDisplay">
+                        <!-- Words will be injected here -->
+                    </div>
+                    
+                    <div class="row align-items-center">
+                        <div class="col-lg-5 mb-4 mb-lg-0 text-center">
+                            <img id="storyImage" src="" alt="Story Image" class="story-image shadow-sm d-none">
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="story-text" id="storyText">
+                                <!-- Story text will be injected here -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- History Section -->
+            <div class="mt-5">
+                <h4 class="fw-bold mb-4 border-bottom pb-2 border-secondary"><i class="fas fa-history me-2"></i> <span data-i18n="history_title">Geçmiş Hikayeler</span></h4>
+                <div class="row g-4" id="historyGrid">
+                    <!-- History cards will be injected here -->
+                </div>
+                <div id="noHistoryMsg" class="text-center text-muted my-5 d-none">
+                    <i class="fas fa-folder-open fs-1 mb-3"></i>
+                    <p data-i18n="msg_no_history">Henüz oluşturulmuş bir hikayeniz bulunmuyor.</p>
+                </div>
+            </div>
+
         </div>
     </main>
+</div>
+
+<!-- Modal for viewing a past story in full -->
+<div class="modal fade" id="storyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background: var(--card); color: var(--text);">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title fw-bold" data-i18n="modal_title">Hikaye Detayı</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="text-center mb-4" id="modalWordChain"></div>
+                <div class="text-center mb-4">
+                    <img id="modalImage" src="" alt="Story Image" class="img-fluid rounded shadow-sm" style="max-height: 400px; width: 100%; object-fit: cover;">
+                </div>
+                <div class="story-text" id="modalText"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -110,5 +261,344 @@
 <script src="assets/js/theme.js"></script>
 <script src="assets/js/translations.js"></script>
 <script src="assets/js/auth.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        loadHistory();
+        loadWordPool();
+
+        document.getElementById('generateBtn').addEventListener('click', generateStory);
+        document.getElementById('autoFillBtn').addEventListener('click', autoFillWords);
+    });
+
+    async function loadWordPool() {
+        try {
+            const token = localStorage.getItem('vocabler_token');
+            const response = await fetch(`${API_BASE_URL}/words/get_words.php?mode=all`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success' && result.words) {
+                const list = document.getElementById('wordList');
+                list.innerHTML = '';
+                const uniqueWords = [...new Set(result.words.map(w => w.EnglishTranslation.trim()))];
+                uniqueWords.forEach(word => {
+                    const option = document.createElement('option');
+                    option.value = word;
+                    list.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Error loading word pool:', error);
+        }
+    }
+
+    async function autoFillWords() {
+        const btn = document.getElementById('autoFillBtn');
+        const errBox = document.getElementById('chainErrorMsg');
+        const originalHtml = btn.innerHTML;
+        
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        errBox.classList.add('d-none');
+
+        try {
+            const token = localStorage.getItem('vocabler_token');
+            const response = await fetch(`${API_BASE_URL}/words/get_words.php?mode=all`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success' && result.words && result.words.length > 0) {
+                // Collect target words (EnglishTranslation in the returned model usually)
+                const pool = [...new Set(result.words.map(w => w.EnglishTranslation.trim()))].filter(w => w.length > 0);
+                
+                // Shuffle to get different chains
+                pool.sort(() => Math.random() - 0.5);
+                
+                const chain = findValidChainJs(pool, 5);
+                if (chain) {
+                    for(let i = 0; i < 5; i++) {
+                        document.getElementById('word' + (i+1)).value = chain[i];
+                    }
+                } else {
+                    errBox.innerText = 'Kelime havuzunuzda geçerli bir 5 kelimelik zincir bulunamadı.';
+                    errBox.classList.remove('d-none');
+                }
+            } else {
+                errBox.innerText = 'Kelime havuzunuz boş veya yeterli kelime yok.';
+                errBox.classList.remove('d-none');
+            }
+        } catch (error) {
+            console.error('Error auto-filling words:', error);
+            errBox.innerText = 'Kelimeler getirilirken bir hata oluştu.';
+            errBox.classList.remove('d-none');
+        } finally {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+        }
+    }
+
+    function findValidChainJs(words, goal) {
+        if (!words || words.length === 0) return null;
+        
+        function backtrack(current, remaining) {
+            if (current.length === goal) return current;
+            
+            for (let i = 0; i < remaining.length; i++) {
+                const word = remaining[i];
+                const lastWord = current[current.length - 1].toLowerCase();
+                const nextWord = word.toLowerCase();
+                
+                if (lastWord.slice(-1) === nextWord.charAt(0)) {
+                    const newRemaining = [...remaining];
+                    newRemaining.splice(i, 1);
+                    const res = backtrack([...current, word], newRemaining, goal);
+                    if (res) return res;
+                }
+            }
+            return null;
+        }
+        
+        for (let i = 0; i < words.length; i++) {
+            const remaining = [...words];
+            remaining.splice(i, 1);
+            const res = backtrack([words[i]], remaining, goal);
+            if (res) return res;
+        }
+        return null;
+    }
+
+    async function generateStory() {
+        const btn = document.getElementById('generateBtn');
+        const section = document.getElementById('currentStorySection');
+        const loader = document.getElementById('storyLoader');
+        const errBox = document.getElementById('chainErrorMsg');
+        
+        let words = [];
+        let emptyCount = 0;
+        for(let i=1; i<=5; i++) {
+            const val = document.getElementById('word' + i).value.trim();
+            if (!val) emptyCount++;
+            words.push(val);
+        }
+
+        // Backend expects either 5 words or empty array for auto-generation.
+        // We will send what the user has. If they have partial, backend logic will validate.
+        const payloadWords = (emptyCount === 5) ? [] : words;
+
+        errBox.classList.add('d-none');
+        
+        btn.disabled = true;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> ${t('btn_generating')}`;
+        
+        section.style.display = 'block';
+        loader.style.display = 'flex';
+
+        try {
+            const token = localStorage.getItem('vocabler_token');
+            const response = await fetch(`${API_BASE_URL}/wordchain/generate.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ words: payloadWords })
+            });
+
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                if (result.data.words && result.data.words.length === 5) {
+                    for(let i=0; i<5; i++) {
+                        document.getElementById('word' + (i+1)).value = result.data.words[i];
+                    }
+                }
+                displayCurrentStory(result.data.story, result.data.imageUrl, result.data.words, result.data.mappings);
+                loadHistory();
+            } else {
+                alert(result.message || 'Hikaye oluşturulurken bir hata oluştu.');
+                section.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error generating story:', error);
+            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            section.style.display = 'none';
+        } finally {
+            loader.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
+
+    function formatStoryText(text) {
+        return text;
+    }
+
+    function buildWordChainHtml(words, mappings = {}) {
+        if(!words) return '';
+        const wordList = typeof words === 'string' ? words.split(',').map(w => w.trim()) : words;
+        let html = '';
+        wordList.forEach((word, index) => {
+            const native = mappings[word] || word;
+            html += `<span class="word-chain-badge" title="${native}">${word}</span>`;
+            if (index < wordList.length - 1) {
+                html += `<i class="fas fa-arrow-right word-chain-arrow"></i>`;
+            }
+        });
+        return html;
+    }
+
+    function displayCurrentStory(storyText, imageUrl, wordsArr, mappings = {}) {
+        const textContainer = document.getElementById('storyText');
+        const imgElement = document.getElementById('storyImage');
+        const chainDisplay = document.getElementById('wordChainDisplay');
+
+        // Parse story text to add title attributes for tooltips
+        let processedText = storyText;
+        Object.entries(mappings).forEach(([target, native]) => {
+            const regex = new RegExp(`<span>${target}</span>`, 'gi');
+            processedText = processedText.replace(regex, `<span title="${native}">${target}</span>`);
+        });
+
+        textContainer.innerHTML = processedText;
+        
+        let words = wordsArr;
+        if (!words || words.length === 0) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = storyText;
+            const spanElements = tempDiv.querySelectorAll('span');
+            words = [];
+            spanElements.forEach(span => words.push(span.innerText.trim()));
+        }
+        
+        chainDisplay.innerHTML = buildWordChainHtml(words, mappings);
+
+        if (imageUrl) {
+            let finalImageUrl = imageUrl;
+            if (imageUrl.startsWith('uploads/')) {
+                finalImageUrl = `${API_BASE_URL}/../${imageUrl}`;
+            }
+            imgElement.src = finalImageUrl;
+            imgElement.classList.remove('d-none');
+        } else {
+            imgElement.classList.add('d-none');
+        }
+    }
+
+    let historyStories = [];
+
+    async function loadHistory() {
+        try {
+            const token = localStorage.getItem('vocabler_token');
+            const response = await fetch(`${API_BASE_URL}/wordchain/get_history.php`, {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            });
+            const result = await response.json();
+            
+            const grid = document.getElementById('historyGrid');
+            const noMsg = document.getElementById('noHistoryMsg');
+            grid.innerHTML = '';
+
+            if (result.status === 'success' && result.stories && result.stories.length > 0) {
+                noMsg.classList.add('d-none');
+                historyStories = result.stories;
+                
+                result.stories.forEach(story => {
+                    let imgUrl = story.ImageUrl;
+                    if (imgUrl && imgUrl.startsWith('uploads/')) {
+                        imgUrl = `${API_BASE_URL}/../${imgUrl}`;
+                    }
+                    
+                    const card = document.createElement('div');
+                    card.className = 'col-md-6 col-lg-4 col-xl-3';
+                    
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = story.StoryText;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || "";
+                    
+                    const wordsHtml = story.Words.split(',').map(w => w.trim().toUpperCase()).join(' &rarr; ');
+
+                    card.innerHTML = `
+                        <div class="history-card">
+                            <img src="${imgUrl}" class="history-image" onerror="this.src='assets/img/placeholder.png'" alt="Story Image" style="cursor: pointer" onclick="openModal(${story.Id})">
+                            <div class="history-content">
+                                <div class="history-words text-truncate" title="${story.Words}">${wordsHtml}</div>
+                                <div class="history-text-snippet mb-3" style="cursor: pointer" onclick="openModal(${story.Id})">${plainText}</div>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">${new Date(story.CreatedAt).toLocaleDateString()}</small>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteStory(${story.Id}, this)"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } else {
+                noMsg.classList.remove('d-none');
+                historyStories = [];
+            }
+        } catch (error) {
+            console.error('Error loading history:', error);
+        }
+    }
+
+    window.openModal = function(storyId) {
+        const story = historyStories.find(s => s.Id === storyId);
+        if (!story) return;
+        
+        const modal = new bootstrap.Modal(document.getElementById('storyModal'));
+        document.getElementById('modalWordChain').innerHTML = buildWordChainHtml(story.Words);
+        
+        let imgUrl = story.ImageUrl;
+        if (imgUrl && imgUrl.startsWith('uploads/')) {
+            imgUrl = `${API_BASE_URL}/../${imgUrl}`;
+        }
+        document.getElementById('modalImage').src = imgUrl;
+        document.getElementById('modalText').innerHTML = formatStoryText(story.StoryText);
+        
+        modal.show();
+    };
+
+    window.deleteStory = async function(storyId, btnElement) {
+        if (!confirm('Bu hikayeyi silmek istediğinize emin misiniz?')) return;
+        
+        const originalHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+        btnElement.disabled = true;
+
+        try {
+            const token = localStorage.getItem('vocabler_token');
+            const response = await fetch(`${API_BASE_URL}/wordchain/delete_story.php`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({ storyId: storyId })
+            });
+            const result = await response.json();
+            
+            if (result.status === 'success') {
+                // If the currently displayed story was deleted, hide it
+                // We don't have the current story ID easily accessible in DOM, but reloading history works
+                document.getElementById('currentStorySection').style.display = 'none';
+                loadHistory();
+            } else {
+                alert(result.message || 'Silinirken bir hata oluştu.');
+                btnElement.innerHTML = originalHtml;
+                btnElement.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error deleting story:', error);
+            alert('Bir hata oluştu.');
+            btnElement.innerHTML = originalHtml;
+            btnElement.disabled = false;
+        }
+    };
+</script>
 </body>
-</html>
+</html></html>

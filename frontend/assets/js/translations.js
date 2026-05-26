@@ -66,6 +66,18 @@ const translations = {
         "wordle_success": "Tebrikler! Bildiniz. 🎉",
         "wordle_fail": "Kaybettiniz! Kelime",
         "wordle_load_error": "Kelime yüklenemedi",
+        "btn_new_word": "Yeni Kelime",
+        "placeholder_word_1": "1. Kelime",
+        "placeholder_word_2": "2. Kelime",
+        "placeholder_word_3": "3. Kelime",
+        "placeholder_word_4": "4. Kelime",
+        "placeholder_word_5": "5. Kelime",
+        "btn_auto_fill": "Otomatik Doldur",
+        "btn_generate_story": "Hikaye Oluştur",
+        "btn_generating": "Oluşturuluyor...",
+        "history_title": "Geçmiş Hikayeler",
+        "modal_title": "Hikaye Detayı",
+        "msg_no_history": "Henüz oluşturulmuş bir hikayeniz bulunmuyor.",
         "quiz_options": "Seçenekler:",
         "quiz_question": "Soru",
         "quiz_total": "Toplam",
@@ -83,7 +95,6 @@ const translations = {
         "quiz_quota_reached_title": "Günlük Hedefine Ulaştın!",
         "quiz_quota_reached_text": "Bugünlük tüm kelimelerini tamamladın. Yeni kelimeler için yarını bekle!",
         "label_next_quiz": "Sonraki Quiz:",
-        "feature_topics_title": "Konular",
         "quiz_meaning": "Anlam",
         "quiz_sample_sentence": "Örnek Cümle",
         "word_type_noun": "İsim",
@@ -92,6 +103,12 @@ const translations = {
         "word_type_conjunction": "Bağlaç",
         "word_type_adverb": "Zarf",
         "word_type_phrase": "Kalıp",
+        "level_a1": "A1 - Başlangıç",
+        "level_a2": "A2 - Temel",
+        "level_b1": "B1 - Orta",
+        "level_b2": "B2 - Üst Orta",
+        "level_c1": "C1 - İleri",
+        "level_c2": "C2 - Yetkin",
         "label_new_word": "Yeni Kelime Ekle",
         "label_main_word": "Kelime",
         "label_target_word": "Anlamı",
@@ -134,7 +151,7 @@ const translations = {
         "msg_no_words_found": "Henüz kelime eklenmemiş veya arama sonucu bulunamadı.",
         "login_title": "Öğrenmeye kaldığın yerden devam et",
         "register_title": "Kelime dünyasına adım at",
-        "label_email": "E-posta Adresi",
+        "label_email": "E-posta veya Kullanıcı Adı",
         "label_password": "Şifre",
         "label_name": "Ad",
         "label_surname": "Soyad",
@@ -146,6 +163,7 @@ const translations = {
         "link_no_account": "Hesabın yok mu? Hemen Kayıt Ol",
         "link_have_account": "Zaten hesabın var mı? Giriş Yap",
         "btn_back_home": "Ana Sayfaya Dön",
+        "placeholder_login_id": "e-posta veya kullanıcı adı",
         "placeholder_email": "örnek@gmail.com",
         "placeholder_name": "Adınız",
         "placeholder_surname": "Soyadınız",
@@ -175,7 +193,20 @@ const translations = {
         "msg_fill_required": "Lütfen tüm zorunlu alanları doldurun.",
         "msg_connection_error": "Bağlantı hatası.",
         "msg_list_error": "Listeleme sırasında bir hata oluştu.",
-        "msg_invalid_input": "Geçersiz giriş."
+        "msg_invalid_input": "Geçersiz giriş.",
+        "category_education": "Eğitim",
+        "category_science": "Bilim",
+        "category_technology": "Teknoloji",
+        "category_business": "İş Dünyası",
+        "category_art": "Sanat",
+        "category_health": "Sağlık",
+        "category_travel": "Seyahat",
+        "category_food": "Yemek",
+        "category_sports": "Spor",
+        "category_general": "Genel",
+        "category_cooking": "Mutfak",
+        "category_entertainment": "Eğlence",
+        "category_nature": "Doğa"
     },
     "en": {
         "inspect_btn": "Review",
@@ -244,6 +275,18 @@ const translations = {
         "wordle_success": "Congratulations! You found it. 🎉",
         "wordle_fail": "You lost! The word was",
         "wordle_load_error": "Failed to load word",
+        "btn_new_word": "New Word",
+        "placeholder_word_1": "1st Word",
+        "placeholder_word_2": "2nd Word",
+        "placeholder_word_3": "3rd Word",
+        "placeholder_word_4": "4th Word",
+        "placeholder_word_5": "5th Word",
+        "btn_auto_fill": "Auto Fill",
+        "btn_generate_story": "Generate Story",
+        "btn_generating": "Generating...",
+        "history_title": "Past Stories",
+        "modal_title": "Story Details",
+        "msg_no_history": "You don't have any stories yet.",
         "quiz_options": "Options:",
         "quiz_question": "Question",
         "quiz_total": "Total",
@@ -261,7 +304,6 @@ const translations = {
         "quiz_quota_reached_title": "Daily Goal Reached!",
         "quiz_quota_reached_text": "You've completed all your words for today. Wait until tomorrow for new words!",
         "label_next_quiz": "Next Quiz In:",
-        "feature_topics_title": "Topics",
         "quiz_meaning": "Meaning",
         "quiz_sample_sentence": "Sample Sentence",
         "word_type_noun": "Noun",
@@ -270,6 +312,12 @@ const translations = {
         "word_type_conjunction": "Conjunction",
         "word_type_adverb": "Adverb",
         "word_type_phrase": "Phrase",
+        "level_a1": "A1 - Beginner",
+        "level_a2": "A2 - Elementary",
+        "level_b1": "B1 - Intermediate",
+        "level_b2": "B2 - Upper Intermediate",
+        "level_c1": "C1 - Advanced",
+        "level_c2": "C2 - Mastery",
         "label_new_word": "Add New Word",
         "label_main_word": "Word",
         "label_target_word": "Meaning",
@@ -312,18 +360,19 @@ const translations = {
         "msg_no_words_found": "No words added yet or no search results found.",
         "login_title": "Continue learning from where you left off",
         "register_title": "Step into the world of words",
-        "label_email": "Email Address",
+        "label_email": "Email or Username",
         "label_password": "Password",
-        "label_name": "First Name",
-        "label_surname": "Last Name",
+        "label_name": "Name",
+        "label_surname": "Surname",
         "label_username": "Username",
-        "label_forgot_password": "Forgot Password?",
+        "label_forgot_password": "Forgot Password",
         "btn_login": "Login",
         "btn_register": "Register",
         "btn_select_picture": "Select Image",
         "link_no_account": "Don't have an account? Register Now",
         "link_have_account": "Already have an account? Login",
         "btn_back_home": "Back to Home",
+        "placeholder_login_id": "email or username",
         "placeholder_email": "example@gmail.com",
         "placeholder_name": "Your name",
         "placeholder_surname": "Your surname",
@@ -353,29 +402,35 @@ const translations = {
         "msg_fill_required": "Please fill in all required fields.",
         "msg_connection_error": "Connection error.",
         "msg_list_error": "An error occurred during listing.",
-        "msg_invalid_input": "Invalid input."
+        "msg_invalid_input": "Invalid input.",
+        "category_education": "Education",
+        "category_science": "Science",
+        "category_technology": "Technology",
+        "category_business": "Business",
+        "category_art": "Art",
+        "category_health": "Health",
+        "category_travel": "Travel",
+        "category_food": "Food",
+        "category_sports": "Sports",
+        "category_general": "General",
+        "category_cooking": "Cooking",
+        "category_entertainment": "Entertainment",
+        "category_nature": "Nature"
     }
 };
 
 function applyLanguage(langCode) {
     const dictionary = translations[langCode] || translations['tr'];
-    const elements = document.querySelectorAll("[data-i18n]");
     
+    // Process standard i18n
+    const elements = document.querySelectorAll("[data-i18n]");
     elements.forEach(el => {
         const key = el.getAttribute("data-i18n");
         const translation = dictionary[key];
-
         if (translation) {
             if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
-                if (key.startsWith("placeholder_")) {
-                    el.setAttribute("placeholder", translation);
-                } else if (el.type === "submit" || el.type === "button") {
+                if (el.type === "submit" || el.type === "button") {
                     el.value = translation;
-                } else {
-                    const placeholderKey = `placeholder_${key.replace('label_', '').replace('nav_', '')}`;
-                    if (dictionary[placeholderKey]) {
-                        el.setAttribute("placeholder", dictionary[placeholderKey]);
-                    }
                 }
             } else {
                 if (translation.includes("<")) {
@@ -384,6 +439,16 @@ function applyLanguage(langCode) {
                     el.textContent = translation;
                 }
             }
+        }
+    });
+
+    // Process placeholders explicitly
+    const placeholderElements = document.querySelectorAll("[data-i18n-placeholder]");
+    placeholderElements.forEach(el => {
+        const key = el.getAttribute("data-i18n-placeholder");
+        const translation = dictionary[key];
+        if (translation) {
+            el.setAttribute("placeholder", translation);
         }
     });
 

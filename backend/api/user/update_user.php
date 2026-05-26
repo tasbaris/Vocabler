@@ -41,7 +41,23 @@ if (empty($updates)) {
 try {
     $sql = "UPDATE Users SET " . implode(', ', $updates) . " WHERE Id = :id";
     $pdo->prepare($sql)->execute($params);
-    echo json_encode(['status' => 'success', 'message' => 'Kullanici bilgileri ve ayarlar guncellendi.']);
+
+    // Fetch updated user data with joined LangCode
+    $stmt = $pdo->prepare("
+        SELECT u.*, l.LangCode as NativeLangCode 
+        FROM Users u 
+        LEFT JOIN Languages l ON u.NativeLangId = l.Id 
+        WHERE u.Id = ?
+    ");
+    $stmt->execute([$userId]);
+    $updatedUser = $stmt->fetch();
+    unset($updatedUser['PasswordHash']);
+
+    echo json_encode([
+        'status' => 'success', 
+        'message' => 'Kullanici bilgileri ve ayarlar guncellendi.',
+        'user' => $updatedUser
+    ]);
 } catch (\PDOException $e) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatasi.']);

@@ -219,8 +219,8 @@ function renderWordsTable() {
       const tr = document.createElement("tr");
       tr.className = "align-middle word-row";
 
-      const en = word.EnglishTranslation || "";
-      const trWord = word.TurkishTranslation || "";
+      const targetWord = word.EnglishTranslation || "";
+      const nativeWord = word.TurkishTranslation || "";
       const pronunciation = word.Pronunciation || "";
       const level = word.Level || "";
       const categoryName = word.CategoryName || "Genel";
@@ -251,6 +251,9 @@ function renderWordsTable() {
 
       const imgHtml = picture ? `<img src="${picture}" class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">` : `<div class="rounded me-2 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.05);"><i class="fas fa-image opacity-25"></i></div>`;
 
+      const categoryKey = `category_${categoryName.toLowerCase()}`;
+      const translatedCategory = dict[categoryKey] || categoryName;
+
       tr.innerHTML = `
         <td class="text-center">
             <input class="form-check-input word-checkbox" type="checkbox" value="${word.Id}">
@@ -259,13 +262,13 @@ function renderWordsTable() {
           <div class="d-flex align-items-center">
             ${imgHtml}
             <div>
-              <div class="fw-bold word-en">${en}</div>
+              <div class="fw-bold target-word-display">${targetWord}</div>
               <div class="small opacity-50">${pronunciation}</div>
             </div>
           </div>
         </td>
         <td>
-          <div class="opacity-75 word-tr">${trWord}</div>
+          <div class="opacity-75 native-word-display">${nativeWord}</div>
         </td>
         <td class="text-center">
             <span class="small opacity-50">${translatedType}</span>
@@ -274,7 +277,7 @@ function renderWordsTable() {
             <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1">${level}</span>
         </td>
         <td class="text-center">
-            <span class="small opacity-50">${categoryName}</span>
+            <span class="small opacity-50">${translatedCategory}</span>
         </td>
         <td class="text-center">
             ${rankHtml}
@@ -403,8 +406,11 @@ document.addEventListener("DOMContentLoaded", () => {
         let options = `<option value="" selected disabled>${t('placeholder_select')}</option>`;
         let filterOptions = `<option value="">${t('filter_all_categories')}</option>`;
         result.data.forEach(cat => {
-          options += `<option value="${cat.Id}">${cat.CategoryName}</option>`;
-          filterOptions += `<option value="${cat.Id}">${cat.CategoryName}</option>`;
+          const categoryKey = `category_${cat.CategoryName.toLowerCase()}`;
+          const displayName = t(categoryKey) !== categoryKey ? t(categoryKey) : cat.CategoryName;
+          
+          options += `<option value="${cat.Id}">${displayName}</option>`;
+          filterOptions += `<option value="${cat.Id}">${displayName}</option>`;
         });
         categorySelect.innerHTML = options;
         if(filterCategory) filterCategory.innerHTML = filterOptions;

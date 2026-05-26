@@ -12,7 +12,7 @@ try {
     $stmtProfile = $pdo->prepare("
         SELECT u.Id, u.Name, u.Surname, u.Email, u.UserName, u.DailyWord, u.Level, u.StreakDays,
                n.LangName as NativeLanguage, t.LangName as TargetLanguage,
-               u.NativeLangId, u.CurrentTargetLangId
+               u.NativeLangId, u.CurrentTargetLangId, n.LangCode as NativeLangCode
         FROM Users u
         LEFT JOIN Languages n ON u.NativeLangId = n.Id
         LEFT JOIN Languages t ON u.CurrentTargetLangId = t.Id

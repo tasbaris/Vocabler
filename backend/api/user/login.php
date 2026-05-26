@@ -44,8 +44,15 @@ if (!$identifier || !$password) {
 }
 
 try {
-    // Kullanıcıyı veritabanında e-posta adresi VEYA kullanıcı adına göre arıyoruz
-    $stmt = $pdo->prepare("SELECT Id, Name, Surname, Email, UserName, PasswordHash, DailyWord, NativeLangId, CurrentTargetLangId, StreakDays, Active FROM Users WHERE Email = :id1 OR UserName = :id2");
+    // Join with Languages to get the actual LangCode (tr, en etc.)
+    $stmt = $pdo->prepare("
+        SELECT u.Id, u.Name, u.Surname, u.Email, u.UserName, u.PasswordHash, u.DailyWord, u.Level, 
+               u.NativeLangId, u.CurrentTargetLangId, u.StreakDays, u.Active,
+               l.LangCode as NativeLangCode
+        FROM Users u 
+        LEFT JOIN Languages l ON u.NativeLangId = l.Id
+        WHERE u.Email = :id1 OR u.UserName = :id2
+    ");
     $stmt->execute(['id1' => $identifier, 'id2' => $identifier]);
     $user = $stmt->fetch();
 
