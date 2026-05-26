@@ -18,6 +18,8 @@ services:
     build: ./api
     container_name: vocabler_api
     restart: always
+    env_file:
+      - .env
     ports:
       - "8080:80"
     volumes:

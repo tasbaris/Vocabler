@@ -38,7 +38,7 @@ try {
     // 3. Optional: Delete the local image file if it exists
     $imageUrl = $story['ImageUrl'];
     if (strpos($imageUrl, 'uploads/stories/') !== false) {
-        $filePath = '../../' . $imageUrl;
+        $filePath = '../' . $imageUrl;
         if (file_exists($filePath)) {
             @unlink($filePath);
         }

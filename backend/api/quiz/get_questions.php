@@ -112,6 +112,8 @@ try {
         $imageUrl = null;
         $correctAnswer = "";
         $options = [];
+        $promptKey = "quiz_prompt_word";
+        $promptLangName = "";
 
         if ($type === 'Flashcard') {
             if (rand(0, 1)) {
@@ -122,25 +124,25 @@ try {
                 $correctAnswer = $word['NativeWord'];
             }
             $imageUrl = $word['Picture'];
+            $promptKey = "quiz_flashcard_label";
         } else {
             $isImageQuestion = ($type === 'Image');
             if ($isImageQuestion) {
-                // Localized question text for image
-                $questionText = ($nativeLangId == 1) ? "Bu görseldeki kelimenin $targetLangName karşılığı nedir?" : "What is the $targetLangName word for this image?";
+                $promptKey = "quiz_prompt_image";
+                $promptLangName = $targetLangName;
                 $imageUrl = $word['Picture'];
                 $correctAnswer = $word['TargetWord'];
                 $type = 'Multiple Choice';
             } else {
                 if (rand(0, 1)) {
                     $questionText = $word['NativeWord'];
-                    $prompt = ($nativeLangId == 1) ? "Bu kelimenin $targetLangName karşılığı nedir?" : "What is the $targetLangName word for this?";
+                    $promptLangName = $targetLangName;
                     $correctAnswer = $word['TargetWord'];
                 } else {
                     $questionText = $word['TargetWord'];
-                    $prompt = ($nativeLangId == 1) ? "Bu kelimenin $nativeLangName karşılığı nedir?" : "What is the $nativeLangName word for this?";
+                    $promptLangName = $nativeLangName;
                     $correctAnswer = $word['NativeWord'];
                 }
-                $questionText = "<small class='opacity-50 d-block mb-2' style='font-size: 0.9rem;'>$prompt</small> " . $questionText;
             }
 
             $stmtDist = $pdo->prepare("
@@ -163,6 +165,8 @@ try {
             'WordId' => $wordId,
             'QuestionType' => $type,
             'QuestionText' => $questionText,
+            'PromptKey' => $promptKey,
+            'PromptLangName' => $promptLangName,
             'ImageUrl' => $imageUrl,
             'Options' => $options,
             'CorrectAnswer' => $correctAnswer,

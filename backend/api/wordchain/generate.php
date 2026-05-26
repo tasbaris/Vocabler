@@ -75,6 +75,13 @@ function verifyUserWords($pdo, $userId, $words) {
     }
 }
 
+// Get user language settings
+$stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId FROM Users WHERE Id = ?");
+$stmtUser->execute([$userId]);
+$userSettings = $stmtUser->fetch();
+$nativeLangId = $userSettings['NativeLangId'] ?? 1;
+$targetLangId = $userSettings['CurrentTargetLangId'] ?? 2;
+
 $input = json_decode(file_get_contents('php://input'), true);
 $inputWords = isset($input['words']) ? array_filter($input['words']) : [];
 
@@ -86,9 +93,9 @@ if (!$validChain || count($validChain) < 2) {
             SELECT wt.Translation
             FROM WordTranslations wt
             JOIN UserWords uw ON wt.WordId = uw.WordId
-            WHERE uw.UserId = ? AND wt.LangId = 2
+            WHERE uw.UserId = ? AND wt.LangId = ?
         ");
-        $stmtAll->execute([$userId]);
+        $stmtAll->execute([$userId, $targetLangId]);
         $pool = $stmtAll->fetchAll(PDO::FETCH_COLUMN);
         shuffle($pool);
 
@@ -123,6 +130,8 @@ $stmtLang = $pdo->prepare("
 ");
 $stmtLang->execute([$userId]);
 $userLangs = $stmtLang->fetch();
+$nativeLangName = $userLangs['NativeLang'] ?? 'Native Language';
+$targetLangName = $userLangs['TargetLang'] ?? 'Target Language';
 
 $wordMappings = [];
 try {
@@ -130,9 +139,9 @@ try {
     $sql = "SELECT wt_target.Translation as target_word, wt_native.Translation as native_word
             FROM WordTranslations wt_target
             JOIN WordTranslations wt_native ON wt_target.WordId = wt_native.WordId
-            WHERE wt_target.LangId = 2 AND wt_native.LangId = 1 AND wt_target.Translation IN ($placeholders)";
+            WHERE wt_target.LangId = ? AND wt_native.LangId = ? AND wt_target.Translation IN ($placeholders)";
     $stmtMap = $pdo->prepare($sql);
-    $stmtMap->execute($words);
+    $stmtMap->execute(array_merge([$targetLangId, $nativeLangId], $words));
     while ($row = $stmtMap->fetch()) {
         $wordMappings[$row['target_word']] = $row['native_word'];
     }
@@ -140,7 +149,7 @@ try {
     // Silent fail fallback
 }
 
-function generateGeminiStory($words, $wordMappings) {
+function generateGeminiStory($words, $wordMappings, $nativeLangName, $targetLangName) {
     $apiKey = getenv('GEMINI_API_KEY');
     if (!$apiKey) {
         return "Gemini API key is not configured in environment variables.";
@@ -150,16 +159,16 @@ function generateGeminiStory($words, $wordMappings) {
     $mappingInstructions = [];
     foreach ($words as $w) {
         $tr = $wordMappings[$w] ?? $w;
-        $mappingInstructions[] = "\"$w\" -> \"$tr\"";
+        $mappingInstructions[] = "\"$w\" ($targetLangName) means \"$tr\" ($nativeLangName)";
     }
     $mappingStr = implode(", ", $mappingInstructions);
 
-    $prompt = "You are a creative storyteller. Write a very short and engaging story (max 100 words) in English. ";
-    $prompt .= "The story must naturally use the following concepts in this exact sequence: " . implode(", ", $words) . ". ";
-    $prompt .= "CRITICAL RULE: Instead of the English words, you MUST use their specific Turkish translations provided below: ";
-    $prompt .= $mappingStr . ". ";
-    $prompt .= "FORMATTING RULE: Every Turkish word MUST be wrapped in a <span> tag without any classes or other attributes (e.g., <span>Cesaret</span>). ";
-    $prompt .= "The rest of the story must be in perfect English. Do not use bold (**) or any other markdown.";
+    $prompt = "You are a creative storyteller. Write a very short and engaging story (max 100 words) in $nativeLangName. \n\n";
+    $prompt .= "STORY LANGUAGE: The story MUST be written in $nativeLangName. \n";
+    $prompt .= "WORD RULE: The story must naturally use the following $targetLangName words in this exact sequence: " . implode(", ", $words) . ". \n";
+    $prompt .= "CONTEXT: To help you write the story in $nativeLangName, here are the translations: $mappingStr. \n";
+    $prompt .= "FORMATTING RULE: Every $targetLangName word MUST be wrapped in a <span> tag without any classes or other attributes (e.g., <span>" . $words[0] . "</span>). \n";
+    $prompt .= "The rest of the story must be in perfect $nativeLangName. Do not use bold (**) or any other markdown.";
 
     $data = [
         "contents" => [["parts" => [["text" => $prompt]]]],
@@ -190,7 +199,7 @@ function generateGeminiStory($words, $wordMappings) {
     return "Sorry, technical error (Code: $httpCode $curlError). Please try again.";
 }
 
-$storyText = generateGeminiStory($words, $wordMappings);
+$storyText = generateGeminiStory($words, $wordMappings, $nativeLangName, $targetLangName);
 
 $imageName = 'story_' . time() . '_' . $userId . '.jpg';
 $uploadDir = '../uploads/stories/';
@@ -235,7 +244,7 @@ try {
         ob_clean();
     }
     header(CONTENT_TYPE_JSON);
-    echo json_encode(['status' => 'success', 'data' => ['storyId' => $storyId, 'story' => $storyText, 'imageUrl' => (strpos($imageUrl, 'http') === 0) ? $imageUrl : 'api/' . $imageUrl]], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['status' => 'success', 'data' => ['storyId' => $storyId, 'story' => $storyText, 'imageUrl' => $imageUrl]], JSON_UNESCAPED_UNICODE);
 } catch (PDOException $e) {
     if ($pdo->inTransaction()) {
         $pdo->rollBack();
