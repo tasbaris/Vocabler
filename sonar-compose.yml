@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+  sonarqube:
+    image: sonarqube:community
+    container_name: vocabler_sonarqube
+    ports:
+      - "9000:9000"
+    networks:
+      - sonar-net
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    container_name: vocabler_sonar_scanner
+    volumes:
+      - ./:/usr/src
+    environment:
+      - SONAR_HOST_URL=http://sonarqube:9000
+      - SONAR_SCANNER_OPTS=-Xmx2048m
+    networks:
+      - sonar-net
+    depends_on:
+      - sonarqube
+
+networks:
+  sonar-net:
+    driver: bridge
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:

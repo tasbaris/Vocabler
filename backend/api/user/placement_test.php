@@ -37,7 +37,7 @@ if ($percentage < 30) {
 try {
     $stmt = $pdo->prepare("UPDATE Users SET Level = ? WHERE Id = ?");
     $stmt->execute([$level, $userId]);
-    
+
     echo json_encode([
         'status' => 'success',
         'level' => $level,
@@ -47,4 +47,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
 }
-?>

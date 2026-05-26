@@ -19,12 +19,12 @@ try {
     $userStmt = $pdo->prepare("SELECT CurrentTargetLangId FROM Users WHERE Id = ?");
     $userStmt->execute([$userId]);
     $user = $userStmt->fetch();
-    
+
     if (!$user) {
         echo json_encode(['status' => 'error', 'message' => 'Kullanıcı bulunamadı.']);
         exit;
     }
-    
+
     $targetLangId = $user['CurrentTargetLangId'];
 
     // sp_AssignWordsToUser(UserId, CategoryId, TargetLangId, Limit)
@@ -32,10 +32,9 @@ try {
     $stmt->execute([$userId, $categoryId, $targetLangId, $limit]);
 
     echo json_encode([
-        'status' => 'success', 
+        'status' => 'success',
         'message' => 'Kategori başarıyla çalışma listene eklendi.'
     ]);
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => 'Hata: ' . $e->getMessage()]);
 }
-?>

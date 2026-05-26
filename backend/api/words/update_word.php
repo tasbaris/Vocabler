@@ -51,7 +51,7 @@ try {
     $updateWords = [];
     $paramsWords = [];
     if (isset($input['wordCategory'])) { $updateWords[] = "CategoryId = ?"; $paramsWords[] = $input['wordCategory']; }
-    
+
     // Resim güncellemesi
     if (isset($_FILES['wordPicture']) && $_FILES['wordPicture']['error'] == 0) {
         $uploadDir = '../uploads/';
@@ -70,7 +70,7 @@ try {
         $updateWords[] = "Picture = ?";
         $paramsWords[] = $input['wordPicture'];
     }
-    
+
     if (!empty($updateWords)) {
         $paramsWords[] = $input['wordId'];
         $stmt = $pdo->prepare("UPDATE Words SET " . implode(", ", $updateWords) . " WHERE Id = ?");
@@ -140,4 +140,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatası: ' . $e->getMessage()]);
 }
-?>

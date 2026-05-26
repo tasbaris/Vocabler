@@ -6,7 +6,14 @@ header('Content-Type: application/json; charset=utf-8');
 
 $userData = authenticate();
 $userId = $userData['userId'];
-$length = isset($_GET['length']) ? (int)$_GET['length'] : 5;
+
+// If length is not provided, pick a random length between 4 and 7
+if (!isset($_GET['length'])) {
+    $lengths = [4, 5, 6, 7];
+    $length = $lengths[array_rand($lengths)];
+} else {
+    $length = (int)$_GET['length'];
+}
 
 try {
     $stmtUser = $pdo->prepare("SELECT NativeLangId, CurrentTargetLangId FROM Users WHERE Id = ?");
@@ -16,7 +23,7 @@ try {
     $targetLangId = $userLangs['CurrentTargetLangId'] ?? 2;
 
     $query = "
-        SELECT wt_target.Translation as word, 
+        SELECT wt_target.Translation as word,
                ws.SampleText as sentence,
                ws.TranslatedText as sentence_translated,
                c.CategoryName as category,
@@ -25,27 +32,30 @@ try {
         INNER JOIN Words w ON uw.WordId = w.Id
         INNER JOIN WordTranslations wt_target ON w.Id = wt_target.WordId AND wt_target.LangId = :targetLangId
         LEFT JOIN Categories c ON w.CategoryId = c.Id
-        LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2
-        WHERE uw.UserId = :userId 
-          AND CHAR_LENGTH(wt_target.Translation) = :length 
+        LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2 AND ws.NativeLangId = :nativeLangId
+        WHERE uw.UserId = :userId
+          AND CHAR_LENGTH(wt_target.Translation) = :length
           AND w.Active = 1
         ORDER BY RAND()
         LIMIT 1
     ";
-    
-    $stmt = $pdo->prepare($query);
-    $stmt->execute([
-        'targetLangId' => $targetLangId, 
-        'targetLangId2' => $targetLangId, 
-        'length' => $length, 
+
+    $params = [
+        'targetLangId' => $targetLangId,
+        'targetLangId2' => $targetLangId,
+        'nativeLangId' => $nativeLangId,
+        'length' => $length,
         'userId' => $userId
-    ]);
+    ];
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
     $result = $stmt->fetch();
 
     if (!$result) {
         // Fallback to general words
         $fallbackQuery = "
-            SELECT wt_target.Translation as word, 
+            SELECT wt_target.Translation as word,
                    ws.SampleText as sentence,
                    ws.TranslatedText as sentence_translated,
                    c.CategoryName as category,
@@ -53,17 +63,18 @@ try {
             FROM WordTranslations wt_target
             INNER JOIN Words w ON wt_target.WordId = w.Id
             LEFT JOIN Categories c ON w.CategoryId = c.Id
-            LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2
-            WHERE wt_target.LangId = :targetLangId 
-              AND CHAR_LENGTH(wt_target.Translation) = :length 
+            LEFT JOIN WordSamples ws ON w.Id = ws.WordId AND ws.TargetLangId = :targetLangId2 AND ws.NativeLangId = :nativeLangId
+            WHERE wt_target.LangId = :targetLangId
+              AND CHAR_LENGTH(wt_target.Translation) = :length
               AND w.Active = 1
             ORDER BY RAND()
             LIMIT 1
         ";
         $stmtFallback = $pdo->prepare($fallbackQuery);
         $stmtFallback->execute([
-            'targetLangId' => $targetLangId, 
-            'targetLangId2' => $targetLangId, 
+            'targetLangId' => $targetLangId,
+            'targetLangId2' => $targetLangId,
+            'nativeLangId' => $nativeLangId,
             'length' => $length
         ]);
         $result = $stmtFallback->fetch();
@@ -71,31 +82,40 @@ try {
 
     if ($result) {
         $word = strtoupper($result['word']);
-        $hint = "";
-        
-        // Use native language translation for hint if available
-        if ($nativeLangId == 1) { // Turkish
-            $hintStr = "Kategori: " . ($result['category'] ?? "Genel") . " | Tür: " . ($result['type'] ?? "Bilinmiyor");
-            $hint = !empty($result['sentence_translated']) ? $result['sentence_translated'] : $hintStr;
-        } else { // Default English or other
-            $hintStr = "Category: " . ($result['category'] ?? "General") . " | Type: " . ($result['type'] ?? "Unknown");
-            $hint = !empty($result['sentence']) ? $result['sentence'] : $hintStr;
+
+        $category = $result['category'] ?? "General";
+        $type = $result['type'] ?? "Unknown";
+
+        // Localize type if native language is Turkish
+        if ($nativeLangId == 1) {
+            $typeMap = [
+                'Noun' => 'İsim',
+                'Verb' => 'Fiil',
+                'Adjective' => 'Sıfat',
+                'Adj' => 'Sıfat',
+                'Adverb' => 'Zarf',
+                'Adv' => 'Zarf',
+                'Conjunction' => 'Bağlaç',
+                'Conj' => 'Bağlaç',
+                'Phrase' => 'Kalıp'
+            ];
+            if (isset($typeMap[$type])) {
+                $type = $typeMap[$type];
+            }
         }
 
-        // Mask the word in the hint
-        $pattern = "/\b" . preg_quote($result['word'], '/') . "\b/i";
-        $hint = preg_replace($pattern, str_repeat("_", strlen($word)), $hint);
+        // Final hint format as requested: Category|Type
+        $hint = "$category|$type";
 
         echo json_encode([
-            'status' => 'success', 
+            'status' => 'success',
             'word' => $word,
             'hint' => $hint
         ]);
     } else {
-        echo json_encode(['status' => 'error', 'message' => 'Bu uzunlukta kelime bulunamadı.']);
+        echo json_encode(['status' => 'error', 'message' => 'No word found for this length.']);
     }
 } catch (\PDOException $e) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
 }
-?>

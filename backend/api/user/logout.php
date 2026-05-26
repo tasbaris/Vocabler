@@ -17,7 +17,6 @@ $userData = authenticate();
 // İstenirse buraya veritabanında loglama eklenebilir.
 
 echo json_encode([
-    'status' => 'success', 
+    'status' => 'success',
     'message' => 'Başarıyla çıkış yapıldı. Lütfen istemci tarafındaki tokeni silin.'
 ]);
-?>

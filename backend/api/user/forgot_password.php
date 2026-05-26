@@ -24,10 +24,10 @@ try {
         $token = bin2hex(random_bytes(32));
         $pdo->prepare("INSERT INTO PasswordResets (UserId, ResetToken, ExpiresAt) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))")
             ->execute([$userId, $token]);
-            
+
         echo json_encode([
-            'status' => 'success', 
-            'message' => 'Sifre sifirlama baglantisi e-posta adresinize gonderildi.', 
+            'status' => 'success',
+            'message' => 'Sifre sifirlama baglantisi e-posta adresinize gonderildi.',
             'debug_token' => $token
         ]);
     } else {
@@ -38,4 +38,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatasi.']);
 }
-?>

@@ -12,8 +12,8 @@ try {
     $stmt = $pdo->prepare("CALL sp_GetDailyWords(?)");
     $stmt->execute([$userId]);
     $rawWords = $stmt->fetchAll();
-    
-    // ÖNEMLİ: CALL işleminden sonra dönen result set'i kapatıyoruz ki 
+
+    // ÖNEMLİ: CALL işleminden sonra dönen result set'i kapatıyoruz ki
     // "Cannot execute queries while there are pending result sets" hatası almayalım.
     $stmt->closeCursor();
 
@@ -22,7 +22,7 @@ try {
         foreach ($rawWords as $row) {
             // Her kelime için detayları (çeviriler ve örnekler) çek
             $stmtDetails = $pdo->prepare("
-                SELECT 
+                SELECT
                     wt_target.Translation as TargetWord,
                     wt_target.Pronunciation,
                     wt_target.WordType,
@@ -44,9 +44,9 @@ try {
                 'wordId' => $row['WordId']
             ]);
             $details = $stmtDetails->fetch();
-            
+
             if ($details) {
-                $details['WordId'] = $row['WordId']; 
+                $details['WordId'] = $row['WordId'];
                 $quizWords[] = $details;
             }
             $stmtDetails->closeCursor();
@@ -58,4 +58,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
 }
-?>

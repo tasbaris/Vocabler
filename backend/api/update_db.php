@@ -13,7 +13,7 @@ try {
 
     // 2. Kelimeleri yükle
     $wordsData = json_decode(file_get_contents('bulk_words.json'), true);
-    
+
     // Words tablosu için hazırlık
     $stmtWord = $pdo->prepare("INSERT INTO Words (CategoryId, Active) VALUES (?, 1)");
     // WordTranslations için hazırlık
@@ -39,7 +39,7 @@ try {
     // 3. Soruları yükle
     $questionsData = json_decode(file_get_contents('bulk_questions.json'), true);
     $stmtQ = $pdo->prepare("INSERT INTO Questions (WordId, SourceLangId, LangId, Level, QuestionType, QuestionText, Options, CorrectAnswer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    
+
     foreach ($questionsData as $q) {
         // WordId'yi kontrol et, eğer Words tablosunda yoksa NULL yap
         $checkStmt = $pdo->prepare("SELECT Id FROM Words WHERE Id = ?");
@@ -56,4 +56,3 @@ try {
     $pdo->rollBack();
     echo "Hata: " . $e->getMessage();
 }
-?>

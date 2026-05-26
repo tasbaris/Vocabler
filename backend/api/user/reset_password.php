@@ -22,15 +22,15 @@ try {
 
     if ($resetData) {
         $newHash = password_hash($input['newPassword'], PASSWORD_BCRYPT);
-        
+
         // İşlemleri Transaction içinde yapıyoruz ki hata olursa geri alınsın
         $pdo->beginTransaction();
-        
+
         $pdo->prepare("UPDATE Users SET PasswordHash = ? WHERE Id = ?")->execute([$newHash, $resetData['UserId']]);
         $pdo->prepare("UPDATE PasswordResets SET IsUsed = 1 WHERE Id = ?")->execute([$resetData['Id']]);
-        
+
         $pdo->commit();
-        
+
         echo json_encode(['status' => 'success', 'message' => 'Sifreniz basariyla sifirlandi.']);
     } else {
         http_response_code(400);
@@ -43,4 +43,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatasi.']);
 }
-?>

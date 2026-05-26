@@ -26,7 +26,7 @@ try {
     // Kelimeyi kullanıcının kelime havuzundan (UserWords) çıkar
     $stmt = $pdo->prepare("DELETE FROM UserWords WHERE UserId = ? AND WordId = ?");
     $stmt->execute([$userId, $input['wordId']]);
-    
+
     // Eğer kelimeyi bizzat kullanıcı oluşturmuşsa ve başka kimsede yoksa, kelimeyi Words tablosundan da silebiliriz (İsteğe bağlı temizlik).
     // Ancak standart bir "Listeden Çıkar" mantığı için UserWords'ten silmek yeterlidir.
 
@@ -35,4 +35,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatası: ' . $e->getMessage()]);
 }
-?>

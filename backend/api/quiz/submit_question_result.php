@@ -36,10 +36,9 @@ try {
     error_log("Updating progress for User: $userId, Word: $wordId, Correct: " . ($isCorrect ? 1 : 0));
     $stmt = $pdo->prepare("CALL sp_UpdateWordProgress(?, ?, ?)");
     $stmt->execute([$userId, $wordId, $isCorrect ? 1 : 0]);
-    
+
     echo json_encode(['status' => 'success']);
 } catch (\PDOException $e) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabani hatasi: ' . $e->getMessage()]);
 }
-?>

@@ -25,7 +25,7 @@ try {
     if ($currentHash && password_verify($input['oldPassword'], $currentHash)) {
         $newHash = password_hash($input['newPassword'], PASSWORD_BCRYPT);
         $pdo->prepare("UPDATE Users SET PasswordHash = ? WHERE Id = ?")->execute([$newHash, $userData['userId']]);
-        
+
         echo json_encode(['status' => 'success', 'message' => 'Sifreniz basariyla degistirildi.']);
     } else {
         http_response_code(401);
@@ -35,4 +35,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatasi.']);
 }
-?>

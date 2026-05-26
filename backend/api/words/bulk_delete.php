@@ -22,9 +22,9 @@ if (empty($wordIds) || !is_array($wordIds)) {
 
 try {
     $pdo->beginTransaction();
-    
+
     // Güvenli silme: Sadece bu kullanıcının listesinde (UserWords) olanları sil (abonelik iptali gibi).
-    // Eğer kelimeyi bizzat kendisi eklediyse ve başka abonesi yoksa tamamen silinebilir, 
+    // Eğer kelimeyi bizzat kendisi eklediyse ve başka abonesi yoksa tamamen silinebilir,
     // ama şimdilik SRS listesinden (UserWords) çıkarmak yeterlidir.
     $placeholders = implode(',', array_fill(0, count($wordIds), '?'));
     $params = array_merge([$userId], $wordIds);
@@ -40,4 +40,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabanı hatası: ' . $e->getMessage()]);
 }
-?>

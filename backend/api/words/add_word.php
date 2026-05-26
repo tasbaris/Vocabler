@@ -50,7 +50,7 @@ try {
     // 1. Words tablosuna ekle
     $stmt = $pdo->prepare("INSERT INTO Words (CategoryId, Picture, AddedById, Active) VALUES (?, ?, ?, 1)");
     $stmt->execute([$input['wordCategory'], $picture, $userId]);
-    
+
     $wordId = $pdo->lastInsertId();
 
     // 2. WordTranslations tablosuna Hedef Dil ekle
@@ -59,7 +59,7 @@ try {
 
     // 3. WordTranslations tablosuna Ana Dil ekle
     $stmtNative = $pdo->prepare("INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation, Pronunciation) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmtNative->execute([$wordId, $nativeLangId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]); 
+    $stmtNative->execute([$wordId, $nativeLangId, $input['wordLevel'], $input['wordType'], trim($input['targetWord']), null]);
 
     // 4. WordSamples tablosuna ekle
     // Frontend'den 'sentences' (JSON string) veya eski format 'wordSentence' gelebilir
@@ -95,4 +95,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Sunucu hatası: ' . $e->getMessage()]);
 }
-?>

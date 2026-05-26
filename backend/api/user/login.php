@@ -26,21 +26,27 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // JSON formatında gelen veriyi alıyoruz
 $inputJSON = file_get_contents('php://input');
-$input = json_decode($inputJSON, TRUE);
+$input = json_decode($inputJSON, true);
 
-if (!isset($input['email']) || !isset($input['password'])) {
+$identifier = null;
+if (isset($input['emailOrUsername'])) {
+    $identifier = trim($input['emailOrUsername']);
+} elseif (isset($input['email'])) {
+    $identifier = trim($input['email']);
+}
+
+$password = $input['password'] ?? null;
+
+if (!$identifier || !$password) {
     http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'E-posta adresi ve şifre zorunludur.']);
+    echo json_encode(['status' => 'error', 'message' => 'E-posta/Kullanıcı adı ve şifre zorunludur.']);
     exit;
 }
 
-$email = trim($input['email']);
-$password = $input['password'];
-
 try {
-    // Kullanıcıyı veritabanında e-posta adresine göre arıyoruz
-    $stmt = $pdo->prepare("SELECT Id, Name, Surname, Email, UserName, PasswordHash, DailyWord, NativeLangId, CurrentTargetLangId, StreakDays, Active FROM Users WHERE Email = :email");
-    $stmt->execute(['email' => $email]);
+    // Kullanıcıyı veritabanında e-posta adresi VEYA kullanıcı adına göre arıyoruz
+    $stmt = $pdo->prepare("SELECT Id, Name, Surname, Email, UserName, PasswordHash, DailyWord, NativeLangId, CurrentTargetLangId, StreakDays, Active FROM Users WHERE Email = :id1 OR UserName = :id2");
+    $stmt->execute(['id1' => $identifier, 'id2' => $identifier]);
     $user = $stmt->fetch();
 
     if ($user) {
@@ -55,12 +61,12 @@ try {
         if (password_verify($password, $user['PasswordHash'])) {
             // Güvenlik için şifre hash'ini cevap nesnesinden siliyoruz
             unset($user['PasswordHash']);
-            
+
             // --- JWT Token Oluşturma ---
             $secret_key = "vocabler_super_secret_key_2026!"; // İleride bunu çevre değişkenlerine (.env) taşımanız daha güvenli olur.
             $issuedAt = time();
             $expirationTime = $issuedAt + (60 * 60 * 24); // Token 24 saat geçerli olacak
-            
+
             $payload = [
                 'iat' => $issuedAt,
                 'exp' => $expirationTime,
@@ -70,13 +76,13 @@ try {
                     'email'  => $user['Email']
                 ]
             ];
-            
+
             $jwt_token = generate_jwt($payload, $secret_key);
             // ---------------------------
 
             http_response_code(200);
             echo json_encode([
-                'status' => 'success', 
+                'status' => 'success',
                 'message' => 'Giriş başarılı.',
                 'token' => $jwt_token, // Oluşturulan token'ı JS tarafına gönderiyoruz
                 'user' => $user
@@ -87,10 +93,9 @@ try {
         }
     } else {
         http_response_code(404);
-        echo json_encode(['status' => 'error', 'message' => 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı.']);
+        echo json_encode(['status' => 'error', 'message' => 'Bu e-posta adresi veya kullanıcı adı ile kayıtlı kullanıcı bulunamadı.']);
     }
 } catch (\PDOException $e) {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Veritabanı hatası.', 'error' => $e->getMessage()]);
 }
-?>

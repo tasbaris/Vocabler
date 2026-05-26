@@ -45,4 +45,3 @@ foreach ($words as $item) {
 }
 
 echo "\nToplam $count kelime başarıyla içe aktarıldı.\n";
-?>

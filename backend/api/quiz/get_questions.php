@@ -40,7 +40,7 @@ try {
             $now = new DateTime();
             $tomorrow = new DateTime('tomorrow');
             $diff = $now->diff($tomorrow);
-            
+
             echo json_encode([
                 'status' => 'quota_reached',
                 'message' => 'Bugünlük tüm kelimelerini tamamladın!',
@@ -89,13 +89,22 @@ try {
             'wordId' => $wordId
         ]);
         $word = $stmtDetails->fetch(PDO::FETCH_ASSOC);
-        
-        if (!$word) continue;
+
+        if (!$word) {
+            continue;
+        }
+
+        // Fetch language names for dynamic question text
+        $stmtLangs = $pdo->prepare("SELECT Id, LangName FROM Languages WHERE Id IN (?, ?)");
+        $stmtLangs->execute([$nativeLangId, $targetLangId]);
+        $langNames = $stmtLangs->fetchAll(PDO::FETCH_KEY_PAIR);
+        $targetLangName = $langNames[$targetLangId] ?? 'Target Language';
+        $nativeLangName = $langNames[$nativeLangId] ?? 'Native Language';
 
         $type = 'Multiple Choice';
         if ($learnRank == 0) {
             $type = 'Flashcard';
-        } else if ($learnRank == 1 && !empty($word['Picture'])) {
+        } elseif ($learnRank == 1 && !empty($word['Picture'])) {
             $type = 'Image';
         }
 
@@ -116,25 +125,29 @@ try {
         } else {
             $isImageQuestion = ($type === 'Image');
             if ($isImageQuestion) {
-                $questionText = "Bu görseldeki kelime nedir?";
+                // Localized question text for image
+                $questionText = ($nativeLangId == 1) ? "Bu görseldeki kelimenin $targetLangName karşılığı nedir?" : "What is the $targetLangName word for this image?";
                 $imageUrl = $word['Picture'];
                 $correctAnswer = $word['TargetWord'];
-                $type = 'Multiple Choice'; 
+                $type = 'Multiple Choice';
             } else {
                 if (rand(0, 1)) {
                     $questionText = $word['NativeWord'];
+                    $prompt = ($nativeLangId == 1) ? "Bu kelimenin $targetLangName karşılığı nedir?" : "What is the $targetLangName word for this?";
                     $correctAnswer = $word['TargetWord'];
                 } else {
                     $questionText = $word['TargetWord'];
+                    $prompt = ($nativeLangId == 1) ? "Bu kelimenin $nativeLangName karşılığı nedir?" : "What is the $nativeLangName word for this?";
                     $correctAnswer = $word['NativeWord'];
                 }
+                $questionText = "<small class='opacity-50 d-block mb-2' style='font-size: 0.9rem;'>$prompt</small> " . $questionText;
             }
 
             $stmtDist = $pdo->prepare("
-                SELECT Translation 
-                FROM WordTranslations 
-                WHERE LangId = :langId AND Translation != :correct 
-                ORDER BY RAND() 
+                SELECT Translation
+                FROM WordTranslations
+                WHERE LangId = :langId AND Translation != :correct
+                ORDER BY RAND()
                 LIMIT 3
             ");
             $distLangId = ($correctAnswer === $word['NativeWord']) ? $nativeLangId : $targetLangId;
@@ -156,7 +169,7 @@ try {
             'Level' => $word['Level'],
             'Explanation' => $word['SampleText'] ?: "",
             'SampleTranslation' => $word['TranslatedText'] ?: "",
-            'Pronunciation' => '' 
+            'Pronunciation' => ''
         ];
     }
 
@@ -169,4 +182,3 @@ try {
     http_response_code(500);
     echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
 }
-?>
