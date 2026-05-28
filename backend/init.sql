@@ -325,4 +325,48 @@ BEGIN
     WHERE UserId = p_UserId;
 END //
 
+-- Toplu Global Kelime Ekleme (Admin/Sistem İçin)
+DROP PROCEDURE IF EXISTS sp_AddGlobalWord //
+CREATE PROCEDURE sp_AddGlobalWord(
+    IN p_TargetTranslation VARCHAR(255),
+    IN p_NativeTranslation VARCHAR(255),
+    IN p_Level ENUM('A1', 'A2', 'B1', 'B2', 'C1', 'C2'),
+    IN p_CategoryId INT,
+    IN p_WordType VARCHAR(20),
+    IN p_SampleText VARCHAR(255),
+    IN p_SampleTranslation VARCHAR(255),
+    IN p_Picture VARCHAR(255)
+)
+BEGIN
+    DECLARE v_WordId INT;
+    DECLARE v_TR_Id INT DEFAULT 1;
+    DECLARE v_EN_Id INT DEFAULT 2;
+    DECLARE v_Exists INT;
+
+    SELECT w.Id INTO v_Exists
+    FROM Words w
+    JOIN WordTranslations wt ON w.Id = wt.WordId
+    WHERE wt.Translation = p_TargetTranslation AND wt.LangId = v_EN_Id AND w.AddedById IS NULL
+    LIMIT 1;
+
+    IF v_Exists IS NULL THEN
+        INSERT INTO Words (CategoryId, Picture, AddedById, Active) VALUES (p_CategoryId, p_Picture, NULL, 1);
+        SET v_WordId = LAST_INSERT_ID();
+        INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
+        VALUES (v_WordId, v_EN_Id, p_Level, p_WordType, p_TargetTranslation);
+        INSERT INTO WordTranslations (WordId, LangId, Level, WordType, Translation)
+        VALUES (v_WordId, v_TR_Id, p_Level, p_WordType, p_NativeTranslation);
+        IF p_SampleText IS NOT NULL THEN
+            INSERT INTO WordSamples (WordId, TargetLangId, NativeLangId, SampleText, TranslatedText)
+            VALUES (v_WordId, v_EN_Id, v_TR_Id, p_SampleText, p_SampleTranslation);
+        END IF;
+    ELSE
+        SET v_WordId = v_Exists;
+        IF p_Picture IS NOT NULL THEN
+            UPDATE Words SET Picture = p_Picture WHERE Id = v_WordId;
+        END IF;
+    END IF;
+    SELECT v_WordId as WordId;
+END //
+
 DELIMITER ;

@@ -38,17 +38,35 @@ Vocabler, kullanıcıların kelime dağarcığını eğlenceli ve interaktif bir
    ```bash
    docker-compose up -d
    ```
-3. Uygulamaya tarayıcınızdan erişin:
+3. Go Live ile siteyi açın:
    ```
-   http://localhost
+   http://127.0.0.1:5500/frontend/
    ```
 
-## 📂 Veritabanı Yapısı
+### Veritabanı Yapısı ve Yönetimi
 
 Proje, veritabanı seviyesinde yüksek performanslı iş mantığı kullanmaktadır. Ana yordamlar:
 - `sp_AssignWordsToUser`: Kullanıcının dil ve seviyesine uygun kelimeleri otomatik atar.
 - `sp_UpdateWordProgress`: Kullanıcının cevaplarına göre kelime ilerlemesini (SRS) hesaplar.
 - `sp_GetDailyWords`: Kullanıcının günlük hedefine ve tekrar zamanı gelen kelimelere göre çalışma listesi hazırlar.
+
+### 🛠 Yönetici ve Geliştirici Araçları
+
+#### 1. Toplu Kelime Yükleme (Bulk Upload)
+Sisteme tek tek kelime eklemek yerine, önceden hazırlanmış bir JSON dosyasından binlerce kelimeyi saniyeler içinde içe aktarabilirsiniz.
+- **Dosya:** `backend/api/bulk_words.json` (Örnek veriler burada yer alır).
+- **Çalıştırma:**
+  ```bash
+  # CLI üzerinden (Tavsiye edilen)
+  php backend/api/words/bulk_upload.php
+
+  # Veya tarayıcı üzerinden (Güvenlik anahtarı ile)
+  http://localhost/backend/api/words/bulk_upload.php?key=import123
+  ```
+
+#### 2. Konu ve Kategori Yönetimi
+- **Konular Sayfası:** Arayüz üzerinden yeni kategoriler (Mutfak, Teknoloji vb.) oluşturabilir, mevcut olanları güncelleyebilir veya silebilirsiniz.
+- **Toplu Silme:** "Kelimelerim" sayfasında birden fazla kelimeyi seçerek tek tıkla toplu silme işlemi gerçekleştirebilirsiniz.
 
 ---
 *Bu proje, modern yazılım prensipleri (DRY, KISS) ve verimli veritabanı yönetimi odaklı geliştirilmiştir.*

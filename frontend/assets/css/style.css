@@ -442,6 +442,16 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 8px 25px rgba(0, 173, 181, 0.4);
 }
 
+.btn-lg {
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+}
+
 /* Theme Toggle Button */
 .theme-toggle {
     width: 40px;

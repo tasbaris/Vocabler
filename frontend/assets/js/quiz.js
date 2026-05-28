@@ -394,16 +394,6 @@ function showResults() {
     
     document.getElementById("correct-count").textContent = correctCount;
     document.getElementById("wrong-count").textContent = wrongCount;
-
-    Swal.fire({
-        title: dict.quiz_completed_title || "Quiz Tamamlandı! 🎉",
-        text: dict.quiz_completed_text || "Tebrikler, quizi tamamladın!",
-        icon: "success",
-        confirmButtonText: "Tamam",
-        confirmButtonColor: "#00ADB5"
-    }).then(() => {
-        location.reload(); // Re-fetch to show quota reached screen
-    });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
