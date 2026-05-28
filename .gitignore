@@ -1,5 +1,13 @@
 /backend/mysql_data/
 
+# Environment files
+.env
+backend/.env
+.env.[!e]*
+.env.[!e][!x]*
+.env.e[!x]*
+!.env.example
+
 # macOS
 .DS_Store
 .AppleDouble
