@@ -344,7 +344,55 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .light-theme .navbar {
-    background-color: rgba(248, 249, 250, 0.8) !important;
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .navbar-toggler {
+    color: #1E2128;
+}
+
+.light-theme #langSelector {
+    color: #1E2128 !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light-theme #langSelector option {
+    background-color: #FFFFFF;
+    color: #1E2128;
+}
+
+.light-theme .nav-link {
+    color: #1E2128 !important;
+}
+
+.light-theme .nav-link:hover {
+    color: var(--accent) !important;
+}
+
+.light-theme .hero-subtitle,
+.light-theme p.lead,
+.light-theme .custom-card p {
+    color: #64748B !important;
+}
+
+.light-theme section[style*="var(--card)"],
+.light-theme footer[style*="var(--card)"] {
+    background: #FFFFFF !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.light-theme footer p.opacity-50 {
+    color: #64748B !important;
+    opacity: 0.8 !important;
+}
+
+.light-theme footer a.text-white-50 {
+    color: #64748B !important;
+}
+
+.light-theme footer a.text-white-50:hover {
+    color: var(--accent) !important;
 }
 
 .nav-link {
@@ -503,6 +551,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Dark Mode Readability Fixes */
+.form-text {
+    color: var(--text-muted) !important;
+    opacity: 0.7 !important;
+}
+
 .form-text.opacity-50 {
     opacity: 0.5 !important;
 }

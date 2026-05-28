@@ -43,6 +43,9 @@ async function fetchQuizWords() {
             })
         ]);
 
+        if (handleUnauthorized(quizRes)) return;
+        if (handleUnauthorized(wordsRes)) return;
+
         const quizResult = await quizRes.json();
         const wordsResult = await wordsRes.json();
 
@@ -98,21 +101,9 @@ async function fetchQuizWords() {
                 }
             }
         } else {
-            // Hata durumunda (örn: 401 Unauthorized)
+            // Hata durumunda (örn: 500 Server Error)
             console.error("Quiz verisi alınamadı:", quizResult.message);
-            if (quizRes.status === 401) {
-                Swal.fire({
-                    title: "Oturum Hatası",
-                    text: "Oturumunuzun süresi dolmuş veya yetkiniz yok. Lütfen tekrar giriş yapın.",
-                    icon: "error",
-                    confirmButtonText: "Giriş Yap"
-                }).then(() => {
-                    localStorage.removeItem("vocabler_token");
-                    window.location.href = "login.html";
-                });
-            } else {
-                showEmptyState();
-            }
+            showEmptyState();
         }
     } catch (error) {
         console.error("Veri yüklenirken hata:", error);

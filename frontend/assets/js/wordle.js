@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': `Bearer ${localStorage.getItem('vocabler_token')}`
                 }
             });
+
+            if (handleUnauthorized(response)) return;
+
             const data = await response.json();
             if (data.status === 'success') {
                 targetWord = data.word.toUpperCase();
@@ -47,7 +50,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateTitleWithHint();
                 initGrid();
             } else {
-                showMessage(t('wordle_load_error') + ": " + data.message, "danger");
+                gameOver = true; // Prevent input
+                const keyboard = document.querySelector('.keyboard');
+                if (keyboard) keyboard.style.display = 'none';
+                
+                wordleGrid.innerHTML = `
+                    <div class="p-5 text-center">
+                        <div class="mb-4 opacity-50">
+                            <i class="fas fa-book-open fa-3x mb-3" style="color: var(--accent);"></i>
+                            <h5 class="fw-bold">${t('msg_wordle_empty')}</h5>
+                        </div>
+                        <div class="d-flex flex-column gap-2 max-width-200 mx-auto">
+                            <a href="topics.html" class="btn btn-primary rounded-pill">
+                                <i class="fas fa-layer-group me-2"></i>${t('nav_topics')}
+                            </a>
+                            <a href="my-words.html" class="btn btn-outline-light rounded-pill border-opacity-25">
+                                <i class="fas fa-plus me-2"></i>${t('label_new_word')}
+                            </a>
+                        </div>
+                    </div>
+                `;
+                const titleElem = document.querySelector('[data-i18n="feature_wordle_desc"]');
+                if (titleElem) titleElem.style.display = 'none';
             }
         } catch (error) {
             console.error("Fetch error:", error);

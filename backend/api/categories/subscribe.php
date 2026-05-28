@@ -27,14 +27,35 @@ try {
 
     $targetLangId = $user['CurrentTargetLangId'];
 
+    // Get count before
+    $stmtBefore = $pdo->prepare("SELECT COUNT(*) FROM UserWords WHERE UserId = ?");
+    $stmtBefore->execute([$userId]);
+    $countBefore = $stmtBefore->fetchColumn();
+
     // sp_AssignWordsToUser(UserId, CategoryId, TargetLangId, Limit)
     $stmt = $pdo->prepare("CALL sp_AssignWordsToUser(?, ?, ?, ?)");
     $stmt->execute([$userId, $categoryId, $targetLangId, $limit]);
 
-    echo json_encode([
-        'status' => 'success',
-        'message' => 'Kategori başarıyla çalışma listene eklendi.'
-    ]);
+    // Get count after
+    $stmtAfter = $pdo->prepare("SELECT COUNT(*) FROM UserWords WHERE UserId = ?");
+    $stmtAfter->execute([$userId]);
+    $countAfter = $stmtAfter->fetchColumn();
+
+    $addedCount = $countAfter - $countBefore;
+
+    if ($addedCount > 0) {
+        echo json_encode([
+            'status' => 'success',
+            'addedCount' => $addedCount,
+            'message' => "Kategori başarıyla çalışma listene eklendi. Havuzuna $addedCount yeni kelime eklendi."
+        ]);
+    } else {
+        echo json_encode([
+            'status' => 'success',
+            'addedCount' => 0,
+            'message' => 'Kategori listene eklendi, ancak bu kategoride şu an eklenebilecek yeni kelime bulunmuyor.'
+        ]);
+    }
 } catch (Exception $e) {
     echo json_encode(['status' => 'error', 'message' => 'Hata: ' . $e->getMessage()]);
 }

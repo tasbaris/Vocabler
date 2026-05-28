@@ -99,6 +99,8 @@ async function fetchWords() {
       },
     });
 
+    if (handleUnauthorized(response)) return;
+
     const result = await response.json();
 
     if (response.ok && result.status === "success") {
@@ -401,6 +403,9 @@ document.addEventListener("DOMContentLoaded", () => {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` }
       });
+
+      if (handleUnauthorized(response)) return;
+
       const result = await response.json();
       if (response.ok && result.status === "success") {
         let options = `<option value="" selected disabled>${t('placeholder_select')}</option>`;
@@ -502,6 +507,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify({ wordId: wordId }),
               });
 
+              if (handleUnauthorized(response)) return;
+
               const result = await response.json();
               if (response.ok && result.status === "success") {
                 showToast(result.message, "success");
@@ -596,18 +603,21 @@ document.addEventListener("DOMContentLoaded", () => {
           bulkDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Siliniyor...';
 
           try {
-            const promises = Array.from(checkboxes).map(cb => {
-              return fetch(`${API_BASE_URL}/words/delete_word.php`, {
+            const promises = Array.from(checkboxes).map(async cb => {
+              const res = await fetch(`${API_BASE_URL}/words/delete_word.php`, {
                 method: "POST",
                 headers: {
                   Authorization: `Bearer ${token}`,
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ wordId: cb.value }),
-              }).then(res => res.json());
+              });
+              if (handleUnauthorized(res)) return { status: 'unauthorized' };
+              return res.json();
             });
 
-            await Promise.all(promises);
+            const results = await Promise.all(promises);
+            if (results.some(r => r.status === 'unauthorized')) return;
             
             showToast(`${checkboxes.length} kelime silindi.`, "success");
             fetchWords(); // Tabloyu yenile
@@ -778,6 +788,8 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { Authorization: `Bearer ${token}` },
           body: payload,
         });
+
+        if (handleUnauthorized(response)) return;
 
         const result = await response.json();
         if (response.ok && result.status === "success") {

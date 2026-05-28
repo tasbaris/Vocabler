@@ -30,6 +30,38 @@ document.addEventListener('DOMContentLoaded', () => {
             applyTheme(); // Değişikliği tüm ikonlara yansıt
         }
     });
+
+    // Language Toggle
+    const langSelector = document.getElementById('langSelector');
+    if (langSelector) {
+        const savedLang = localStorage.getItem('vocabler_lang') || 'tr';
+        
+        // Fetch languages from backend
+        fetch(`${typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://localhost:8080'}/languages/get_active.php`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    langSelector.innerHTML = '';
+                    data.languages.forEach(lang => {
+                        const option = document.createElement('option');
+                        option.value = lang.LangCode.toLowerCase();
+                        option.className = 'text-dark';
+                        option.textContent = lang.LangCode.toUpperCase();
+                        if (option.value === savedLang) option.selected = true;
+                        langSelector.appendChild(option);
+                    });
+                }
+            })
+            .catch(err => console.error("Diller yüklenirken hata:", err));
+        
+        langSelector.addEventListener('change', (e) => {
+            const newLang = e.target.value;
+            localStorage.setItem('vocabler_lang', newLang);
+            if (typeof applyLanguage === 'function') {
+                applyLanguage(newLang);
+            }
+        });
+    }
 });
 
 // Sayfalar arası geçişte anlık kontrol

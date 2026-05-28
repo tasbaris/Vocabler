@@ -44,6 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "X-Vocabler-Token": token
             }
         });
+
+        if (handleUnauthorized(profileRes)) return;
+
         const profileData = await profileRes.json();
 
         if (profileData.status === "success") {
@@ -106,6 +109,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 body: JSON.stringify(data)
             });
+
+            if (handleUnauthorized(res)) return;
+
             const result = await res.json();
             if (result.status === "success") {
                 showToast(t('msg_update_success'), "success");
@@ -132,7 +138,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const parts = fullName.split(" ");
             const name = parts[0] || "";
             const surname = parts.slice(1).join(" ") || "";
-            updateUserData({ name, surname });
+            const email = emailInput.value.trim();
+            const level = levelInput.value;
+            updateUserData({ name, surname, email, level });
         });
     }
 
@@ -142,9 +150,88 @@ document.addEventListener("DOMContentLoaded", async () => {
             const data = {
                 nativeLangId: nativeLangSelect.value,
                 targetLangId: targetLangSelect.value,
-                dailyWord: goalSlider.value
+                dailyGoal: goalSlider.value
             };
             updateUserData(data);
         });
     }
-});
+
+    // --- Şifre Değiştirme İşlemi ---
+    const changePasswordBtn = document.getElementById("changePasswordBtn");
+    if (changePasswordBtn) {
+        changePasswordBtn.addEventListener("click", () => {
+            const isLight = document.documentElement.classList.contains("light-theme");
+            const lang = localStorage.getItem("vocabler_lang") || "tr";
+            const dict = translations[lang] || translations['tr'];
+
+            Swal.fire({
+                title: dict.btn_change_password || 'Şifre Değiştir',
+                html: `
+                    <div class="text-start">
+                        <label class="form-label small opacity-50">${dict.label_old_password || 'Eski Şifre'}</label>
+                        <input type="password" id="oldPassword" class="form-control mb-3" placeholder="******">
+
+                        <label class="form-label small opacity-50">${dict.label_new_password || 'Yeni Şifre'}</label>
+                        <input type="password" id="newPassword" class="form-control mb-3" placeholder="******">
+
+                        <label class="form-label small opacity-50">${dict.label_confirm_password || 'Yeni Şifre (Tekrar)'}</label>
+                        <input type="password" id="confirmPassword" class="form-control" placeholder="******">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: dict.btn_save || 'Kaydet',
+                cancelButtonText: dict.btn_cancel || 'İptal',
+                confirmButtonColor: "#00ADB5",
+                background: isLight ? "#FFFFFF" : "#1E2128",
+                color: isLight ? "#1E2128" : "#F9F9F9",
+                preConfirm: () => {
+                    const oldPassword = Swal.getPopup().querySelector('#oldPassword').value;
+                    const newPassword = Swal.getPopup().querySelector('#newPassword').value;
+                    const confirmPassword = Swal.getPopup().querySelector('#confirmPassword').value;
+
+                    if (!oldPassword || !newPassword || !confirmPassword) {
+                        Swal.showValidationMessage(dict.msg_fill_required || 'Lütfen tüm alanları doldurun');
+                        return false;
+                    }
+
+                    if (newPassword !== confirmPassword) {
+                        Swal.showValidationMessage(dict.msg_passwords_dont_match || 'Yeni şifreler eşleşmiyor');
+                        return false;
+                    }
+
+                    if (newPassword.length < 6) {
+                        Swal.showValidationMessage(dict.msg_password_too_short || 'Yeni şifre en az 6 karakter olmalıdır');
+                        return false;
+                    }
+
+                    return { oldPassword, newPassword };
+                }
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/user/change_password.php`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify(result.value)
+                        });
+
+                        if (handleUnauthorized(response)) return;
+
+                        const data = await response.json();
+                        if (data.status === "success") {
+                            showToast(data.message, "success");
+                        } else {
+                            showToast(data.message || 'Bir hata oluştu', "error");
+                        }
+                    } catch (error) {
+                        console.error("Şifre değiştirme hatası:", error);
+                        showToast(dict.msg_server_error || 'Sunucu hatası', "error");
+                    }
+                }
+            });
+        });
+    }
+    });

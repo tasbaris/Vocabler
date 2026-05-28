@@ -155,25 +155,57 @@ document.addEventListener("DOMContentLoaded", () => {
     if (authGuest && authUser) {
         authGuest.classList.add("d-none");
         authUser.classList.remove("d-none");
-    }
 
-    const welcomeMessage = document.getElementById("welcomeMessage");
-    if (welcomeMessage) {
-      const levelHtml = user.Level ? `<span class="badge bg-warning text-dark ms-2 align-middle fs-6">${user.Level}</span>` : '';
-      welcomeMessage.innerHTML = `${t('msg_welcome_back')}, ${firstName}! 👋 ${levelHtml}`;
+        // Landing page CTA butonlarını Panele Git olarak güncelle
+        const ctaButtons = document.querySelectorAll('a[href="login.html"], a[href="register.html"]');
+        ctaButtons.forEach(btn => {
+            if (!btn.closest('#auth-guest')) { // Navbar'dakiler hariç (onlar zaten d-none olacak)
+                btn.href = 'dashboard.html';
+                if (btn.hasAttribute('data-i18n')) {
+                    btn.setAttribute('data-i18n', 'nav_dashboard');
+                    if (typeof t === 'function') btn.textContent = t('nav_dashboard');
+                }
+            }
+        });
     }
   }
 }); 
 
 function checkAuth() {
   const token = localStorage.getItem("vocabler_token");
-  if (!token && !window.location.pathname.includes("login.html")) {
+  const path = window.location.pathname;
+
+  const isLoginPage = path.includes("login.html") || 
+                     path.includes("register.html") || 
+                     path.includes("forgot-password.html");
+                     
+  const isPublicPage = isLoginPage ||
+                     path.endsWith("/") ||
+                     path.includes("index.html");
+
+  if (!token && !isPublicPage) {
     window.location.href = "login.html";
+  } else if (token && isLoginPage) {
+    // Oturum açıksa ve login/register sayfasına gidilmeye çalışılıyorsa dashboard'a yönlendir
+    window.location.href = "dashboard.html";
   }
+}
+
+// Global 401 handler
+function handleUnauthorized(response) {
+  if (response.status === 401) {
+    logout();
+    return true;
+  }
+  return false;
 }
 
 function logout() {
   localStorage.removeItem("vocabler_token");
   localStorage.removeItem("vocabler_user");
-  window.location.href = "index.html";
+  // localStorage.removeItem("vocabler_lang"); // Dili korumak isteyebiliriz
+  window.location.href = "login.html";
 }
+
+// Call checkAuth immediately
+checkAuth();

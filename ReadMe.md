@@ -1,107 +1,54 @@
-# 📚 Vocabler - Dil Öğrenme Uygulaması
+# Vocabler - Dil Öğrenme Platformu
 
-Vocabler, aralıklı tekrar (SRS) algoritması kullanarak kelime öğrenmeyi eğlenceli hale getiren bir dil öğrenme platformudur. Bu rehber, ekibin projeyi sorunsuz ayağa kaldırması ve geliştirmesi için hazırlanmıştır.
+Vocabler, kullanıcıların kelime dağarcığını eğlenceli ve interaktif bir şekilde geliştirmelerini sağlayan modern bir dil öğrenme platformudur. SRS (Spaced Repetition System) algoritması, oyunlaştırılmış testler ve dinamik içerik yönetimi ile dil öğrenme sürecini optimize eder.
 
-## 🚀 Proje Yapısı
-```text
-Vocabler/
-├── frontend/           # HTML, CSS ve Vanilla JS dosyaları
-└── backend/            # PHP API, MySQL ve Docker yapılandırması
-    ├── api/            # PHP Endpoint'leri (.php dosyaları)
-    ├── init.sql        # Veritabanı şeması ve başlangıç verileri
-    └── docker-compose.yml
-```
+## 🚀 Temel Özellikler
 
----
+- **SRS Tabanlı Öğrenme:** Kelimeleri unutma eğrinize göre planlayan akıllı tekrar sistemi.
+- **Gelişmiş Quiz Sistemi:** Çoktan seçmeli, doğru/yanlış ve yazma pratikleri.
+- **Oyunlaştırma (Wordle & Word Chain):** Kelime bilginizi strateji ve oyunlarla test edin.
+- **Kişiselleştirilmiş Kelime Havuzu:** Kendi kelimelerinizi ekleyin veya hazır kategorilerden (Teknoloji, Doğa, İş dünyası vb.) kelime setlerine abone olun.
+- **Seviye Tespit Sınavı:** Başlangıç seviyenizi belirleyen dinamik yerleştirme testi.
+- **Karanlık/Aydınlık Tema:** Göz yormayan, modern ve duyarlı (responsive) arayüz.
+- **Çoklu Dil Desteği:** Tamamen yerelleştirilmiş (TR/EN) içerik ve arayüz.
 
-## 🎨 Frontend Geliştiricileri İçin Kurulum
+## 🛠 Teknik Mimari
 
-Frontend tarafı **Vanilla CSS** ve **Bootstrap 5** kullanılarak tasarlanmıştır.
+### Frontend (İstemci)
+- **Vanilla JS & Bootstrap 5:** Saf JavaScript ve modern CSS framework'ü ile hızlı ve hafif bir yapı.
+- **İnternasyonalizasyon (i18n):** `translations.js` üzerinden yönetilen dinamik dil sistemi.
+- **Responsive Tasarım:** Mobil, tablet ve masaüstü cihazlarla tam uyum.
 
-1.  **Arayüzü Görüntüleme:** 
-    *   `frontend/index.html` dosyasını tarayıcınızda açarak projeyi görebilirsiniz.
-    *   **Tavsiye:** VS Code üzerinden **"Live Server"** eklentisini kullanırsanız yaptığınız CSS değişikliklerini anında görebilirsiniz.
-2.  **Tasarım Standartları:**
-    *   **Font:** Poppins (Google Fonts).
-    *   **Renk Paleti:** 
-        *   Arkaplan: `#222831`
-        *   Kartlar: `#393E46`
-        *   Vurgu (Accent): `#00ADB5`
-        *   Yazı: `#EEEEEE`
+### Backend (Sunucu)
+- **PHP 8.x:** RESTful API mimarisi ile veri yönetimi.
+- **MySQL:** Saklı yordamlar (Stored Procedures) ve tetikleyiciler (Triggers) ile veritabanı seviyesinde iş mantığı.
+- **JWT (JSON Web Token):** Güvenli oturum yönetimi ve yetkilendirme.
 
----
+### Altyapı
+- **Docker & Docker Compose:** Kolay kurulum ve izole çalışma ortamı.
+- **SRS Algoritması:** Veritabanı seviyesinde çalışan, `sp_UpdateWordProgress` yordamı ile yönetilen bilimsel tekrar sistemi.
 
-## ⚙️ Backend ve API Kurulumu (Docker)
+## 📦 Kurulum
 
-Backend, PHP 8.2 ve MySQL 8.0 kullanır. Tüm ekipte aynı ortamın çalışması için Docker zorunludur.
+1. Projeyi bilgisayarınıza klonlayın:
+   ```bash
+   git clone https://github.com/Vocabler/Vocabler.git
+   ```
+2. Docker kullanarak sistemi ayağa kaldırın:
+   ```bash
+   docker-compose up -d
+   ```
+3. Uygulamaya tarayıcınızdan erişin:
+   ```
+   http://localhost
+   ```
 
-1.  **Gereksinimler:** [Docker Desktop](https://www.docker.com/products/docker-desktop/) yüklü ve çalışıyor olmalıdır.
-2.  **Sistemi Başlatma:**
-    *   Terminalden `Vocabler/backend/` klasörüne gidin.
-    *   Şu komutu çalıştırın: `docker-compose up -d --build`
-3.  **Kontrol:**
-    *   Tarayıcıdan `http://localhost:8080/db_test.php` adresine gidin.
-    *   **"Veritabanına PDO ile başarıyla bağlanıldı!"** yazısını görüyorsanız her şey hazırdır.
+## 📂 Veritabanı Yapısı
 
----
-
-## 💻 JavaScript Geliştiricileri İçin Teknik Bilgiler
-
-Backend ile iletişim tamamen **JSON** formatında yapılacaktır.
-
-### 1. API İstekleri (Fetch)
-Backend API `http://localhost:8080/` adresinden hizmet vermektedir. Örnek bir veri çekme işlemi:
-
-```javascript
-const BASE_URL = 'http://localhost:8080';
-
-async function getWords() {
-    try {
-        const response = await fetch(`${BASE_URL}/get_words.php`);
-        const data = await response.json();
-        console.log(data);
-    } catch (error) {
-        console.error('API Hatası:', error);
-    }
-}
-```
-
-### 2. Veritabanı Bağlantı Bilgileri (PHP & PDO İçin)
-Yeni bir `.php` dosyası oluştururken güvenli ve modern bir yapı olan **PDO** kullanmalısınız:
-
-```php
-$host = 'db';
-$db   = 'vocabler';
-$user = 'root';
-$pass = 'root_password';
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
-$options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES   => false,
-];
-
-try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-     throw new \PDOException($e->getMessage(), (int)$e->getCode());
-}
-```
-
-### 3. Önemli Tablolar ve Mantık
-*   **UserWords:** Kelimelerin öğrenilme durumunu tutar. `LearnRank` (1-6) değeri kelimenin ne kadar iyi bilindiğini temsil eder.
-*   **Questions:** `WordId` ile ilişkilidir. Sadece kullanıcının "öğreniliyor" statüsündeki kelimelerinden soru sormalısınız.
-*   **SRS Algoritması:** Kullanıcı bir soruyu doğru bildiğinde `NextReviewDate` değerini ileri bir tarihe atan API'yi tetikleyin.
+Proje, veritabanı seviyesinde yüksek performanslı iş mantığı kullanmaktadır. Ana yordamlar:
+- `sp_AssignWordsToUser`: Kullanıcının dil ve seviyesine uygun kelimeleri otomatik atar.
+- `sp_UpdateWordProgress`: Kullanıcının cevaplarına göre kelime ilerlemesini (SRS) hesaplar.
+- `sp_GetDailyWords`: Kullanıcının günlük hedefine ve tekrar zamanı gelen kelimelere göre çalışma listesi hazırlar.
 
 ---
-
-## 🆘 Sorun Giderme
-*   **Port Hatası:** Eğer 8080 portu doluysa `docker-compose.yml` içindeki `8080:80` satırını `8081:80` olarak değiştirin.
-*   **Veritabanı Sıfırlama:** Tablo yapısını tamamen sıfırlamak isterseniz, `mysql_data` klasörünü silip Docker'ı tekrar başlatın.
-*   **CORS Hatası:** PHP dosyalarınızın en başına şu satırı eklediğinizden emin olun: 
-    `header("Access-Control-Allow-Origin: *");`
-
----
-**Vocabler Takımı - 2026**
+*Bu proje, modern yazılım prensipleri (DRY, KISS) ve verimli veritabanı yönetimi odaklı geliştirilmiştir.*

@@ -276,6 +276,9 @@
             const response = await fetch(`${API_BASE_URL}/words/get_words.php?mode=all`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
+
+            if (handleUnauthorized(response)) return;
+
             const result = await response.json();
             
             if (result.status === 'success' && result.words) {
@@ -307,6 +310,9 @@
             const response = await fetch(`${API_BASE_URL}/words/get_words.php?mode=all`, {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
+
+            if (handleUnauthorized(response)) return;
+
             const result = await response.json();
             
             if (result.status === 'success' && result.words && result.words.length > 0) {
@@ -318,22 +324,23 @@
                 
                 const chain = findValidChainJs(pool, 5);
                 if (chain) {
-                    for(let i = 0; i < 5; i++) {
-                        document.getElementById('word' + (i+1)).value = chain[i];
-                    }
+                   for(let i = 0; i < 5; i++) {
+                       document.getElementById('word' + (i+1)).value = chain[i];
+                   }
                 } else {
-                    errBox.innerText = 'Kelime havuzunuzda geçerli bir 5 kelimelik zincir bulunamadı.';
-                    errBox.classList.remove('d-none');
+                   errBox.innerText = t('msg_wordchain_no_chain') || 'Kelime havuzunuzda geçerli bir 5 kelimelik zincir bulunamadı.';
+                   errBox.classList.remove('d-none');
                 }
-            } else {
-                errBox.innerText = 'Kelime havuzunuz boş veya yeterli kelime yok.';
+                } else {
+                errBox.innerText = t('msg_wordchain_empty') || 'Kelime havuzunuz boş veya yeterli kelime yok.';
                 errBox.classList.remove('d-none');
-            }
-        } catch (error) {
-            console.error('Error auto-filling words:', error);
-            errBox.innerText = 'Kelimeler getirilirken bir hata oluştu.';
-            errBox.classList.remove('d-none');
-        } finally {
+                }
+                } catch (error) {
+                console.error('Error auto-filling words:', error);
+                errBox.innerText = t('msg_server_error') || 'Kelimeler getirilirken bir hata oluştu.';
+                errBox.classList.remove('d-none');
+                } finally {
+
             btn.innerHTML = originalHtml;
             btn.disabled = false;
         }
@@ -406,6 +413,8 @@
                 },
                 body: JSON.stringify({ words: payloadWords })
             });
+
+            if (handleUnauthorized(response)) return;
 
             const result = await response.json();
             
@@ -497,6 +506,9 @@
                     'Authorization': 'Bearer ' + token
                 }
             });
+
+            if (handleUnauthorized(response)) return;
+
             const result = await response.json();
             
             const grid = document.getElementById('historyGrid');
@@ -580,6 +592,9 @@
                 },
                 body: JSON.stringify({ storyId: storyId })
             });
+
+            if (handleUnauthorized(response)) return;
+
             const result = await response.json();
             
             if (result.status === 'success') {

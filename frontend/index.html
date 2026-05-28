@@ -28,7 +28,7 @@
             </a>
             
             <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <i class="fas fa-bars text-white"></i>
+                <i class="fas fa-bars"></i>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -39,23 +39,27 @@
                 </ul>
                 
                 <div class="d-flex align-items-center gap-3">
+                    <select class="form-select form-select-sm bg-transparent border-opacity-25 rounded-pill px-3" id="langSelector" style="width: auto; cursor: pointer;">
+                        <option value="" disabled selected>...</option>
+                    </select>
+
                     <button class="theme-toggle" title="Tema Değiştir">
                         <i class="fas fa-moon"></i>
                     </button>
                     
                     <!-- Misafir Kullanıcı Görünümü -->
                     <div id="auth-guest" class="d-flex align-items-center gap-3">
-                        <a href="login.html" class="text-decoration-none small fw-medium text-white-50 hover-text-white transition-all px-2" data-i18n="nav_login">Giriş Yap</a>
-                        <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" style="min-width: 120px; padding: 10px 0;" data-i18n="nav_register">Ücretsiz Başla</a> 
+                        <a href="login.html" class="text-decoration-none small fw-medium opacity-75 hover-opacity-100 transition-all px-2" data-i18n="nav_login" style="color: var(--text);">Giriş Yap</a>
+                        <a href="register.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-white shadow-sm" style="min-width: 120px; padding: 10px 0;" data-i18n="nav_register">Ücretsiz Başla</a> 
                     </div>
 
                     <!-- Giriş Yapmış Kullanıcı Görünümü -->
                     <div id="auth-user" class="d-flex align-items-center gap-3 d-none">
                         <div class="d-flex align-items-center gap-2 me-1">
                             <img src="" alt="Profil" class="rounded-circle border border-primary userAvatar" style="width: 32px; height: 32px; object-fit: cover;">
-                            <span class="text-white-50 small d-none d-md-inline"><span data-i18n="nav_welcome">Hoş geldin</span>, <span class="userNameDisplay fw-bold text-white"></span>!</span>
+                            <span class="small d-none d-md-inline opacity-75"><span data-i18n="nav_welcome">Hoş geldin</span>, <span class="userNameDisplay fw-bold" style="color: var(--text);"></span>!</span>
                         </div>
-                        <a href="dashboard.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-dark shadow-sm" data-i18n="nav_dashboard">Panele Git</a>
+                        <a href="dashboard.html" class="btn btn-primary btn-sm px-4 rounded-pill fw-bold text-white shadow-sm" data-i18n="nav_dashboard">Panele Git</a>
                     </div>
                 </div>
             </div>

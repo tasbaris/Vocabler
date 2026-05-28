@@ -32,6 +32,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "X-Vocabler-Token": token
                 }
             });
+
+            if (handleUnauthorized(profileRes)) return;
+
             const profileData = await profileRes.json();
 
             if (profileData.status === "success") {
@@ -86,13 +89,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     streakCount.innerText = `${streak} ${lang === 'tr' ? 'Gün' : 'Days'}`;
                 }
                 
-                // Kullanıcı seviyesini göster
+                // Kullanıcı seviyesini göster (Mevcut olanı temizle veya güncelle)
                 if (user.Level) {
-                    const levelSpan = document.createElement("span");
-                    levelSpan.className = "badge bg-warning text-dark ms-2 align-middle";
-                    levelSpan.innerText = user.Level;
                     const welcomeMsgHeader = document.querySelector("#welcomeMessage");
                     if (welcomeMsgHeader) {
+                        // Eğer zaten bir level badge varsa onu kaldır
+                        const existingBadge = welcomeMsgHeader.querySelector(".level-badge");
+                        if (existingBadge) existingBadge.remove();
+
+                        const levelSpan = document.createElement("span");
+                        levelSpan.className = "badge bg-warning text-dark ms-2 align-middle level-badge";
+                        levelSpan.innerText = user.Level;
                         welcomeMsgHeader.appendChild(levelSpan);
                     }
                 }
@@ -105,6 +112,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     "X-Vocabler-Token": token
                 }
             });
+
+            if (handleUnauthorized(wordsRes)) return;
+
             const wordsData = await wordsRes.json();
 
             if (wordsData.status === "success") {

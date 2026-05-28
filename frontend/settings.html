@@ -96,26 +96,28 @@
                         <div class="d-flex align-items-center gap-4 mb-4">
                             <!--id ekledim-->
                             <img class="rounded-circle" alt="Avatar" id="settingsBigAvatar">
-                            <div>
-                                <button class="btn btn-sm btn-outline-light border-opacity-25 mb-2"><i class="fas fa-upload me-2"></i><span data-i18n="label_picture">Fotoğraf Yükle</span></button>
-                            </div>
                         </div>
 
                         <form id="profileForm">
                             <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_full_name">Ad Soyad</label>
-                                    <!--id ekledim-->
+                                <div class="col-md-4">
+                                    <label class="form-label small opacity-50" data-i18n="label_full_name">Ad Soyad</label>
                                     <input type="text" class="form-control" id="settingsNameInput" name="fullName">
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_level">Seviye</label>
-                                    <input type="text" class="form-control" id="settingsLevelInput" readonly>
+                                    <label class="form-label small opacity-50" data-i18n="label_level">Seviye</label>
+                                    <select class="form-select" id="settingsLevelInput" name="level">
+                                        <option value="A1">A1</option>
+                                        <option value="A2">A2</option>
+                                        <option value="B1">B1</option>
+                                        <option value="B2">B2</option>
+                                        <option value="C1">C1</option>
+                                        <option value="C2">C2</option>
+                                    </select>
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_email">E-posta Adresi</label>
-                                    <!--id ekledim-->
-                                    <input type="email" class="form-control" readonly id="settingsEmailInput">
+                                <div class="col-md-5">
+                                    <label class="form-label small opacity-50" data-i18n="label_email">E-posta Adresi</label>
+                                    <input type="email" class="form-control" id="settingsEmailInput" name="email">
                                 </div>
                             </div>
                             <div class="text-end mt-4">
@@ -131,13 +133,13 @@
                         <form id="preferencesForm">
                             <div class="row g-3 mb-4">
                                 <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_main_word">Ana Dil</label>
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_main_lang">Ana Dil</label>
                                     <select class="form-select" id="nativeLanguage" name="nativeLanguage">
                                         <option value="" disabled selected data-i18n="topics_loading">Yükleniyor...</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_target_word">Öğrenilen Dil</label>
+                                    <label class="form-label small opacity-50 ms-2" data-i18n="label_target_lang">Öğrenilen Dil</label>
                                     <select class="form-select" id="targetLanguage" name="targetLanguage">
                                         <option value="" disabled selected data-i18n="topics_loading">Yükleniyor...</option>
                                     </select>
@@ -162,7 +164,7 @@
                     <div class="custom-card">
                         <h5 class="fw-bold mb-4 text-danger border-bottom border-white border-opacity-10 pb-3" data-i18n="label_security">Güvenlik</h5>
                         <p class="small  mb-4" data-i18n="security_desc">Hesabınızın güvenliğini sağlamak için şifrenizi güncel tutun.</p>
-                        <button class="btn btn-outline-danger" data-i18n="btn_change_password">Şifre Değiştir</button>
+                        <button class="btn btn-outline-danger" id="changePasswordBtn" data-i18n="btn_change_password">Şifre Değiştir</button>
                     </div>
 
                 </div>

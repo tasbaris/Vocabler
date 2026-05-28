@@ -17,6 +17,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $allowed = [
     'name' => 'Name',
     'surname' => 'Surname',
+    'email' => 'Email',
     'dailyWord' => 'DailyWord',
     'level' => 'Level',
     'nativeLangId' => 'NativeLangId',

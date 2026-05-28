@@ -20,6 +20,8 @@ async function fetchCategories() {
             },
         });
 
+        if (handleUnauthorized(response)) return;
+
         const result = await response.json();
 
         if (response.ok && result.status === "success") {
@@ -126,6 +128,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             body: JSON.stringify({ categoryName: result.value }),
                         });
 
+                        if (handleUnauthorized(response)) return;
+
                         const res = await response.json();
                         if (response.ok && res.status === "success") {
                             showToast(res.message, "success");
@@ -176,6 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 body: JSON.stringify({ id: id }),
                             });
 
+                            if (handleUnauthorized(response)) return;
+
                             const result = await response.json();
                             if (response.ok && result.status === "success") {
                                 showToast(result.message, "success");
@@ -225,6 +231,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 body: JSON.stringify({ id: id, categoryName: result.value }),
                             });
 
+                            if (handleUnauthorized(response)) return;
+
                             const res = await response.json();
                             if (response.ok && res.status === "success") {
                                 showToast(res.message, "success");
@@ -260,9 +268,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         body: JSON.stringify({ categoryId: id }),
                     });
 
+                    if (handleUnauthorized(response)) return;
+
                     const res = await response.json();
                     if (response.ok && res.status === "success") {
-                        showToast(res.message, "success");
+                        showToast(res.message, res.addedCount > 0 ? "success" : "info");
                         btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> ${t('btn_added')}`;
                         btn.classList.replace("btn-primary", "btn-success");
                         btn.disabled = true;
