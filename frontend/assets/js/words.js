@@ -236,11 +236,11 @@ function renderWordsTable() {
 
       let rankHtml = "";
       if (word.SRSStatus == 2) {
-          rankHtml = `<span class="badge bg-success px-2 py-1 shadow-sm"><i class="fas fa-graduation-cap me-1"></i>${dict.quiz_completed_title ? dict.quiz_completed_title.split(' ')[0] : 'Öğrenildi'}</span>`;
+          rankHtml = `<span class="badge bg-success px-2 py-1 shadow-sm"><i class="fas fa-graduation-cap me-1"></i>${t('label_mastered')}</span>`;
       } else {
           const progressPercent = Math.min((rank / 6) * 100, 100);
           const rankColor = rank >= 5 ? 'bg-info' : (rank >= 3 ? 'bg-warning' : 'bg-secondary');
-          const stepLabel = lang === 'en' ? 'Step' : 'Adım';
+          const stepLabel = t('label_step');
           rankHtml = `
             <div class="d-flex flex-column align-items-center" style="min-width: 80px;">
                 <div class="progress w-100 mb-1" style="height: 4px;">
@@ -484,7 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const isLight = document.documentElement.classList.contains("light-theme");
 
         Swal.fire({
-          title: t('confirm_delete_topic'),
+          title: t('msg_confirm_title'),
           text: t('confirm_delete_word'),
           icon: "warning",
           showCancelButton: true,
@@ -511,7 +511,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
               const result = await response.json();
               if (response.ok && result.status === "success") {
-                showToast(result.message, "success");
+                showToast(t('msg_word_removed'), "success");
                 fetchWords();
               } else {
                 showToast(result.message || t('msg_update_error'), "error");
@@ -585,8 +585,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const isLight = document.documentElement.classList.contains("light-theme");
       Swal.fire({
-        title: "Toplu Silme",
-        text: `Seçili ${checkboxes.length} kelimeyi silmek istediğinize emin misiniz?`,
+        title: t('msg_bulk_delete_title'),
+        text: t('msg_bulk_delete_confirm').replace('{count}', checkboxes.length),
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#00ADB5",
@@ -600,7 +600,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const token = localStorage.getItem("vocabler_token");
           
           bulkDeleteBtn.disabled = true;
-          bulkDeleteBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Siliniyor...';
+          bulkDeleteBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>${t('msg_deleting')}`;
 
           try {
             const promises = Array.from(checkboxes).map(async cb => {
@@ -618,8 +618,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const results = await Promise.all(promises);
             if (results.some(r => r.status === 'unauthorized')) return;
-            
-            showToast(`${checkboxes.length} kelime silindi.`, "success");
+
+            showToast(t('msg_items_deleted').replace('{count}', checkboxes.length), "success");
             fetchWords(); // Tabloyu yenile
           } catch (err) {
             showToast(t('msg_connection_error'), "error");
@@ -627,9 +627,10 @@ document.addEventListener("DOMContentLoaded", () => {
             bulkDeleteBtn.disabled = false;
             bulkDeleteBtn.innerHTML = `<i class="fas fa-trash me-1"></i> <span data-i18n="btn_delete_selected">${t('btn_delete_selected')}</span> (<span id="selectedCount">0</span>)`;
           }
-        }
-      });
-    });
+          }
+          });
+          }
+);
   }
 
   // Örnek Cümle Ekleme Butonu
@@ -695,14 +696,14 @@ document.addEventListener("DOMContentLoaded", () => {
         // Dosya boyutu kontrolü (2MB)
         const maxSize = 2 * 1024 * 1024;
         if (file.size > maxSize) {
-          showToast("Dosya boyutu çok büyük! Maksimum 2MB yükleyebilirsiniz.", "warning");
+          showToast(t('msg_file_too_large'), "warning");
           wordPictureInput.value = "";
           return;
         }
 
         // Dosya tipi kontrolü
         if (!file.type.startsWith('image/')) {
-          showToast("Lütfen sadece resim dosyası seçin!", "warning");
+          showToast(t('msg_select_image'), "warning");
           wordPictureInput.value = "";
           return;
         }
@@ -748,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>İşlem yapılıyor...';
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>${t('msg_processing')}`;
 
       const payload = new FormData();
       payload.append("mainWord", mainWord);
@@ -793,12 +794,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const result = await response.json();
         if (response.ok && result.status === "success") {
-          showToast(result.message, "success");
+          showToast(wordId ? t('msg_update_success') : t('msg_add_success'), "success");
           resetAddForm();
           fetchWords();
         } else {
-          showToast(result.message || t('msg_update_error'), "error");
+          // Backend'den gelen spesifik mesajı localize et
+          if (result.message === 'Sadece kendi eklediğiniz kelimeleri güncelleyebilirsiniz.') {
+            showToast(t('msg_only_own_words'), "error");
+          } else {
+            showToast(result.message || t('msg_update_error'), "error");
+          }
         }
+
       } catch (error) {
         showToast(t('msg_server_error'), "error");
       } finally {

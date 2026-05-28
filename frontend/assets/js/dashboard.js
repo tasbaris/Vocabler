@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 // Öğrenme Serisi (Streak)
                 if (streakCount) {
                     const streak = user.StreakDays || 0;
-                    streakCount.innerText = `${streak} ${lang === 'tr' ? 'Gün' : 'Days'}`;
+                    streakCount.innerText = `${streak} ${t('label_days')}`;
                 }
                 
                 // Kullanıcı seviyesini göster (Mevcut olanı temizle veya güncelle)
@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             
                             const rank = parseInt(word.LearnRank) || 0;
                             const statusHtml = word.SRSStatus == 2 
-                                ? `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">${dict.quiz_completed_title.split(' ')[0]}</span>`
-                                : `<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1">Step ${rank}/6</span>`;
+                                ? `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">${t('label_mastered')}</span>`
+                                : `<span class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1">${t('label_step')} ${rank}/6</span>`;
 
                             const picture = word.Picture ? (word.Picture.startsWith('http') ? word.Picture : `${API_BASE_URL}/../${word.Picture}`) : null;
                             const imgHtml = picture ? `<img src="${picture}" class="rounded me-2" style="width: 32px; height: 32px; object-fit: cover;">` : `<div class="rounded me-2 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;"><i class="fas fa-image opacity-25 fa-xs"></i></div>`;

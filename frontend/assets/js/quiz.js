@@ -63,10 +63,12 @@ async function fetchQuizWords() {
                     document.getElementById("total-words-count").textContent = totalWords;
                     
                     // Başlangıç ekranını güncelle
+                    const labelQuizQ = t('label_quiz_question');
+                    const labelTotalWords = t('label_total_words');
                     document.getElementById("quiz-info-text").innerHTML = `
                         <div class="d-flex justify-content-center gap-4">
-                            <span><strong>Quiz Sorusu:</strong> ${quizData.length}</span>
-                            <span><strong>Toplam Kelime:</strong> ${totalWords}</span>
+                            <span><strong>${labelQuizQ}:</strong> ${quizData.length}</span>
+                            <span><strong>${labelTotalWords}:</strong> ${totalWords}</span>
                         </div>
                     `;
 
@@ -107,7 +109,7 @@ async function fetchQuizWords() {
         }
     } catch (error) {
         console.error("Veri yüklenirken hata:", error);
-        Swal.fire("Hata", "Veriler yüklenirken bir sorun oluştu.", "error");
+        Swal.fire(t('msg_error'), t('msg_server_error'), "error");
     }
 }
 

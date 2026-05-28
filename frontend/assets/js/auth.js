@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
           }
 
           submitBtn.className = "btn btn-success w-100 mb-4 py-3";
-          submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
+          submitBtn.innerHTML = `<i class="fas fa-check me-2"></i>${t('msg_success')}`;
           setTimeout(() => { window.location.href = "dashboard.html"; }, 800);
         } else {
-          alert(`Hata: ${result.message || "Giriş yapılamadı."}`);
+          showToast(result.message || t('msg_login_failed'), "error");
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalBtnText;
         }
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const submitBtn = document.getElementById("registerBtn");
       const originalBtnText = submitBtn.innerHTML;
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Kayıt Yapılıyor...';
+      submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>${t('msg_registering')}`;
 
       const formData = new FormData(registerForm);
       const registerData = Object.fromEntries(formData.entries());
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json();
         if (response.ok && result.status === "success") {
           submitBtn.className = "btn btn-success w-100 mb-4 py-3";
-          submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Başarılı!';
+          submitBtn.innerHTML = `<i class="fas fa-check me-2"></i>${t('msg_success')}`;
           
           fetch(`${API_BASE_URL}/user/login.php`, {
               method: "POST",
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
               } else { window.location.replace("login.html"); }
           }).catch(() => window.location.replace("login.html"));
         } else {
-          alert(`Hata: ${result.message || "Kayıt yapılamadı."}`);
+          showToast(result.message || t('msg_register_failed'), "error");
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalBtnText;
         }
@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(userStr);
     const firstName = user.Name || user.name || "";
     const lastName = user.Surname || user.surname || "";
-    const fullName = `${firstName} ${lastName}`.trim() || user.UserName || "Kullanıcı";
+    const fullName = `${firstName} ${lastName}`.trim() || user.UserName || t('label_user');
 
     const nameDisplays = document.querySelectorAll(".userNameDisplay");
     nameDisplays.forEach(el => el.textContent = fullName);

@@ -328,19 +328,18 @@
                        document.getElementById('word' + (i+1)).value = chain[i];
                    }
                 } else {
-                   errBox.innerText = t('msg_wordchain_no_chain') || 'Kelime havuzunuzda geçerli bir 5 kelimelik zincir bulunamadı.';
+                   errBox.innerText = t('msg_wordchain_no_chain');
                    errBox.classList.remove('d-none');
                 }
-                } else {
-                errBox.innerText = t('msg_wordchain_empty') || 'Kelime havuzunuz boş veya yeterli kelime yok.';
+            } else {
+                errBox.innerText = t('msg_wordchain_empty');
                 errBox.classList.remove('d-none');
-                }
-                } catch (error) {
-                console.error('Error auto-filling words:', error);
-                errBox.innerText = t('msg_server_error') || 'Kelimeler getirilirken bir hata oluştu.';
-                errBox.classList.remove('d-none');
-                } finally {
-
+            }
+        } catch (error) {
+            console.error('Error auto-filling words:', error);
+            errBox.innerText = t('msg_server_error');
+            errBox.classList.remove('d-none');
+        } finally {
             btn.innerHTML = originalHtml;
             btn.disabled = false;
         }
@@ -427,12 +426,12 @@
                 displayCurrentStory(result.data.story, result.data.imageUrl, result.data.words, result.data.mappings);
                 loadHistory();
             } else {
-                alert(result.message || 'Hikaye oluşturulurken bir hata oluştu.');
+                showToast(result.message || t('msg_update_error'), 'error');
                 section.style.display = 'none';
             }
         } catch (error) {
             console.error('Error generating story:', error);
-            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            showToast(t('msg_server_error'), 'error');
             section.style.display = 'none';
         } finally {
             loader.style.display = 'none';
@@ -576,7 +575,21 @@
     };
 
     window.deleteStory = async function(storyId, btnElement) {
-        if (!confirm('Bu hikayeyi silmek istediğinize emin misiniz?')) return;
+        const isLight = document.documentElement.classList.contains("light-theme");
+        const swalResult = await Swal.fire({
+            title: t('msg_confirm_title'),
+            text: t('confirm_delete_story') || 'Bu hikayeyi silmek istediğinize emin misiniz?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#00ADB5",
+            cancelButtonColor: "#d33",
+            confirmButtonText: t('btn_yes_delete'),
+            cancelButtonText: t('btn_cancel'),
+            background: isLight ? "#FFFFFF" : "#1E2128",
+            color: isLight ? "#1E2128" : "#F9F9F9",
+        });
+
+        if (!swalResult.isConfirmed) return;
         
         const originalHtml = btnElement.innerHTML;
         btnElement.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
@@ -598,18 +611,17 @@
             const result = await response.json();
             
             if (result.status === 'success') {
-                // If the currently displayed story was deleted, hide it
-                // We don't have the current story ID easily accessible in DOM, but reloading history works
                 document.getElementById('currentStorySection').style.display = 'none';
                 loadHistory();
+                showToast(t('msg_update_success'), 'success');
             } else {
-                alert(result.message || 'Silinirken bir hata oluştu.');
+                showToast(result.message || t('msg_update_error'), 'error');
                 btnElement.innerHTML = originalHtml;
                 btnElement.disabled = false;
             }
         } catch (error) {
             console.error('Error deleting story:', error);
-            alert('Bir hata oluştu.');
+            showToast(t('msg_server_error'), 'error');
             btnElement.innerHTML = originalHtml;
             btnElement.disabled = false;
         }

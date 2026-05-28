@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Veritabanından gelen Ad ve Soyadı birleştirerek tam isim oluştur
             const firstName = user.Name || "";
             const lastName = user.Surname || "";
-            const fullName = `${firstName} ${lastName}`.trim() || user.UserName || "Kullanıcı";
+            const fullName = `${firstName} ${lastName}`.trim() || user.UserName || t('label_user');
 
             if (nameInput) nameInput.value = fullName;
             if (levelInput) levelInput.value = user.Level || "A1";
@@ -165,22 +165,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             const dict = translations[lang] || translations['tr'];
 
             Swal.fire({
-                title: dict.btn_change_password || 'Şifre Değiştir',
+                title: t('btn_change_password'),
                 html: `
                     <div class="text-start">
-                        <label class="form-label small opacity-50">${dict.label_old_password || 'Eski Şifre'}</label>
+                        <label class="form-label small opacity-50">${t('label_old_password')}</label>
                         <input type="password" id="oldPassword" class="form-control mb-3" placeholder="******">
-
-                        <label class="form-label small opacity-50">${dict.label_new_password || 'Yeni Şifre'}</label>
+                        <label class="form-label small opacity-50">${t('label_new_password')}</label>
                         <input type="password" id="newPassword" class="form-control mb-3" placeholder="******">
-
-                        <label class="form-label small opacity-50">${dict.label_confirm_password || 'Yeni Şifre (Tekrar)'}</label>
+                        <label class="form-label small opacity-50">${t('label_confirm_password')}</label>
                         <input type="password" id="confirmPassword" class="form-control" placeholder="******">
                     </div>
                 `,
                 showCancelButton: true,
-                confirmButtonText: dict.btn_save || 'Kaydet',
-                cancelButtonText: dict.btn_cancel || 'İptal',
+                confirmButtonText: t('btn_save'),
+                cancelButtonText: t('btn_cancel'),
+
                 confirmButtonColor: "#00ADB5",
                 background: isLight ? "#FFFFFF" : "#1E2128",
                 color: isLight ? "#1E2128" : "#F9F9F9",
@@ -188,21 +187,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const oldPassword = Swal.getPopup().querySelector('#oldPassword').value;
                     const newPassword = Swal.getPopup().querySelector('#newPassword').value;
                     const confirmPassword = Swal.getPopup().querySelector('#confirmPassword').value;
-
                     if (!oldPassword || !newPassword || !confirmPassword) {
-                        Swal.showValidationMessage(dict.msg_fill_required || 'Lütfen tüm alanları doldurun');
+                        Swal.showValidationMessage(t('msg_fill_required'));
                         return false;
                     }
-
                     if (newPassword !== confirmPassword) {
-                        Swal.showValidationMessage(dict.msg_passwords_dont_match || 'Yeni şifreler eşleşmiyor');
+                        Swal.showValidationMessage(t('msg_passwords_dont_match'));
+                        return false;
+                    }
+                    if (newPassword.length < 6) {
+                        Swal.showValidationMessage(t('msg_password_too_short'));
                         return false;
                     }
 
-                    if (newPassword.length < 6) {
-                        Swal.showValidationMessage(dict.msg_password_too_short || 'Yeni şifre en az 6 karakter olmalıdır');
-                        return false;
-                    }
 
                     return { oldPassword, newPassword };
                 }
@@ -224,11 +221,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                         if (data.status === "success") {
                             showToast(data.message, "success");
                         } else {
-                            showToast(data.message || 'Bir hata oluştu', "error");
+                            showToast(data.message, "error");
                         }
                     } catch (error) {
                         console.error("Şifre değiştirme hatası:", error);
-                        showToast(dict.msg_server_error || 'Sunucu hatası', "error");
+                        showToast(t('msg_server_error'), "error");
                     }
                 }
             });

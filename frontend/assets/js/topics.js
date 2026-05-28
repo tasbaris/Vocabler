@@ -101,18 +101,18 @@ document.addEventListener("DOMContentLoaded", () => {
         addTopicBtn.addEventListener("click", () => {
             const isLight = document.documentElement.classList.contains("light-theme");
             Swal.fire({
-                title: translations[localStorage.getItem("vocabler_lang") || "tr"].modal_add_topic,
+                title: t('modal_add_topic'),
                 input: 'text',
-                inputLabel: translations[localStorage.getItem("vocabler_lang") || "tr"].label_topic_name,
+                inputLabel: t('label_topic_name'),
                 showCancelButton: true,
-                confirmButtonText: translations[localStorage.getItem("vocabler_lang") || "tr"].btn_save,
-                cancelButtonText: translations[localStorage.getItem("vocabler_lang") || "tr"].btn_cancel,
+                confirmButtonText: t('btn_save'),
+                cancelButtonText: t('btn_cancel'),
                 confirmButtonColor: "#00ADB5",
                 background: isLight ? "#FFFFFF" : "#1E2128",
                 color: isLight ? "#1E2128" : "#F9F9F9",
                 inputValidator: (value) => {
                     if (!value) {
-                        return 'Konu adı boş olamaz!';
+                        return t('msg_empty_category_name');
                     }
                 }
             }).then(async (result) => {
@@ -157,14 +157,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const id = btn.getAttribute("data-id");
 
                 Swal.fire({
-                    title: "Emin misiniz?",
-                    text: translations[lang].confirm_delete_topic,
+                    title: t('msg_confirm_title'),
+                    text: t('confirm_delete_topic'),
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#00ADB5",
                     cancelButtonColor: "#d33",
-                    confirmButtonText: "Evet, Sil!",
-                    cancelButtonText: translations[lang].btn_cancel,
+                    confirmButtonText: t('btn_yes_delete'),
+                    cancelButtonText: t('btn_cancel'),
                     background: isLight ? "#FFFFFF" : "#1E2128",
                     color: isLight ? "#1E2128" : "#F9F9F9",
                 }).then(async (swalResult) => {
@@ -203,19 +203,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 const oldName = btn.getAttribute("data-name");
 
                 Swal.fire({
-                    title: translations[lang].modal_edit_topic,
+                    title: t('modal_edit_topic'),
                     input: 'text',
                     inputValue: oldName,
-                    inputLabel: translations[lang].label_topic_name,
+                    inputLabel: t('label_topic_name'),
                     showCancelButton: true,
-                    confirmButtonText: translations[lang].btn_save,
-                    cancelButtonText: translations[lang].btn_cancel,
+                    confirmButtonText: t('btn_save'),
+                    cancelButtonText: t('btn_cancel'),
                     confirmButtonColor: "#00ADB5",
                     background: isLight ? "#FFFFFF" : "#1E2128",
                     color: isLight ? "#1E2128" : "#F9F9F9",
                     inputValidator: (value) => {
                         if (!value) {
-                            return 'Konu adı boş olamaz!';
+                            return t('msg_empty_category_name');
                         }
                     }
                 }).then(async (result) => {
